@@ -16,3 +16,13 @@ export const bulkFranchiseAddresses = [
   { label: "District", value: "Rawalpindi" },
   { label: "Tehsil", value: "Rawalpindi" },
 ];
+
+export const bulkFranchiseAddressDetails = [
+  { label: "Manager", value: "Ahmad Raza" },
+  { label: "Contact", value: "0310-000 0000" },
+  { label: "Address", value: "Shop #1, BG-5, Mid city apartments" },
+  { label: "Province", value: "Punjab" },
+  { label: "District", value: "Rawalpindi" },
+  { label: "Tehsil", value: "Rawalpindi" },
+  { label: "Active", value: "False" },
+];

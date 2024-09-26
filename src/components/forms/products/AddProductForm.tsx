@@ -13,10 +13,12 @@ import { addProductFormSchema } from "@/schemas/validation/validationSchema";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import LabelInputContainer from "./LabelInputContainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus } from "lucide-react";
-import { Textarea } from "../ui/textarea";
+
+import { productCategory } from "@/constant/data";
+import LabelInputContainer from "../LabelInputContainer";
+import { Textarea } from "@/components/ui/textarea";
 import {
   Select,
   SelectContent,
@@ -25,8 +27,7 @@ import {
   SelectLabel,
   SelectTrigger,
   SelectValue,
-} from "../ui/select";
-import { productCategory } from "@/constant/data";
+} from "@/components/ui/select";
 
 const AddProductForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("province");

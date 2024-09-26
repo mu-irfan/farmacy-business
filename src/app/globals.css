@@ -129,3 +129,25 @@
     ),
     linear-gradient(0deg, rgb(21, 128, 61), rgb(20, 83, 45));
 }
+
+.scrollbar-custom {
+  --sb-track-color: #ffffff;
+  --sb-thumb-color: #2aab59;
+  --sb-size: 4px;
+}
+.scrollbar-custom::-webkit-scrollbar {
+  width: var(--sb-size);
+}
+.scrollbar-custom::-webkit-scrollbar-track {
+  background: var(--sb-track-color);
+  border-radius: 17px;
+}
+.scrollbar-custom::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb-color);
+  border-radius: 17px;
+}
+@supports not selector(::-webkit-scrollbar) {
+  .scrollbar-custom {
+    scrollbar-color: var(--sb-thumb-color) var(--sb-track-color);
+  }
+}

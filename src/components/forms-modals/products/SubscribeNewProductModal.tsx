@@ -6,22 +6,22 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import FilterFranchiceForm from "@/components/forms/franchice/FilterFranchiceForm";
+import FilterSubscribedProductsForm from "@/components/forms/products/FilterSubscribedProductsForm";
 
-const FilterFranchiceModal = ({ open, onOpenChange }: any) => {
+const NewProductSubscribeModal = ({ open, onOpenChange }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       {/* <DialogTrigger>Open</DialogTrigger> */}
       <DialogContent className="max-w-[80vw] md:max-w-md lg:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-primary text-xl font-bold">
-            Filter Franchice
+            Filter
           </DialogTitle>
         </DialogHeader>
-        <FilterFranchiceForm />
+        <FilterSubscribedProductsForm />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default FilterFranchiceModal;
+export default NewProductSubscribeModal;

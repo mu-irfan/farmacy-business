@@ -1,6 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import AddProductModal from "@/components/forms-modals/AddProduct";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";

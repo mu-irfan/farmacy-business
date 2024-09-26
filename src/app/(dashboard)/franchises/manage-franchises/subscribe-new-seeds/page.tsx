@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
 import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
@@ -18,14 +17,12 @@ import { Button } from "@/components/ui/button";
 import { Filter, MoveLeft, Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
-import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
-import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
-import Link from "next/link";
+import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
+import NewProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
 
-const ManageFranchises = () => {
+const SubscribeNewSeeds = () => {
   const router = useRouter();
-  const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] = useState(false);
-  const [isBulkActivateModalOpen, setBulkActivateModalOpen] = useState(false);
+  const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
 
   const form = useForm<z.infer<typeof searchProductsFormSchema>>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -49,23 +46,9 @@ const ManageFranchises = () => {
           <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
           Back
         </h3>
-        <h2 className="text-3xl font-bold text-primary">Get Franchise List</h2>
-        <p className="text-md lg:pl-2 font-normal text-left pb-3">
-          Find or update franchise in the franchise list
-        </p>
-        <Button
-          className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-40"
-          onClick={() => setBulkActivateModalOpen((prev) => !prev)}
-        >
-          Bulk Activate
-        </Button>
-        <Link href="/franchises/manage-franchises/franchise/123">
-          <Button className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-40">
-            View Franchise
-          </Button>
-        </Link>
-        <p className="text-md lg:pl-2 font-normal text-left pb-3">
-          Activate the franchises in bulk in a single click
+        <h2 className="text-3xl font-bold text-primary">Subscribe New Seed</h2>
+        <p className="text-md lg:pl-2 font-normal pb-4 text-left">
+          Search, find and subscribe seed from global list.
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10">
           <CardContent>
@@ -80,7 +63,7 @@ const ManageFranchises = () => {
                         <FormItem className="relative">
                           <FormControl>
                             <Input
-                              placeholder="Search seed variety by name ..."
+                              placeholder="Search product by name ..."
                               type="text"
                               id="varietyName"
                               className="outline-none border py-5 border-primary rounded-full pl-12"
@@ -96,7 +79,7 @@ const ManageFranchises = () => {
                   <Button
                     className="text-farmacieWhite font-medium"
                     type="button"
-                    onClick={() => setAddFranchiceModalOpen((prev) => !prev)}
+                    onClick={() => setAddProductModalOpen((prev) => !prev)}
                   >
                     <Filter className="w-5 h-5 mr-1" />
                     Filter
@@ -107,16 +90,12 @@ const ManageFranchises = () => {
           </CardContent>
         </Card>
       </DashboardLayout>
-      <FilterFranchiceModal
-        open={isAddFranchiceModalOpen}
-        onOpenChange={setAddFranchiceModalOpen}
-      />
-      <ActivateFranchiseModal
-        open={isBulkActivateModalOpen}
-        onOpenChange={setBulkActivateModalOpen}
+      <NewProductSubscribeModal
+        open={isAddProductModalOpen}
+        onOpenChange={setAddProductModalOpen}
       />
     </>
   );
 };
 
-export default ManageFranchises;
+export default SubscribeNewSeeds;

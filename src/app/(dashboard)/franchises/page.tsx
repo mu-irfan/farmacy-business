@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import DashboardLayout from "../dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus, Search } from "lucide-react";
-import AddProductModal from "@/components/forms-modals/AddProduct";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import AddFranchiseModal from "@/components/forms-modals/franchice/AddFranchise";
 import Link from "next/link";
 

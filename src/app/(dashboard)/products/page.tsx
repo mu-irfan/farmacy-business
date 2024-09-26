@@ -5,7 +5,7 @@ import { CirclePlus, Search } from "lucide-react";
 import ReportCard from "@/components/ReportCard";
 import { productsReports } from "@/constant/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AddProductModal from "@/components/forms-modals/AddProduct";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../dashboard-layout";
 import Link from "next/link";
 
