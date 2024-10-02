@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -29,9 +29,20 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const AddProductForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+const AddProductForm = ({
+  mode,
+  productData,
+}: {
+  mode: "add" | "view" | "edit";
+  productData?: any;
+}) => {
+  const isViewMode = mode === "view";
+  const [selectedCategory, setSelectedCategory] = useState(
+    productData?.category || ""
+  );
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
+
+  console.log(productData, "selected product");
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -49,8 +60,27 @@ const AddProductForm = () => {
     },
   });
 
+  const { reset } = form;
+
+  useEffect(() => {
+    if (productData) {
+      reset({
+        productName: productData.productName || "",
+        brandName: productData.brandName || "",
+        category: productData.category || "",
+        subCategory: productData.subCategory || "",
+        packageWeight: productData.packageWeight || "",
+        weightUnit: productData.weightUnit || "",
+        packagingType: productData.packagingType || "",
+        areaCovered: productData.areaCovered || "",
+        disease: productData.disease || "",
+        description: productData.description || "",
+      });
+    }
+  }, [productData, reset]);
+
   const onSubmit = (data: z.infer<typeof addProductFormSchema>) => {
-    if (selectedImages.length < 5) {
+    if (mode === "add" && selectedImages.length < 5) {
       alert("Please upload at least 5 images.");
       return;
     }
@@ -70,7 +100,7 @@ const AddProductForm = () => {
   };
 
   const handleCardClick = () => {
-    document.getElementById("fileInput")?.click();
+    if (mode === "add") document.getElementById("fileInput")?.click();
   };
 
   return (
@@ -89,8 +119,9 @@ const AddProductForm = () => {
                       placeholder="Enter Product name"
                       type="text"
                       id="productName"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -110,8 +141,9 @@ const AddProductForm = () => {
                       placeholder="Sygenta fixed"
                       type="text"
                       id="brandName"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -134,6 +166,8 @@ const AddProductForm = () => {
                         setSelectedCategory(value);
                         field.onChange(value);
                       }}
+                      // defaultValue={field.value.toString()}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Category" />
@@ -169,6 +203,7 @@ const AddProductForm = () => {
                         // setValue("");
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select SubCategory" />
@@ -204,8 +239,9 @@ const AddProductForm = () => {
                       placeholder="Enter Package Weight"
                       type="text"
                       id="packageWeight"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -227,6 +263,7 @@ const AddProductForm = () => {
                         // setValue("");
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Weight Unit" />
@@ -263,6 +300,7 @@ const AddProductForm = () => {
                         setSelectedCategory(value);
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Packaging type" />
@@ -296,8 +334,9 @@ const AddProductForm = () => {
                       placeholder="Enter Area covered"
                       type="text"
                       id="areaCovered"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -318,8 +357,9 @@ const AddProductForm = () => {
                     placeholder="Enter purpose or disease keywords seperated by comma"
                     type="text"
                     id="disease"
-                    className="outline-none focus:border-primary"
+                    className="outline-none focus:border-primary disabled:bg-primary/20"
                     {...field}
+                    disabled={isViewMode}
                   />
                 </FormControl>
                 <FormMessage />
@@ -339,8 +379,9 @@ const AddProductForm = () => {
                     placeholder="Enter product description ..."
                     // type="text"
                     id="description"
-                    className="outline-none focus:border-primary"
+                    className="outline-none focus:border-primary disabled:bg-primary/20"
                     {...field}
+                    disabled={isViewMode}
                   />
                 </FormControl>
                 <FormMessage />
@@ -386,8 +427,12 @@ const AddProductForm = () => {
           className="hidden"
           onChange={handleImageChange}
         />
-        <Button className="w-full text-white font-medium" type="submit">
-          Submit Product
+        <Button
+          className="w-full text-white font-medium"
+          type="submit"
+          disabled={isViewMode}
+        >
+          {mode === "edit" ? "Update Product" : "Submit"}
         </Button>
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
       </form>

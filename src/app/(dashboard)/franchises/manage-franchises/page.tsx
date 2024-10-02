@@ -15,12 +15,14 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Filter, MoveLeft, Search } from "lucide-react";
+import { Check, Filter, MoveLeft, Search, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
 import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
 import Link from "next/link";
+import DataTable from "@/components/Table/DataTable";
+import { franchiseData } from "@/constant/data";
 
 const ManageFranchises = () => {
   const router = useRouter();
@@ -38,6 +40,55 @@ const ManageFranchises = () => {
   const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
+  const handleView = (seed: Franchise) => {
+    // Logic to view the product details
+    console.log("View seed:", seed);
+  };
+
+  const handleDelete = (seedId: number) => {
+    // Logic to delete the product
+    console.log("Delete seed with ID:", seedId);
+    // Add your delete logic here
+  };
+
+  const franchiseColumns: {
+    Header: string;
+    accessor: FranchiseColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Manager Name", accessor: "name" },
+    { Header: "Contact", accessor: "contact" },
+    { Header: "Address", accessor: "address" },
+    { Header: "Tehsil", accessor: "tehsil" },
+    {
+      Header: "Active",
+      accessor: "active",
+      Cell: ({ row }: any) => <Check className="text-primary" />,
+    },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }: any) => (
+        <div className="flex items-center gap-4">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleView(row.original)}
+            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
+          >
+            View
+          </Button>
+          <Button
+            size="icon"
+            onClick={() => handleDelete(row.original.id)}
+            className="bg-red-400 hover:bg-red-500 text-black"
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -67,7 +118,7 @@ const ManageFranchises = () => {
         <p className="text-md lg:pl-2 font-normal text-left pb-3">
           Activate the franchises in bulk in a single click
         </p>
-        <Card className="w-full py-6 rounded-xl text-center bg-primary/10">
+        <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -106,6 +157,10 @@ const ManageFranchises = () => {
             </Form>
           </CardContent>
         </Card>
+        <DataTable
+          columns={franchiseColumns}
+          data={franchiseData as FranchiseTableRow[]}
+        />
       </DashboardLayout>
       <FilterFranchiceModal
         open={isAddFranchiceModalOpen}

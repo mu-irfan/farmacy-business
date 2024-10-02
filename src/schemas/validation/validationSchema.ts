@@ -175,6 +175,20 @@ const filterFranchiceFormSchema = z.object({
   }),
 });
 
+const addQueryFormSchema = z.object({
+  contactEmail: z
+    .string()
+    .nonempty({
+      message: "Email is required.",
+    })
+    .email({
+      message: "Invalid email.",
+    }),
+  query: z.string().nonempty({
+    message: "Please enter query",
+  }),
+});
+
 export {
   createAccountFormSchema,
   loginAccountFormSchema,
@@ -184,4 +198,5 @@ export {
   filterSeedFormSchema,
   addFranchiseFormSchema,
   filterFranchiceFormSchema,
+  addQueryFormSchema,
 };

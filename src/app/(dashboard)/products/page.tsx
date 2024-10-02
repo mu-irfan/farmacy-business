@@ -61,6 +61,7 @@ export default function Dashboard() {
       <AddProductModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
+        mode="add"
       />
     </>
   );

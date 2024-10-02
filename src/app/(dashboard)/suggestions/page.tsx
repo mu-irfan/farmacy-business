@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import DashboardLayout from "../dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus, Search } from "lucide-react";
-import AddProductModal from "@/components/forms-modals/products/AddProduct";
+import AddQueryModal from "@/components/forms-modals/suggestions/AddQuery";
+import Link from "next/link";
 
 const Suggestions = () => {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
@@ -39,23 +40,28 @@ const Suggestions = () => {
         <p className="text-left text-sm lg:pl-2 font-medium pb-4">
           Write a suggestion or ask query if something confusing you.
         </p>
-        <Card className="w-full py-6 lg:py-8 max-w-lg rounded-xl text-center bg-primary/10 hover:bg-background border-2 border-primary">
-          <CardHeader className="space-y-0 pb-2">
-            <CardTitle className="text-3xl lg:text-4xl font-medium lg:py-4">
-              <Search className="h-8 w-8 mx-auto text-farmacieWhite" />
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-3xl lg:text-4xl font-bold text-farmacieWhite">
-              Responses
-            </div>
-          </CardContent>
-        </Card>
+        <Link
+          href="/suggestions/manage-suggestions"
+          className="w-full mx-auto max-w-lg"
+        >
+          <Card className="w-full py-6 lg:py-8 max-w-lg rounded-xl text-center bg-primary/10 hover:bg-background border-2 border-primary">
+            <CardHeader className="space-y-0 pb-2">
+              <CardTitle className="text-3xl lg:text-4xl font-medium lg:py-4">
+                <Search className="h-8 w-8 mx-auto text-farmacieWhite" />
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-3xl lg:text-4xl font-bold text-farmacieWhite">
+                Responses
+              </div>
+            </CardContent>
+          </Card>
+        </Link>
         <p className="text-sm lg:pl-2 font-medium pb-4">
           View and manage the responses of your suggestion.
         </p>
       </DashboardLayout>
-      <AddProductModal
+      <AddQueryModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
       />

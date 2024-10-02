@@ -4,10 +4,7 @@ import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import {
-  addProductFormSchema,
-  searchProductsFormSchema,
-} from "@/schemas/validation/validationSchema";
+import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -19,7 +16,7 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { productCategory } from "@/constant/data";
+import { productCategory, productData } from "@/constant/data";
 import {
   Select,
   SelectContent,
@@ -29,12 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MoveLeft } from "lucide-react";
+import { MoveLeft, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
+import DataTable from "@/components/Table/DataTable";
 
 const AllProducts = () => {
   const router = useRouter();
-  const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
+  const [selectedProductToView, setSelectedProductToView] = useState({});
 
   const form = useForm<z.infer<typeof searchProductsFormSchema>>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -47,6 +46,51 @@ const AllProducts = () => {
   const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
+
+  const handleView = (product: Product) => {
+    setViewProductModalOpen(true);
+    setSelectedProductToView(product);
+  };
+
+  const handleDelete = (productId: number) => {
+    // Logic to delete the product
+    console.log("Delete product with ID:", productId);
+    // Add your delete logic here
+  };
+
+  const productColumns: {
+    Header: string;
+    accessor: ProductColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Product Name", accessor: "productName" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Category", accessor: "category" },
+    { Header: "Sub Category", accessor: "subCategory" },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }: any) => (
+        <div className="flex items-center gap-4">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleView(row.original)}
+            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
+          >
+            View
+          </Button>
+          <Button
+            size="icon"
+            onClick={() => handleDelete(row.original.id)}
+            className="bg-red-400 hover:bg-red-500 text-black"
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
 
   return (
     <>
@@ -62,7 +106,7 @@ const AllProducts = () => {
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Filter and search the products from the product global list.
         </p>
-        <Card className="w-full py-6 rounded-xl text-center bg-primary/10">
+        <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -185,10 +229,17 @@ const AllProducts = () => {
             </Form>
           </CardContent>
         </Card>
+        <DataTable
+          columns={productColumns}
+          data={productData as ProductTableRow[]}
+          paginate
+        />
       </DashboardLayout>
       <AddProductModal
-        open={isAddProductModalOpen}
-        onOpenChange={setAddProductModalOpen}
+        open={isViewProductModalOpen}
+        onOpenChange={setViewProductModalOpen}
+        mode="view"
+        productData={selectedProductToView}
       />
     </>
   );
