@@ -15,8 +15,10 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
   useEffect(() => {
-    setCurrentMode("view");
-  }, [open]);
+    if (open && mode !== "add") {
+      setCurrentMode("view");
+    }
+  }, [open, mode]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -43,7 +45,7 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
             </DialogDescription>
           )}
         </DialogHeader>
-        <AddSeedForm />
+        <AddSeedForm mode={currentMode} seed={seedData} />
       </DialogContent>
     </Dialog>
   );

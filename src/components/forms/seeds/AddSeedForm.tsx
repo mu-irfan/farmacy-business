@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -28,8 +28,17 @@ import {
 } from "../../ui/select";
 import { productCategory } from "@/constant/data";
 
-const AddSeedForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+const AddSeedForm = ({
+  mode,
+  seed,
+}: {
+  mode: "add" | "view" | "edit";
+  seed?: any;
+}) => {
+  const isViewMode = mode === "view";
+  const [selectedCategory, setSelectedCategory] = useState(
+    seed?.category || ""
+  );
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
 
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
@@ -51,8 +60,30 @@ const AddSeedForm = () => {
     },
   });
 
+  const { reset } = form;
+
+  useEffect(() => {
+    if (seed) {
+      reset({
+        varietyName: seed.varietyName || "",
+        brandName: seed.brandName || "",
+        category: seed.category || "",
+        crop: seed.crop || "",
+        seedWeight: seed.seedWeight || "",
+        packageWeight: seed.packageWeight || "",
+        germinationPercentage: seed.germinationPercentage || "",
+        maturityPercentage: seed.maturityPercentage || "",
+        minHarvestingDays: seed.minHarvestingDays || "",
+        maxHavestingDays: seed.maxHavestingDays || "",
+        suitableRegion: seed.suitableRegion || "",
+        packageType: seed.packageType || "",
+        description: seed.description || "",
+      });
+    }
+  }, [seed, reset]);
+
   const onSubmit = (data: z.infer<typeof addSeedFormSchema>) => {
-    if (selectedImages.length < 5) {
+    if (mode === "add" && selectedImages.length < 5) {
       alert("Please upload at least 5 images.");
       return;
     }
@@ -72,7 +103,7 @@ const AddSeedForm = () => {
   };
 
   const handleCardClick = () => {
-    document.getElementById("fileInput")?.click();
+    if (mode === "add") document.getElementById("fileInput")?.click();
   };
 
   return (
@@ -91,8 +122,9 @@ const AddSeedForm = () => {
                       placeholder="Enter variety name"
                       type="text"
                       id="varietyName"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -112,8 +144,9 @@ const AddSeedForm = () => {
                       placeholder="Sygenta fixed"
                       type="text"
                       id="brandName"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -136,6 +169,7 @@ const AddSeedForm = () => {
                         setSelectedCategory(value);
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop Category" />
@@ -171,6 +205,7 @@ const AddSeedForm = () => {
                         // setValue("");
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop" />
@@ -206,8 +241,9 @@ const AddSeedForm = () => {
                       placeholder="Enter seed in gram"
                       type="text"
                       id="seedWeight"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -227,8 +263,9 @@ const AddSeedForm = () => {
                       placeholder="Enter package weight in kg"
                       type="text"
                       id="packageWeight"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -252,8 +289,9 @@ const AddSeedForm = () => {
                       placeholder="Enter Germination Percentage"
                       type="text"
                       id="germinationPercentage"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -273,8 +311,9 @@ const AddSeedForm = () => {
                       placeholder="Enter maturity percentage"
                       type="text"
                       id="maturityPercentage"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -296,8 +335,9 @@ const AddSeedForm = () => {
                       placeholder="Enter min days to reach harvesting"
                       type="text"
                       id="minHarvestingDays"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -317,8 +357,9 @@ const AddSeedForm = () => {
                       placeholder="Enter max days to reach harvesting"
                       type="text"
                       id="maxHavestingDays"
-                      className="outline-none focus:border-primary"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
+                      disabled={isViewMode}
                     />
                   </FormControl>
                   <FormMessage />
@@ -341,6 +382,7 @@ const AddSeedForm = () => {
                         setSelectedCategory(value);
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Suitable region" />
@@ -376,6 +418,7 @@ const AddSeedForm = () => {
                         // setValue("");
                         field.onChange(value);
                       }}
+                      disabled={isViewMode}
                     >
                       <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select package type" />
@@ -410,8 +453,9 @@ const AddSeedForm = () => {
                     placeholder="Enter product description ..."
                     // type="text"
                     id="description"
-                    className="outline-none focus:border-primary"
+                    className="outline-none focus:border-primary disabled:bg-primary/20"
                     {...field}
+                    disabled={isViewMode}
                   />
                 </FormControl>
                 <FormMessage />
@@ -458,7 +502,7 @@ const AddSeedForm = () => {
           onChange={handleImageChange}
         />
         <Button className="w-full text-white font-medium" type="submit">
-          Submit Product
+          {mode === "edit" ? "Update Seed" : "Submit"}
         </Button>
       </form>
     </Form>

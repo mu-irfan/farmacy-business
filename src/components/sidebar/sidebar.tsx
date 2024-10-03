@@ -7,18 +7,6 @@ import { IconMenu2, IconX } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { active } from "@/lib/helper";
 
-interface Links {
-  label: string;
-  href: string;
-  icon: React.JSX.Element | React.ReactNode;
-}
-
-interface SidebarContextProps {
-  open: boolean;
-  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  animate: boolean;
-}
-
 const SidebarContext = createContext<SidebarContextProps | undefined>(
   undefined
 );

@@ -14,14 +14,13 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Filter, MoveLeft, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
 import NewProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
+import Header from "@/components/Header";
 
 const SubscribeNewSeeds = () => {
-  const router = useRouter();
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
 
   const form = useForm<z.infer<typeof searchProductsFormSchema>>({
@@ -39,14 +38,7 @@ const SubscribeNewSeeds = () => {
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">Subscribe New Seed</h2>
+        <Header title="Subscribe New Seed" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Search, find and subscribe seed from global list.
         </p>

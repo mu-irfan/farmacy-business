@@ -5,14 +5,12 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import AddFranchiceForm from "../../forms/franchice/AddFranchiseForm";
 
 const AddFranchiseModal = ({ open, onOpenChange }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* <DialogTrigger>Open</DialogTrigger> */}
       <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="text-primary text-xl font-bold">

@@ -32,6 +32,7 @@ interface Product {
   brandName: string;
   category: string;
   subCategory: string;
+  subscribed?: boolean;
   packageWeight: string;
   weightUnit: string;
   packagingType: string;
@@ -43,11 +44,19 @@ interface Product {
 
 interface Seed {
   id: number;
-  name: string;
-  price: number;
+  varietyName: string;
+  brandName: string;
   category: string;
-  brand: string;
   crop: string;
+  seedWeight: string;
+  packageWeight: string;
+  germinationPercentage: string;
+  maturityPercentage: string;
+  minHarvestingDays: number;
+  maxHavestingDays: number;
+  suitableRegion: string;
+  packageType: string;
+  description: string;
 }
 
 interface Franchise {
@@ -55,7 +64,10 @@ interface Franchise {
   name: string;
   contact: string;
   address: string;
+  province: string;
+  district: string;
   tehsil: string;
+  active: boolean;
 }
 
 interface Suggestions {
@@ -77,16 +89,9 @@ interface FranchiseTableRow extends Franchise {
   actions?: never;
 }
 
-interface FranchiseTableActiveRow extends Franchise {
-  active?: never;
-}
-
 interface SuggestionsTableActionRow extends Suggestions {
-  actions?: never;
-}
-
-interface SuggestionsTableActiveRow extends Suggestions {
   viewed?: never;
+  actions?: never;
 }
 
 type ProductColumnAccessor = keyof Product | "actions";
@@ -103,3 +108,15 @@ type AddProductModalProps = {
   mode: "add" | "view" | "edit";
   productData?: any;
 };
+
+interface Links {
+  label: string;
+  href: string;
+  icon: React.JSX.Element | React.ReactNode;
+}
+
+interface SidebarContextProps {
+  open: boolean;
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  animate: boolean;
+}

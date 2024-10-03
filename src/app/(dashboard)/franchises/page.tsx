@@ -7,7 +7,7 @@ import AddFranchiseModal from "@/components/forms-modals/franchice/AddFranchise"
 import Link from "next/link";
 
 const Franchises = () => {
-  const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isAddFranchiseModalOpen, setAddFranchiseModalOpen] = useState(false);
 
   return (
     <>
@@ -24,7 +24,7 @@ const Franchises = () => {
         </Card>
         <Card
           className="w-full py-6 lg:py-8 max-w-lg lg:mt-4 rounded-xl text-center bg-muted/50 hover:bg-background cards cursor-pointer"
-          onClick={() => setAddProductModalOpen((prev) => !prev)}
+          onClick={() => setAddFranchiseModalOpen((prev) => !prev)}
         >
           <CardHeader className="space-y-0 pb-2">
             <CardTitle className="text-3xl lg:text-4xl font-medium lg:py-4">
@@ -62,8 +62,8 @@ const Franchises = () => {
         </p>
       </DashboardLayout>
       <AddFranchiseModal
-        open={isAddProductModalOpen}
-        onOpenChange={setAddProductModalOpen}
+        open={isAddFranchiseModalOpen}
+        onOpenChange={setAddFranchiseModalOpen}
       />
     </>
   );

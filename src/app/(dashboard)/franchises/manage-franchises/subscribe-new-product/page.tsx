@@ -14,15 +14,20 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Filter, MoveLeft, Search } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Ban, Check, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
 import NewProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
+import DataTable from "@/components/Table/DataTable";
+import { productData } from "@/constant/data";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
+import Header from "@/components/Header";
 
 const SubscribeNewProduct = () => {
-  const router = useRouter();
-  const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isNewSubscribedProductModalOpen, setNewSubscribedProductModalOpen] =
+    useState(false);
+  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
+  const [selectedProductToView, setSelectedProductToView] = useState({});
 
   const form = useForm<z.infer<typeof searchProductsFormSchema>>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -36,23 +41,61 @@ const SubscribeNewProduct = () => {
     console.log("Submitting form data:", data);
   };
 
+  const handleView = (product: Product) => {
+    setViewProductModalOpen(true);
+    setSelectedProductToView(product);
+  };
+
+  const handleDelete = (productId: number) => {
+    // Logic to delete the product
+    console.log("Delete product with ID:", productId);
+    // Add your delete logic here
+  };
+
+  const productColumns: {
+    Header: string;
+    accessor: ProductColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Product Name", accessor: "productName" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Category", accessor: "category" },
+    { Header: "Sub Category", accessor: "subCategory" },
+    {
+      Header: "Subscribed",
+      accessor: "subscribed",
+      Cell: ({ row }: any) =>
+        row.original.subscribed ? (
+          <Check className="text-primary ml-4" />
+        ) : (
+          <Ban className="text-yellow-500 w-5 h-5 ml-4" />
+        ),
+    },
+    {
+      Header: "",
+      accessor: "actions",
+      Cell: ({ row }: any) =>
+        row.original.subscribed && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleView(row.original)}
+            className="border-primary bg-primary/10  text-primary tracking-wider hover:text-primary/80"
+          >
+            View & Subscribe
+          </Button>
+        ),
+    },
+  ];
+
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">
-          Subscribe New Product
-        </h2>
+        <Header title="Subscribe New Product" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Search, find and subscribe product from global list.
         </p>
-        <Card className="w-full py-6 rounded-xl text-center bg-primary/10">
+        <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -81,7 +124,9 @@ const SubscribeNewProduct = () => {
                   <Button
                     className="text-farmacieWhite font-medium"
                     type="button"
-                    onClick={() => setAddProductModalOpen((prev) => !prev)}
+                    onClick={() =>
+                      setNewSubscribedProductModalOpen((prev) => !prev)
+                    }
                   >
                     <Filter className="w-5 h-5 mr-1" />
                     Filter
@@ -91,10 +136,20 @@ const SubscribeNewProduct = () => {
             </Form>
           </CardContent>
         </Card>
+        <DataTable
+          columns={productColumns}
+          data={productData as ProductTableRow[]}
+        />
       </DashboardLayout>
       <NewProductSubscribeModal
-        open={isAddProductModalOpen}
-        onOpenChange={setAddProductModalOpen}
+        open={isNewSubscribedProductModalOpen}
+        onOpenChange={setNewSubscribedProductModalOpen}
+      />
+      <AddProductModal
+        open={isViewProductModalOpen}
+        onOpenChange={setViewProductModalOpen}
+        mode="view"
+        productData={selectedProductToView}
       />
     </>
   );

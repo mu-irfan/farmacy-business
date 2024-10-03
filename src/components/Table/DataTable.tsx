@@ -6,6 +6,7 @@ import {
   usePagination,
   TableInstance,
   TableState,
+  ColumnInstance,
 } from "react-table";
 import {
   Table,
@@ -17,6 +18,21 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, MoveLeft, MoveRight } from "lucide-react";
 import { Button } from "../ui/button";
+
+interface ExtendedColumnInstance<T extends object> extends ColumnInstance<T> {
+  isSorted?: boolean;
+  isSortedDesc?: boolean;
+  getSortByToggleProps?: () => any;
+}
+
+interface DataTableProps<T extends object> {
+  columns: Array<{
+    Header: string;
+    accessor: keyof T;
+  }>;
+  data: T[];
+  paginate?: boolean;
+}
 
 const DataTable = <T extends object>({
   columns,
@@ -60,26 +76,34 @@ const DataTable = <T extends object>({
         <TableHeader>
           {headerGroups.map((headerGroup, ind) => (
             <TableRow {...headerGroup.getHeaderGroupProps()} key={ind}>
-              {headerGroup.headers.map((column, ind) => (
-                <TableHead
-                  {...column.getHeaderProps(column.getSortByToggleProps())}
-                  key={ind}
-                  className="bg-gray-200 dark:bg-primary/10"
-                >
-                  {column.render("Header")}
-                  <span>
-                    {column.isSorted ? (
-                      column.isSortedDesc ? (
-                        <ChevronDown className="inline ml-2 w-4 h-4" />
-                      ) : (
-                        <ChevronUp className="inline ml-2 w-4 h-4" />
-                      )
-                    ) : (
-                      ""
+              {headerGroup.headers.map((column, ind) => {
+                const extendedColumn = column as ExtendedColumnInstance<T>;
+
+                return (
+                  <TableHead
+                    {...extendedColumn.getHeaderProps(
+                      extendedColumn.getSortByToggleProps
+                        ? extendedColumn.getSortByToggleProps()
+                        : {}
                     )}
-                  </span>
-                </TableHead>
-              ))}
+                    key={ind}
+                    className="bg-gray-200 dark:bg-primary/10"
+                  >
+                    {extendedColumn.render("Header")}
+                    <span>
+                      {extendedColumn.isSorted ? (
+                        extendedColumn.isSortedDesc ? (
+                          <ChevronDown className="inline ml-2 w-4 h-4" />
+                        ) : (
+                          <ChevronUp className="inline ml-2 w-4 h-4" />
+                        )
+                      ) : (
+                        ""
+                      )}
+                    </span>
+                  </TableHead>
+                );
+              })}
             </TableRow>
           ))}
         </TableHeader>

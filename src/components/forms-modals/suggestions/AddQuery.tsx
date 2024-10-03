@@ -12,7 +12,6 @@ import AddQueryForm from "@/components/forms/suggestions/AddQueryForm";
 const AddQueryModal = ({ open, onOpenChange }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      {/* <DialogTrigger>Open</DialogTrigger> */}
       <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex justify-between items-center text-primary pt-6">

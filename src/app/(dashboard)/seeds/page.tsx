@@ -63,6 +63,7 @@ const Seeds = () => {
       <AddSeedModal
         open={isAddSeedModalOpen}
         onOpenChange={setAddSeedModalOpen}
+        mode="add"
       />
     </>
   );

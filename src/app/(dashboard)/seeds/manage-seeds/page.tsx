@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
@@ -16,16 +15,15 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Filter, MoveLeft, Search, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Filter, Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import FilterSeedModal from "@/components/forms-modals/seeds/FilterSeeds";
 import DataTable from "@/components/Table/DataTable";
 import { seedsData } from "@/constant/data";
 import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
+import Header from "@/components/Header";
 
 const ManageSeeds = () => {
-  const router = useRouter();
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
@@ -58,8 +56,8 @@ const ManageSeeds = () => {
     accessor: SeedColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Seed Variety Name", accessor: "name" },
-    { Header: "Brand Name", accessor: "brand" },
+    { Header: "Seed Variety Name", accessor: "varietyName" },
+    { Header: "Brand Name", accessor: "brandName" },
     { Header: "Crop Category", accessor: "category" },
     { Header: "Crop", accessor: "crop" },
     {
@@ -90,16 +88,7 @@ const ManageSeeds = () => {
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">
-          Manage Seed Varieties
-        </h2>
+        <Header title="Manage Seed Varieties" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Filter search and update the seed varieties of global list
         </p>

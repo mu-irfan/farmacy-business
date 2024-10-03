@@ -15,7 +15,15 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Check, Filter, MoveLeft, Search, Trash } from "lucide-react";
+import {
+  Ban,
+  Check,
+  Filter,
+  MoveLeft,
+  Search,
+  Trash,
+  XCircle,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
@@ -40,14 +48,14 @@ const ManageFranchises = () => {
   const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
-  const handleView = (seed: Franchise) => {
-    // Logic to view the product details
-    console.log("View seed:", seed);
+
+  const handleView = (franchise: Franchise) => {
+    router.push(`/franchises/manage-franchises/franchise/${franchise.id}`);
   };
 
-  const handleDelete = (seedId: number) => {
+  const handleDelete = (franchiseId: number) => {
     // Logic to delete the product
-    console.log("Delete seed with ID:", seedId);
+    console.log("Delete franchise with ID:", franchiseId);
     // Add your delete logic here
   };
 
@@ -63,7 +71,12 @@ const ManageFranchises = () => {
     {
       Header: "Active",
       accessor: "active",
-      Cell: ({ row }: any) => <Check className="text-primary" />,
+      Cell: ({ row }: any) =>
+        row.original.active ? (
+          <Check className="text-primary" />
+        ) : (
+          <Ban className="text-yellow-500 w-5 h-5" />
+        ),
     },
     {
       Header: "Actions",
@@ -93,14 +106,18 @@ const ManageFranchises = () => {
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">Get Franchise List</h2>
+        <div className="md:flex items-center justify-between">
+          <h2 className="text-3xl font-bold text-primary">
+            Get Franchise List
+          </h2>
+          <h3
+            className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
+            onClick={() => router.back()}
+          >
+            <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
+            Back
+          </h3>
+        </div>
         <p className="text-md lg:pl-2 font-normal text-left pb-3">
           Find or update franchise in the franchise list
         </p>
@@ -110,11 +127,6 @@ const ManageFranchises = () => {
         >
           Bulk Activate
         </Button>
-        <Link href="/franchises/manage-franchises/franchise/123">
-          <Button className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-40">
-            View Franchise
-          </Button>
-        </Link>
         <p className="text-md lg:pl-2 font-normal text-left pb-3">
           Activate the franchises in bulk in a single click
         </p>

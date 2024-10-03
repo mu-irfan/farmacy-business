@@ -20,8 +20,10 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   const [currentMode, setCurrentMode] = useState(mode);
 
   useEffect(() => {
-    setCurrentMode("view");
-  }, [open]);
+    if (open && mode !== "add") {
+      setCurrentMode("view");
+    }
+  }, [open, mode]);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>

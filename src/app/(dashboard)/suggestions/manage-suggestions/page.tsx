@@ -2,14 +2,12 @@
 import React from "react";
 import DashboardLayout from "../../dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { Check, MoveLeft, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Check, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
 import { suggestionsData } from "@/constant/data";
+import Header from "@/components/Header";
 
 const ManageSuggestions = () => {
-  const router = useRouter();
-
   const handleView = (suggestion: Suggestions) => {
     // Logic to view the product details
     console.log("View suggestion:", suggestion);
@@ -32,7 +30,7 @@ const ManageSuggestions = () => {
     {
       Header: "Viewed",
       accessor: "viewed",
-      Cell: ({ row }: any) => <Check className="text-primary" />,
+      Cell: () => <Check className="text-primary" />,
     },
     {
       Header: "Actions",
@@ -62,20 +60,13 @@ const ManageSuggestions = () => {
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">Responses</h2>
+        <Header title="Responses" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Responses of your suggestion and quries
         </p>
         <DataTable
           columns={suggestionsColumns}
-          data={suggestionsData as SuggestionsTableActiveRow[]}
+          data={suggestionsData as SuggestionsTableActionRow[]}
         />
       </DashboardLayout>
     </>

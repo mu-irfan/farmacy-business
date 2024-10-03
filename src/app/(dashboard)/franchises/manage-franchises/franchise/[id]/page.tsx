@@ -1,111 +1,221 @@
 "use client";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
+import FranchiseStats from "@/components/forms-modals/franchice/FranchiseStats";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
+import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
+import DataTable from "@/components/Table/DataTable";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { bulkFranchiseAddressDetails } from "@/constant/data";
-import { cn } from "@/lib/utils";
-import { MoveLeft, ShieldCheck } from "lucide-react";
-import Link from "next/link";
+import { franchiseData, productData, seedsData } from "@/constant/data";
+import { MoveLeft, ShieldCheck, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
-const FranchiseDetails = ({ params }: any) => {
+const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
-  const uuid = params.id;
+  const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
+  const [selectedSeedToView, setSelectedSeedToView] = useState({});
+  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
+  const [selectedProductToView, setSelectedProductToView] = useState({});
+  const [visibleTable, setVisibleTable] = useState<"seeds" | "products" | null>(
+    null
+  );
+
+  const franchiseId = parseInt(params.id, 10);
+  const selectedFranchise = franchiseData.find(
+    (franchise) => franchise.id === franchiseId
+  );
+
+  if (!selectedFranchise) {
+    return <p>Franchise not found.</p>;
+  }
+
+  const franchiseAddressDetails = [
+    { label: "Manager Name", value: selectedFranchise.name },
+    { label: "Contact", value: selectedFranchise.contact },
+    { label: "Address", value: selectedFranchise.address },
+    { label: "Province", value: selectedFranchise.province },
+    { label: "District", value: selectedFranchise.district },
+    { label: "Tehsil", value: selectedFranchise.tehsil },
+    { label: "Active", value: selectedFranchise.active ? "True" : "False" },
+  ];
+
+  const handleView = (seed: Product) => {
+    setViewSeedsModalOpen(true);
+    setSelectedSeedToView(seed);
+  };
+
+  const handleDelete = (seedId: number) => {
+    // Logic to delete the product
+    console.log("Delete seed with ID:", seedId);
+    // Add your delete logic here
+  };
+
+  const handleProductView = (product: Product) => {
+    setViewProductModalOpen(true);
+    setSelectedProductToView(product);
+  };
+
+  const handleProductDelete = (productId: number) => {
+    // Logic to delete the product
+    console.log("Delete product with ID:", productId);
+    // Add your delete logic here
+  };
+
+  const seedColumns: {
+    Header: string;
+    accessor: SeedColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Seed Variety Name", accessor: "varietyName" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Crop Category", accessor: "category" },
+    { Header: "Crop", accessor: "crop" },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }: any) => (
+        <div className="flex items-center gap-4">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleView(row.original)}
+            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
+          >
+            View
+          </Button>
+          <Button
+            size="icon"
+            onClick={() => handleDelete(row.original.id)}
+            className="bg-red-400 hover:bg-red-500 text-black"
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
+  const productColumns: {
+    Header: string;
+    accessor: ProductColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Product Name", accessor: "productName" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Category", accessor: "category" },
+    { Header: "Sub Category", accessor: "subCategory" },
+    {
+      Header: "Actions",
+      accessor: "actions",
+      Cell: ({ row }: any) => (
+        <div className="flex items-center gap-4">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleProductView(row.original)}
+            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
+          >
+            View
+          </Button>
+          <Button
+            size="icon"
+            onClick={() => handleProductDelete(row.original.id)}
+            className="bg-red-400 hover:bg-red-500 text-black"
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
+    },
+  ];
+
   return (
     <DashboardLayout>
-      <h3
-        className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-        onClick={() => router.back()}
-      >
-        <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-        Back
-      </h3>
-      <h2 className="text-3xl font-bold text-primary">Franchise Details</h2>
+      <div className="md:flex items-center justify-between">
+        <h2 className="text-3xl font-bold text-primary">Franchise Details</h2>
+        <h3
+          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
+          onClick={() => router.back()}
+        >
+          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
+          Back
+        </h3>
+      </div>
       <p className="text-md lg:pl-2 font-normal text-left pb-3">
         Subscribe the products and seeds to make them available on farmacie in
         this franchise
       </p>
       <div className="md:flex justify-between">
         <div className="flex items-center gap-3">
-          <Link href="/franchises/manage-franchises/subscribe-new-product">
-            <Button className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-60">
-              Subscribe New Products
-            </Button>
-          </Link>
-          <Link href="/franchises/manage-franchises/subscribe-new-seeds">
-            <Button
-              variant="outline"
-              className="font-medium border-primary dark:border-yellow-400 mt-2 md:mt-0 w-60"
-              type="button"
-            >
-              Subscribe New Seeds
-            </Button>
-          </Link>
+          <Button
+            disabled={!selectedFranchise.active}
+            className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-60 !disabled:cursor-not-allowed"
+            onClick={() =>
+              router.push("/franchises/manage-franchises/subscribe-new-product")
+            }
+            type="button"
+          >
+            Subscribe New Products
+          </Button>
+          <Button
+            variant="outline"
+            className="font-medium border-primary dark:border-yellow-400 mt-2 md:mt-0 w-60 !disabled:cursor-not-allowed"
+            type="button"
+            onClick={() =>
+              router.push("/franchises/manage-franchises/subscribe-new-seeds")
+            }
+            disabled={!selectedFranchise.active}
+          >
+            Subscribe New Seeds
+          </Button>
         </div>
-        <Button className="font-medium">
-          Activate <ShieldCheck className="w-5 h-5 ml-1.5" />
-        </Button>
+        {!selectedFranchise.active && (
+          <Button className="font-medium">
+            Activate <ShieldCheck className="w-5 h-5 ml-1.5" />
+          </Button>
+        )}
       </div>
-      <div className="grid xl:grid-cols-4 grid-cols-1 xl:gap-4 gap-y-4 my-10">
-        <Card className="w-full xl:col-span-3 space-y-4 pt-4 rounded-2xl text-left bg-primary/10 border-l-[18px] border-l-green-500">
-          <CardContent>
-            <ul className="text-sm pl-3 space-y-4 py-6">
-              {bulkFranchiseAddressDetails.map((item, index) => (
-                <li key={index} className="grid grid-cols-[100px_1fr] gap-8">
-                  <span>{item.label}:</span>
-                  <span
-                    className={
-                      (cn("text-gray-800 font-medium dark:text-white"),
-                      item.label === "Active" && item.value === "False"
-                        ? "text-red-400"
-                        : item.label === "Active" && item.value === "True"
-                        ? "text-green-500"
-                        : "")
-                    }
-                  >
-                    {item.value}
-                  </span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
-        <div className="xl:col-span-1 space-y-4">
-          <Card className="relative w-full pt-4 rounded-xl text-center bg-primary/10 overflow-hidden">
-            <CardHeader className="space-y-0 pb-2">
-              <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-                12
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm lg:pt-4">Total Products Subscribed</div>
-            </CardContent>
-            <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-full mx-auto h-96 bg-primary/5 dark:bg-primary/10 rounded blur-3xl z-0" />
-          </Card>
-          <Card className="relative w-full pt-4 rounded-xl text-center bg-primary/10 overflow-hidden">
-            <CardHeader className="space-y-0 pb-2">
-              <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-                12
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="text-sm lg:pt-4">Total Seeds Subscribed</div>
-            </CardContent>
-            <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-full mx-auto h-96 bg-primary/5 dark:bg-primary/10 rounded blur-3xl z-0" />
-          </Card>
-        </div>
-      </div>
-      <div className="flex items-center justify-end gap-3">
+      <FranchiseStats franchiseStats={franchiseAddressDetails} />
+      <div className="flex items-center justify-end gap-3 mb-8">
         <Button
           variant="outline"
           className="font-medium border-primary dark:border-green-500 mt-2 md:mt-0 w-60"
           type="button"
+          disabled={!selectedFranchise.active}
+          onClick={() => setVisibleTable("seeds")}
         >
           View Subscribed Seeds
         </Button>
-        <Button className="font-medium w-60">View Subscribed Products</Button>
+        <Button
+          className="font-medium w-60"
+          disabled={!selectedFranchise.active}
+          onClick={() => setVisibleTable("products")}
+        >
+          View Subscribed Products
+        </Button>
       </div>
+      {visibleTable === "seeds" && (
+        <DataTable columns={seedColumns} data={seedsData as SeedTableRow[]} />
+      )}
+      {visibleTable === "products" && (
+        <DataTable
+          columns={productColumns}
+          data={productData as ProductTableRow[]}
+          paginate
+        />
+      )}
+      <AddSeedModal
+        open={isViewSeedsModalOpen}
+        onOpenChange={setViewSeedsModalOpen}
+        mode="view"
+        seedData={selectedSeedToView}
+      />
+      <AddProductModal
+        open={isViewProductModalOpen}
+        onOpenChange={setViewProductModalOpen}
+        mode="view"
+        productData={selectedProductToView}
+      />
     </DashboardLayout>
   );
 };

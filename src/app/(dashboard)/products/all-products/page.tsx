@@ -26,12 +26,11 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { MoveLeft, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
+import Header from "@/components/Header";
 
 const AllProducts = () => {
-  const router = useRouter();
   const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
   const [selectedProductToView, setSelectedProductToView] = useState({});
 
@@ -95,14 +94,7 @@ const AllProducts = () => {
   return (
     <>
       <DashboardLayout>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-        <h2 className="text-3xl font-bold text-primary">Get Products</h2>
+        <Header title="Get Products" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Filter and search the products from the product global list.
         </p>

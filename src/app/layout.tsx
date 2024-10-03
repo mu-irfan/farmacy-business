@@ -7,8 +7,23 @@ import QueryProvider from "@/query/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Farmacie Login",
-  description: "Login to Farmacie",
+  title: "Business Farmacie Login",
+  description: "Business Farmacie Login",
+  openGraph: {
+    type: "website",
+    locale: "en_US",
+    url: "https://farmacy-business.vercel.app/",
+    title: "Business Farmacie",
+    description: "Business Farmacie",
+    images: [
+      {
+        url: "/assets/images/OG.png",
+        width: 1200,
+        height: 630,
+        alt: "Business Farmacie",
+      },
+    ],
+  },
 };
 
 export default function RootLayout({
