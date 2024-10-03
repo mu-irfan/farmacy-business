@@ -10,7 +10,7 @@ const Layout: FC<{ children: ReactNode }> = async ({ children }) => {
   return (
     <ThemeProvider
       attribute="class"
-      defaultTheme="light"
+      defaultTheme="dark"
       enableSystem
       disableTransitionOnChange
     >
