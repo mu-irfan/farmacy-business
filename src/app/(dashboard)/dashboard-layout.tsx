@@ -56,7 +56,7 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
   ];
 
   return (
-    <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden h-[100vh]">
+    <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden min-h-[100vh]">
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <SidebarContent links={dashboardLinks} />
@@ -81,10 +81,10 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
         </SidebarBody>
       </Sidebar>
 
-      <main className="flex flex-1">
+      <main className="flex flex-1 overflow-y-auto">
         <div
           className={cn(
-            "p-2 md:px-10 md:py-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-farmacieWhite dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full h-full",
+            "p-2 md:px-10 md:py-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-farmacieWhite dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full min-h-full",
             contentAtCenter && "justify-center items-center"
           )}
         >
