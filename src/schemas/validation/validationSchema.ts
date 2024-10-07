@@ -56,6 +56,15 @@ const addProductFormSchema = z.object({
   subCategory: z.string().nonempty({
     message: "Subcategory is required.",
   }),
+  activeIngredient: z.string().nonempty({
+    message: "ActiveIngredient is required.",
+  }),
+  concentration: z.string().nonempty({
+    message: "Concentration is required.",
+  }),
+  units: z.string().nonempty({
+    message: "Unit is required.",
+  }),
   packageWeight: z.string().nonempty({
     message: "Package weight is required.",
   }),
@@ -189,6 +198,15 @@ const addQueryFormSchema = z.object({
   }),
 });
 
+const queryResponseSchema = z.object({
+  query: z.string().nonempty({
+    message: "Please enter query",
+  }),
+  response: z.string().nonempty({
+    message: "Please enter query",
+  }),
+});
+
 export {
   createAccountFormSchema,
   loginAccountFormSchema,
@@ -199,4 +217,5 @@ export {
   addFranchiseFormSchema,
   filterFranchiceFormSchema,
   addQueryFormSchema,
+  queryResponseSchema,
 };

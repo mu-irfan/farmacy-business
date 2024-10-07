@@ -33,8 +33,10 @@ const AddQueryForm = () => {
   return (
     <Form {...form}>
       <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
-        <LabelInputContainer className="mb-6">
-          <Label htmlFor="contactEmail">Your Contact Email</Label>
+        <LabelInputContainer className="my-6">
+          <Label htmlFor="contactEmail" className="dark:text-farmacieGrey">
+            Your Contact Email
+          </Label>
           <FormField
             control={form.control}
             name="contactEmail"
@@ -55,7 +57,9 @@ const AddQueryForm = () => {
           />
         </LabelInputContainer>
         <LabelInputContainer className="mb-4">
-          <Label htmlFor="query">Query</Label>
+          <Label htmlFor="query" className="dark:text-farmacieGrey">
+            Query
+          </Label>
           <FormField
             control={form.control}
             name="query"

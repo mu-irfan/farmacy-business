@@ -12,20 +12,21 @@ const Seeds = () => {
   return (
     <>
       <DashboardLayout contentAtCenter>
-        <Card className="w-full py-6 lg:py-8 max-w-lg rounded-xl text-center bg-primary/10 hover:bg-background border-2 border-primary">
+        <Card className="relative w-full py-6 lg:py-8 max-w-xl rounded-xl text-center bg-primary/10">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
               40
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-md font-medium lg:pt-4">
+            <div className="text-md font-medium lg:pt-4 dark:text-farmacieGrey">
               Total Seeds in Global List
             </div>
           </CardContent>
+          <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-full mx-auto h-96 bg-primary/5 dark:bg-primary/10 rounded blur-3xl z-0" />
         </Card>
         <Card
-          className="w-full py-6 lg:py-8 max-w-lg lg:mt-4 rounded-xl text-center bg-muted/50 hover:bg-background cards cursor-pointer"
+          className="w-full py-6 lg:py-8 max-w-xl lg:mt-4 rounded-xl text-center bg-muted/50 cards cursor-pointer"
           onClick={() => setAddSeedModalOpen((prev) => !prev)}
         >
           <CardHeader className="space-y-0 pb-2">
@@ -39,24 +40,25 @@ const Seeds = () => {
             </div>
           </CardContent>
         </Card>
-        <p className="text-left text-sm lg:pl-2 font-medium pb-4">
+        <p className="text-sm text-left lg:pl-2 font-medium pb-4 w-full max-w-xl dark:text-farmacieGrey">
           Add seed to seed global list
         </p>
-        <Link href="/seeds/manage-seeds" className="w-full mx-auto max-w-lg">
-          <Card className="w-full py-6 lg:py-8 rounded-xl text-center bg-primary/10 hover:bg-background border-2 border-primary">
+        <Link href="/seeds/manage-seeds" className="w-full mx-auto max-w-xl">
+          <Card className="relative w-full py-6 lg:py-8 max-w-xl rounded-xl text-center bg-primary/10 border-2 border-primary">
             <CardHeader className="space-y-0 pb-2">
               <CardTitle className="text-3xl lg:text-4xl font-medium lg:py-4">
-                <Search className="h-8 w-8 mx-auto text-farmacieWhite" />
+                <Search className="h-8 w-8 mx-auto text-primary dark:text-green-500" />
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-3xl lg:text-4xl font-bold text-farmacieWhite">
+              <div className="text-3xl lg:text-4xl font-bold text-primary dark:text-green-500">
                 Manage Seeds
               </div>
             </CardContent>
+            <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-full mx-auto h-96 bg-primary/5 dark:bg-primary/10 rounded blur-3xl z-0" />
           </Card>
         </Link>
-        <p className="text-sm lg:pl-2 font-medium pb-4">
+        <p className="text-sm !text-left lg:pl-2 font-medium pb-4 w-full max-w-xl dark:text-farmacieGrey">
           Search, filter and update seeds from the global list
         </p>
       </DashboardLayout>

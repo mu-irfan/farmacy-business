@@ -1,16 +1,22 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
 import { Button } from "@/components/ui/button";
 import { Check, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
 import { suggestionsData } from "@/constant/data";
 import Header from "@/components/Header";
+import QueryResponsesModal from "@/components/forms-modals/suggestions/QueryResponses";
 
 const ManageSuggestions = () => {
+  const [isQueryResponsesModalOpen, setQueryResponsesModalOpen] =
+    useState(false);
+  const [selectedSuggestion, setSelectedSuggestion] = useState({});
+
   const handleView = (suggestion: Suggestions) => {
-    // Logic to view the product details
     console.log("View suggestion:", suggestion);
+    setQueryResponsesModalOpen(true);
+    setSelectedSuggestion(suggestion);
   };
 
   const handleDelete = (suggestionId: number) => {
@@ -25,15 +31,37 @@ const ManageSuggestions = () => {
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
     { Header: "Date", accessor: "date" },
-    { Header: "Query", accessor: "query" },
-    { Header: "Response", accessor: "response" },
+    {
+      Header: "Query",
+      accessor: "query",
+      Cell: ({ row }: any) => (
+        <div
+          className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
+          title={row.original.query}
+        >
+          {row.original.query}
+        </div>
+      ),
+    },
+    {
+      Header: "Response",
+      accessor: "response",
+      Cell: ({ row }: any) => (
+        <div
+          className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
+          title={row.original.response}
+        >
+          {row.original.response}
+        </div>
+      ),
+    },
     {
       Header: "Viewed",
       accessor: "viewed",
       Cell: () => <Check className="text-primary" />,
     },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
         <div className="flex items-center gap-4">
@@ -61,7 +89,7 @@ const ManageSuggestions = () => {
     <>
       <DashboardLayout>
         <Header title="Responses" />
-        <p className="text-md lg:pl-2 font-normal pb-4 text-left">
+        <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Responses of your suggestion and quries
         </p>
         <DataTable
@@ -69,6 +97,11 @@ const ManageSuggestions = () => {
           data={suggestionsData as SuggestionsTableActionRow[]}
         />
       </DashboardLayout>
+      <QueryResponsesModal
+        open={isQueryResponsesModalOpen}
+        onOpenChange={setQueryResponsesModalOpen}
+        suggestion={selectedSuggestion}
+      />
     </>
   );
 };

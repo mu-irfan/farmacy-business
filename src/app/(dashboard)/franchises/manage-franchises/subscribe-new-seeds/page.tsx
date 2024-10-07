@@ -14,14 +14,19 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Filter, Search } from "lucide-react";
+import { Ban, Check, Filter, Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
 import NewProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
 import Header from "@/components/Header";
+import DataTable from "@/components/Table/DataTable";
+import { seedsData } from "@/constant/data";
+import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
 
 const SubscribeNewSeeds = () => {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+  const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
+  const [selectedSeedToView, setSelectedSeedToView] = useState({});
 
   const form = useForm<z.infer<typeof searchProductsFormSchema>>({
     resolver: zodResolver(searchProductsFormSchema),
@@ -35,6 +40,53 @@ const SubscribeNewSeeds = () => {
     console.log("Submitting form data:", data);
   };
 
+  const handleView = (seed: Product) => {
+    setViewSeedsModalOpen(true);
+    setSelectedSeedToView(seed);
+  };
+
+  const handleDelete = (seedId: number) => {
+    // Logic to delete the product
+    console.log("Delete seed with ID:", seedId);
+    // Add your delete logic here
+  };
+
+  const seedColumns: {
+    Header: string;
+    accessor: SeedColumnAccessor;
+    Cell?: ({ row }: any) => JSX.Element;
+  }[] = [
+    { Header: "Seed Variety Name", accessor: "varietyName" },
+    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Crop Category", accessor: "category" },
+    { Header: "Crop", accessor: "crop" },
+    {
+      Header: "Subscribed",
+      accessor: "subscribed",
+      Cell: ({ row }: any) =>
+        row.original.subscribed ? (
+          <Check className="text-primary ml-4" />
+        ) : (
+          <Ban className="text-yellow-500 w-5 h-5 ml-4" />
+        ),
+    },
+    {
+      Header: "",
+      accessor: "actions",
+      Cell: ({ row }: any) =>
+        row.original.subscribed && (
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={() => handleView(row.original)}
+            className="border-primary bg-primary/10  text-primary tracking-wider hover:text-primary/80"
+          >
+            View & Subscribe
+          </Button>
+        ),
+    },
+  ];
+
   return (
     <>
       <DashboardLayout>
@@ -42,7 +94,7 @@ const SubscribeNewSeeds = () => {
         <p className="text-md lg:pl-2 font-normal pb-4 text-left">
           Search, find and subscribe seed from global list.
         </p>
-        <Card className="w-full py-6 rounded-xl text-center bg-primary/10">
+        <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
@@ -81,10 +133,17 @@ const SubscribeNewSeeds = () => {
             </Form>
           </CardContent>
         </Card>
+        <DataTable columns={seedColumns} data={seedsData as SeedTableRow[]} />
       </DashboardLayout>
       <NewProductSubscribeModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
+      />
+      <AddSeedModal
+        open={isViewSeedsModalOpen}
+        onOpenChange={setViewSeedsModalOpen}
+        mode="view"
+        seedData={selectedSeedToView}
       />
     </>
   );

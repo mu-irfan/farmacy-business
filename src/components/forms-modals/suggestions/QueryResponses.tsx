@@ -7,15 +7,17 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import Link from "next/link";
-import AddQueryForm from "@/components/forms/suggestions/AddQueryForm";
+import Responses from "@/components/forms/suggestions/Responses";
 
-const AddQueryModal = ({ open, onOpenChange }: any) => {
+const QueryResponsesModal = ({ open, onOpenChange, suggestion }: any) => {
+  console.log(suggestion, "suggest");
+
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
         <DialogHeader>
           <DialogTitle className="flex justify-between items-center text-primary pt-6">
-            <span className="text-xl font-bold">Suggestion-Query</span>
+            <span className="text-xl font-bold">Response</span>
             <div>
               <strong className="text-sm dark:text-farmacieGrey font-normal">
                 Our email:
@@ -29,13 +31,13 @@ const AddQueryModal = ({ open, onOpenChange }: any) => {
             </div>
           </DialogTitle>
           <DialogDescription className="!dark:text-farmacieLightGray">
-            Write a suggestion or query if something is confusing you
+            Response of your query we expect this would be helpful
           </DialogDescription>
         </DialogHeader>
-        <AddQueryForm />
+        <Responses query={suggestion.query} response={suggestion.response} />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default AddQueryModal;
+export default QueryResponsesModal;

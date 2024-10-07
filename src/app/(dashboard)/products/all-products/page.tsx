@@ -95,7 +95,7 @@ const AllProducts = () => {
     <>
       <DashboardLayout>
         <Header title="Get Products" />
-        <p className="text-md lg:pl-2 font-normal pb-4 text-left">
+        <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Filter and search the products from the product global list.
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
@@ -227,12 +227,14 @@ const AllProducts = () => {
           paginate
         />
       </DashboardLayout>
-      <AddProductModal
-        open={isViewProductModalOpen}
-        onOpenChange={setViewProductModalOpen}
-        mode="view"
-        productData={selectedProductToView}
-      />
+      <div className="overflow-y-auto">
+        <AddProductModal
+          open={isViewProductModalOpen}
+          onOpenChange={setViewProductModalOpen}
+          mode="view"
+          productData={selectedProductToView}
+        />
+      </div>
     </>
   );
 };

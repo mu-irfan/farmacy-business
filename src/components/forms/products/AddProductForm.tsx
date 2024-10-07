@@ -14,9 +14,9 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, Plus, Trash } from "lucide-react";
 
-import { productCategory } from "@/constant/data";
+import { activeIngredients, productCategory, units } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -51,6 +51,9 @@ const AddProductForm = ({
       brandName: "",
       category: "",
       subCategory: "",
+      activeIngredient: "",
+      concentration: "",
+      units: "",
       packageWeight: "",
       weightUnit: "",
       packagingType: "",
@@ -69,6 +72,9 @@ const AddProductForm = ({
         brandName: productData.brandName || "",
         category: productData.category || "",
         subCategory: productData.subCategory || "",
+        activeIngredient: productData.activeIngredient || "",
+        concentration: productData.concentration || "",
+        units: productData.units || "",
         packageWeight: productData.packageWeight || "",
         weightUnit: productData.weightUnit || "",
         packagingType: productData.packagingType || "",
@@ -108,7 +114,9 @@ const AddProductForm = ({
       <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="productName">Product Name</Label>
+            <Label htmlFor="productName" className="dark:text-farmacieGrey">
+              Product Name
+            </Label>
             <FormField
               control={form.control}
               name="productName"
@@ -130,7 +138,9 @@ const AddProductForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="brandName">Brand Name</Label>
+            <Label htmlFor="brandName" className="dark:text-farmacieGrey">
+              Brand Name
+            </Label>
             <FormField
               control={form.control}
               name="brandName"
@@ -154,7 +164,9 @@ const AddProductForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category" className="dark:text-farmacieGrey">
+              Category
+            </Label>
             <FormField
               control={form.control}
               name="category"
@@ -169,8 +181,11 @@ const AddProductForm = ({
                       // defaultValue={field.value.toString()}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="Select Category" />
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectValue
+                          placeholder="Select Category"
+                          className=""
+                        />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
@@ -190,7 +205,9 @@ const AddProductForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="subCategory">Sub category</Label>
+            <Label htmlFor="subCategory" className="dark:text-farmacieGrey">
+              Sub category
+            </Label>
             <FormField
               control={form.control}
               name="subCategory"
@@ -205,7 +222,7 @@ const AddProductForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select SubCategory" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -228,7 +245,132 @@ const AddProductForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="packageWeight">Package Weight</Label>
+            <Label
+              htmlFor="activeIngredient"
+              className="dark:text-farmacieGrey"
+            >
+              Active Ingredient
+            </Label>
+            <FormField
+              control={form.control}
+              name="activeIngredient"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        setSelectedCategory(value);
+                        // setValue("");
+                        field.onChange(value);
+                      }}
+                      disabled={isViewMode}
+                    >
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectValue placeholder="Select Active Ingredient" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectGroup>
+                          <SelectLabel>Active Ingredients</SelectLabel>
+                          {activeIngredients.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+          <div className="flex flex-col md:flex-row items-center w-full space-y-2 md:space-y-0 md:space-x-2">
+            <LabelInputContainer>
+              <Label htmlFor="concentration" className="dark:text-farmacieGrey">
+                Concentration
+              </Label>
+              <FormField
+                control={form.control}
+                name="concentration"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="John"
+                        type="text"
+                        id="concentration"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
+              <Label htmlFor="units" className="dark:text-farmacieGrey">
+                Unit
+              </Label>
+              <FormField
+                control={form.control}
+                name="units"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          // setValue("");
+                          field.onChange(value);
+                        }}
+                        disabled={isViewMode}
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                          <SelectValue placeholder="kg" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Select unit</SelectLabel>
+                            {units.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <div className="flex items-center gap-2">
+              <Button
+                size="icon"
+                className="bg-primary text-farmacieWhite mt-5"
+                type="button"
+              >
+                <Plus className="w-4 h-4" />
+              </Button>
+              <Button
+                size="icon"
+                className="bg-red-500 hover:bg-red-600 text-black mt-5"
+                type="button"
+              >
+                <Trash className="w-4 h-4" />
+              </Button>
+            </div>
+          </div>
+        </div>
+        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+          <LabelInputContainer>
+            <Label htmlFor="packageWeight" className="dark:text-farmacieGrey">
+              Package Weight
+            </Label>
             <FormField
               control={form.control}
               name="packageWeight"
@@ -250,7 +392,9 @@ const AddProductForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="weightUnit">Weight Unit</Label>
+            <Label htmlFor="weightUnit" className="dark:text-farmacieGrey">
+              Weight Unit
+            </Label>
             <FormField
               control={form.control}
               name="weightUnit"
@@ -265,7 +409,7 @@ const AddProductForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Weight Unit" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -288,7 +432,9 @@ const AddProductForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="packagingType">Packaging type</Label>
+            <Label htmlFor="packagingType" className="dark:text-farmacieGrey">
+              Packaging type
+            </Label>
             <FormField
               control={form.control}
               name="packagingType"
@@ -302,7 +448,7 @@ const AddProductForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Packaging type" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -323,7 +469,9 @@ const AddProductForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="areaCovered">Area covered (acre)</Label>
+            <Label htmlFor="areaCovered" className="dark:text-farmacieGrey">
+              Area covered (acre)
+            </Label>
             <FormField
               control={form.control}
               name="areaCovered"
@@ -346,7 +494,9 @@ const AddProductForm = ({
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-2.5">
-          <Label htmlFor="disease">Disease/Purpose</Label>
+          <Label htmlFor="disease" className="dark:text-farmacieGrey">
+            Disease/Purpose
+          </Label>
           <FormField
             control={form.control}
             name="disease"
@@ -368,7 +518,9 @@ const AddProductForm = ({
           />
         </LabelInputContainer>
         <LabelInputContainer className="mb-2.5">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="dark:text-farmacieGrey">
+            Description
+          </Label>
           <FormField
             control={form.control}
             name="description"
@@ -407,12 +559,12 @@ const AddProductForm = ({
                   ))}
                 </div>
               ) : (
-                <CirclePlus className="h-5 w-5 mx-auto dar:text-farmacieWhite" />
+                <CirclePlus className="h-5 w-5 mx-auto dark:text-green-500" />
               )}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm dark:text-farmacieWhite">
+            <div className="text-sm dark:text-green-500">
               {selectedImages.length > 0
                 ? `${selectedImages.length} Images Selected`
                 : "Add Images"}

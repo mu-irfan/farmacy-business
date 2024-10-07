@@ -28,7 +28,6 @@ import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
 import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
-import Link from "next/link";
 import DataTable from "@/components/Table/DataTable";
 import { franchiseData } from "@/constant/data";
 

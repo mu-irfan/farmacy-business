@@ -111,7 +111,9 @@ const AddSeedForm = ({
       <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="varietyName">Seed Variety Name</Label>
+            <Label htmlFor="varietyName" className="dark:text-farmacieGrey">
+              Seed Variety Name
+            </Label>
             <FormField
               control={form.control}
               name="varietyName"
@@ -133,7 +135,9 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="brandName">Brand Name</Label>
+            <Label htmlFor="brandName" className="dark:text-farmacieGrey">
+              Brand Name
+            </Label>
             <FormField
               control={form.control}
               name="brandName"

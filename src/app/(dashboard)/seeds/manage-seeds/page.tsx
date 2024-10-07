@@ -89,7 +89,7 @@ const ManageSeeds = () => {
     <>
       <DashboardLayout>
         <Header title="Manage Seed Varieties" />
-        <p className="text-md lg:pl-2 font-normal pb-4 text-left">
+        <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Filter search and update the seed varieties of global list
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">

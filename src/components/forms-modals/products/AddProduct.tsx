@@ -27,7 +27,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
+      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl h-[90vh] lg:h-[95vh] overflow-y-auto scrollbar-custom">
         <DialogHeader
           className={cn(
             currentMode === "view"
@@ -44,7 +44,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             </Button>
           )}
           {currentMode === "add" && (
-            <DialogDescription>
+            <DialogDescription className="!dark:text-farmacieLightGray">
               These products are added to the global list (a list containing all
               unique products that can be sold on farmacie).
             </DialogDescription>

@@ -124,7 +124,7 @@ const DataTable = <T extends object>({
       </Table>
 
       {paginate && (
-        <div className="pagination flex justify-between gap-10 mt-3 text-gray-400">
+        <div className="pagination flex justify-between gap-10 mt-3 text-farmacieGrey">
           <Button
             variant="outline"
             onClick={() => previousPage()}

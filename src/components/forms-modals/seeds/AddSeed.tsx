@@ -39,7 +39,7 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
             </Button>
           )}
           {currentMode === "add" && (
-            <DialogDescription>
+            <DialogDescription className="!dark:text-farmacieLightGray">
               These products are added in the global list (a list containing all
               unique products that can be sold on farmacie)
             </DialogDescription>

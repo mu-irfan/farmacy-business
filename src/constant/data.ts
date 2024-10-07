@@ -10,6 +10,16 @@ export const productCategory = [
   { value: "tehsil", label: "Tehsil" },
 ];
 
+export const activeIngredients = [
+  { value: "fertilizer", label: "Fertilizer" },
+  { value: "pesticides", label: "Pesticides" },
+];
+
+export const units = [
+  { value: "kg", label: "Kg" },
+  { value: "ml", label: "Ml" },
+];
+
 export const bulkFranchiseAddresses = [
   { label: "Manager", value: "Ahmad Raza" },
   { label: "Address", value: "Shop #1, BG-5, Mid city apartments" },
@@ -34,6 +44,9 @@ export const productData: Product[] = [
     brandName: "Sygenta",
     category: "Fertilizers",
     subCategory: "Organic",
+    activeIngredient: "Fertilizers",
+    concentration: "John",
+    units: "kg",
     subscribed: false,
     packageWeight: "1",
     weightUnit: "kg",
@@ -48,6 +61,9 @@ export const productData: Product[] = [
     brandName: "AgriTech",
     category: "Pesticides",
     subCategory: "Insecticides",
+    activeIngredient: "Fertilizers",
+    concentration: "John",
+    units: "kg",
     subscribed: true,
     packageWeight: "500",
     weightUnit: "g",
@@ -62,6 +78,9 @@ export const productData: Product[] = [
     brandName: "GrowWell",
     category: "Fertilizers",
     subCategory: "Liquid",
+    activeIngredient: "Fertilizers",
+    concentration: "John",
+    units: "kg",
     subscribed: false,
     packageWeight: "1",
     weightUnit: "l",
@@ -76,6 +95,9 @@ export const productData: Product[] = [
     brandName: "WeedAway",
     category: "Herbicides",
     subCategory: "Selective",
+    activeIngredient: "Fertilizers",
+    concentration: "John",
+    units: "kg",
     subscribed: true,
     packageWeight: "250",
     weightUnit: "g",
@@ -91,6 +113,9 @@ export const productData: Product[] = [
     brandName: "CropGuard",
     category: "Fungicides",
     subCategory: "Broad spectrum",
+    activeIngredient: "Fertilizers",
+    concentration: "John",
+    units: "kg",
     subscribed: false,
     packageWeight: "500",
     weightUnit: "g",
@@ -110,6 +135,7 @@ export const seedsData: Seed[] = [
     brandName: "SoundPro",
     category: "Electronics",
     crop: "Audio Devices",
+    subscribed: false,
     seedWeight: "250g",
     packageWeight: "1kg",
     germinationPercentage: "95%",
@@ -126,6 +152,7 @@ export const seedsData: Seed[] = [
     brandName: "VisionTech",
     category: "Electronics",
     crop: "Televisions",
+    subscribed: true,
     seedWeight: "10kg",
     packageWeight: "15kg",
     germinationPercentage: "90%",
@@ -142,6 +169,7 @@ export const seedsData: Seed[] = [
     brandName: "FitTrack",
     category: "Footwear",
     crop: "Sports Shoes",
+    subscribed: false,
     seedWeight: "500g",
     packageWeight: "1.5kg",
     germinationPercentage: "98%",
@@ -158,6 +186,7 @@ export const seedsData: Seed[] = [
     brandName: "PowerCore",
     category: "Computers",
     crop: "Laptops",
+    subscribed: false,
     seedWeight: "3kg",
     packageWeight: "5kg",
     germinationPercentage: "92%",
@@ -174,6 +203,7 @@ export const seedsData: Seed[] = [
     brandName: "TimeMaster",
     category: "Wearables",
     crop: "Smart Devices",
+    subscribed: true,
     seedWeight: "150g",
     packageWeight: "500g",
     germinationPercentage: "96%",
@@ -245,37 +275,41 @@ export const suggestionsData: Suggestions[] = [
   {
     id: 1,
     date: "2024-09-01",
-    query: "Electronics",
-    response: "SoundPro",
+    query:
+      "There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
+    response:
+      " Your active ingredient is successfully added in the global list.",
   },
   {
     id: 2,
-    date: "2024-09-02",
-    query: "Electronics",
-    response: "SoundPro",
+    date: "2024-09-01",
+    query:
+      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
+    response:
+      " Your active ingredient is successfully added in the global list.",
   },
   {
     id: 3,
-    date: "2024-09-03",
-    query: "Electronics",
-    response: "SoundPro",
+    date: "2024-09-01",
+    query:
+      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
+    response:
+      " Your active ingredient is successfully added in the global list.",
   },
   {
     id: 4,
-    date: "2024-09-04",
-    query: "Electronics",
-    response: "SoundPro",
+    date: "2024-09-01",
+    query:
+      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
+    response:
+      " Your active ingredient is successfully added in the global list.",
   },
   {
     id: 5,
-    date: "2024-09-05",
-    query: "Electronics",
-    response: "SoundPro",
-  },
-  {
-    id: 6,
-    date: "2024-09-06",
-    query: "Electronics",
-    response: "SoundPro",
+    date: "2024-09-01",
+    query:
+      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
+    response:
+      " Your active ingredient is successfully added in the global list.",
   },
 ];

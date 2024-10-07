@@ -32,6 +32,9 @@ interface Product {
   brandName: string;
   category: string;
   subCategory: string;
+  activeIngredient: string;
+  concentration: string;
+  units: string;
   subscribed?: boolean;
   packageWeight: string;
   weightUnit: string;
@@ -48,6 +51,7 @@ interface Seed {
   brandName: string;
   category: string;
   crop: string;
+  subscribed?: boolean;
   seedWeight: string;
   packageWeight: string;
   germinationPercentage: string;
