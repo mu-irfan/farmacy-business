@@ -16,6 +16,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   onOpenChange,
   mode,
   productData,
+  subscribe,
 }) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
@@ -38,7 +39,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           <DialogTitle className="text-primary text-xl font-bold">
             {currentMode === "add" ? "Add New Product" : "Product Details"}
           </DialogTitle>
-          {currentMode === "view" && (
+          {currentMode === "view" && !subscribe && (
             <Button size="sm" onClick={() => setCurrentMode("edit")}>
               Edit <Pencil className="w-3.5 h-3.5 ml-2" />
             </Button>
@@ -50,7 +51,11 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
             </DialogDescription>
           )}
         </DialogHeader>
-        <AddProductForm mode={currentMode} productData={productData} />
+        <AddProductForm
+          mode={currentMode}
+          productData={productData}
+          subscribe={subscribe}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -85,11 +85,11 @@ const addProductFormSchema = z.object({
   }),
 });
 
-const searchProductsFormSchema = z.object({
+const filterProductsFormSchema = z.object({
   category: z.string().nonempty({
     message: "Category is required.",
   }),
-  subCategory: z.string().nonempty({
+  allSubCategories: z.string().nonempty({
     message: "Subcategory is required.",
   }),
 });
@@ -147,16 +147,28 @@ const filterSeedFormSchema = z.object({
   }),
 });
 
+// filter subscribed product
+const filterSubscribedProduct = z.object({
+  category: z.string().nonempty({
+    message: "Category is required.",
+  }),
+  subCategory: z.string().nonempty({
+    message: "Sub category is required.",
+  }),
+  subscribed: z.string().nonempty({
+    message: "Subscribe is required.",
+  }),
+});
+
 // add franchise
 const addFranchiseFormSchema = z.object({
   managerName: z.string().nonempty({
     message: "Manager Name is required.",
   }),
-  phoneNo: validatePhoneNo(
-    z.string().nonempty({
-      message: "Phone is required.",
-    })
-  ),
+  franchiseName: z.string().nonempty({
+    message: "Franchise Name is required.",
+  }),
+  phoneNo: z.string().optional(),
   address: z.string().nonempty({
     message: "Address is required.",
   }),
@@ -169,6 +181,18 @@ const addFranchiseFormSchema = z.object({
   tehsil: z.string().nonempty({
     message: "Select Tehil",
   }),
+});
+
+// add manager
+const addManagerFormSchema = z.object({
+  managerName: z.string().nonempty({
+    message: "Manager Name is required.",
+  }),
+  phoneNo: validatePhoneNo(
+    z.string().nonempty({
+      message: "Phone is required.",
+    })
+  ),
 });
 
 // filter franchice
@@ -199,23 +223,21 @@ const addQueryFormSchema = z.object({
 });
 
 const queryResponseSchema = z.object({
-  query: z.string().nonempty({
-    message: "Please enter query",
-  }),
-  response: z.string().nonempty({
-    message: "Please enter query",
-  }),
+  query: z.string().optional(),
+  response: z.string().optional(),
 });
 
 export {
   createAccountFormSchema,
   loginAccountFormSchema,
   addProductFormSchema,
-  searchProductsFormSchema,
+  filterProductsFormSchema,
   addSeedFormSchema,
   filterSeedFormSchema,
+  filterSubscribedProduct,
   addFranchiseFormSchema,
   filterFranchiceFormSchema,
   addQueryFormSchema,
   queryResponseSchema,
+  addManagerFormSchema,
 };

@@ -133,7 +133,7 @@
 .scrollbar-custom {
   --sb-track-color: #ffffff;
   --sb-thumb-color: #2aab59;
-  --sb-size: 4px;
+  --sb-size: 2px;
 }
 .scrollbar-custom::-webkit-scrollbar {
   width: var(--sb-size);

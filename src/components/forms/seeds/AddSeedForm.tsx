@@ -31,9 +31,11 @@ import { productCategory } from "@/constant/data";
 const AddSeedForm = ({
   mode,
   seed,
+  subscribe,
 }: {
   mode: "add" | "view" | "edit";
   seed?: any;
+  subscribe?: boolean;
 }) => {
   const isViewMode = mode === "view";
   const [selectedCategory, setSelectedCategory] = useState(
@@ -161,7 +163,9 @@ const AddSeedForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="category">Crop Category</Label>
+            <Label htmlFor="category" className="dark:text-farmacieGrey">
+              Crop Category
+            </Label>
             <FormField
               control={form.control}
               name="category"
@@ -175,7 +179,7 @@ const AddSeedForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop Category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -196,7 +200,9 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="crop">Crop</Label>
+            <Label htmlFor="crop" className="dark:text-farmacieGrey">
+              Crop
+            </Label>
             <FormField
               control={form.control}
               name="crop"
@@ -211,7 +217,7 @@ const AddSeedForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -234,7 +240,9 @@ const AddSeedForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="seedWeight">Seed weight (g)</Label>
+            <Label htmlFor="seedWeight" className="dark:text-farmacieGrey">
+              Seed weight (g)
+            </Label>
             <FormField
               control={form.control}
               name="seedWeight"
@@ -256,7 +264,9 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="packageWeight">Package weight (kg)</Label>
+            <Label htmlFor="packageWeight" className="dark:text-farmacieGrey">
+              Package weight (kg)
+            </Label>
             <FormField
               control={form.control}
               name="packageWeight"
@@ -280,7 +290,10 @@ const AddSeedForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="germinationPercentage">
+            <Label
+              htmlFor="germinationPercentage"
+              className="dark:text-farmacieGrey"
+            >
               Germination Percentage
             </Label>
             <FormField
@@ -304,7 +317,12 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="maturityPercentage">Maturity Percentage</Label>
+            <Label
+              htmlFor="maturityPercentage"
+              className="dark:text-farmacieGrey"
+            >
+              Maturity Percentage
+            </Label>
             <FormField
               control={form.control}
               name="maturityPercentage"
@@ -328,7 +346,12 @@ const AddSeedForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="minHarvestingDays">Min harvesting days</Label>
+            <Label
+              htmlFor="minHarvestingDays"
+              className="dark:text-farmacieGrey"
+            >
+              Min harvesting days
+            </Label>
             <FormField
               control={form.control}
               name="minHarvestingDays"
@@ -350,7 +373,12 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="maxHavestingDays">Max havesting days</Label>
+            <Label
+              htmlFor="maxHavestingDays"
+              className="dark:text-farmacieGrey"
+            >
+              Max havesting days
+            </Label>
             <FormField
               control={form.control}
               name="maxHavestingDays"
@@ -374,7 +402,9 @@ const AddSeedForm = ({
         </div>
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="suitableRegion">Suitable Region</Label>
+            <Label htmlFor="suitableRegion" className="dark:text-farmacieGrey">
+              Suitable Region
+            </Label>
             <FormField
               control={form.control}
               name="suitableRegion"
@@ -388,7 +418,7 @@ const AddSeedForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Suitable region" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -409,7 +439,9 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="packageType">Package Type</Label>
+            <Label htmlFor="packageType" className="dark:text-farmacieGrey">
+              Package Type
+            </Label>
             <FormField
               control={form.control}
               name="packageType"
@@ -424,7 +456,7 @@ const AddSeedForm = ({
                       }}
                       disabled={isViewMode}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select package type" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -446,7 +478,9 @@ const AddSeedForm = ({
           </LabelInputContainer>
         </div>
         <LabelInputContainer className="mb-2.5">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="dark:text-farmacieGrey">
+            Description
+          </Label>
           <FormField
             control={form.control}
             name="description"
@@ -468,7 +502,8 @@ const AddSeedForm = ({
           />
         </LabelInputContainer>
         <Card
-          className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer"
+          className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer aria-disabled:cursor-not-allowed"
+          aria-disabled={isViewMode}
           onClick={handleCardClick}
         >
           <CardHeader className="space-y-0 pb-2">
@@ -485,12 +520,12 @@ const AddSeedForm = ({
                   ))}
                 </div>
               ) : (
-                <CirclePlus className="h-5 w-5 mx-auto dar:text-farmacieWhite" />
+                <CirclePlus className="h-5 w-5 mx-auto dark:text-green-500" />
               )}
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-sm dark:text-farmacieWhite">
+            <div className="text-sm dark:text-green-500">
               {selectedImages.length > 0
                 ? `${selectedImages.length} Images Selected`
                 : "Add Images"}
@@ -505,8 +540,12 @@ const AddSeedForm = ({
           className="hidden"
           onChange={handleImageChange}
         />
-        <Button className="w-full text-white font-medium" type="submit">
-          {mode === "edit" ? "Update Seed" : "Submit"}
+        <Button
+          className="w-full text-white font-medium"
+          type="submit"
+          disabled={isViewMode}
+        >
+          {mode === "edit" ? "Update Seed" : subscribe ? "Subscribe" : "Submit"}
         </Button>
       </form>
     </Form>

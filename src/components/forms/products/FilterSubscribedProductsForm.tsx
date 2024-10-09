@@ -9,7 +9,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { filterSeedFormSchema } from "@/schemas/validation/validationSchema";
+import { filterSubscribedProduct } from "@/schemas/validation/validationSchema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
@@ -28,15 +28,16 @@ import {
 const FilterSubscribedProductsForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("province");
 
-  const form = useForm<z.infer<typeof filterSeedFormSchema>>({
-    resolver: zodResolver(filterSeedFormSchema),
+  const form = useForm<z.infer<typeof filterSubscribedProduct>>({
+    resolver: zodResolver(filterSubscribedProduct),
     defaultValues: {
       category: "",
-      crop: "",
+      subCategory: "",
+      subscribed: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof filterSeedFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterSubscribedProduct>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -45,7 +46,9 @@ const FilterSubscribedProductsForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="category">Category</Label>
+            <Label htmlFor="category" className="dark:text-farmacieGrey">
+              Category
+            </Label>
             <FormField
               control={form.control}
               name="category"
@@ -58,7 +61,7 @@ const FilterSubscribedProductsForm = () => {
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -79,10 +82,12 @@ const FilterSubscribedProductsForm = () => {
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="crop">Crop</Label>
+            <Label htmlFor="subCategory" className="dark:text-farmacieGrey">
+              Sub category
+            </Label>
             <FormField
               control={form.control}
-              name="crop"
+              name="subCategory"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -93,12 +98,49 @@ const FilterSubscribedProductsForm = () => {
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="Select Crop" />
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectValue placeholder="Select Sub category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>Crop</SelectLabel>
+                          <SelectLabel>Sub category</SelectLabel>
+                          {productCategory.map((item) => (
+                            <SelectItem key={item.value} value={item.value}>
+                              {item.label}
+                            </SelectItem>
+                          ))}
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+          <LabelInputContainer>
+            <Label htmlFor="subscribed" className="dark:text-farmacieGrey">
+              Subscribed
+            </Label>
+            <FormField
+              control={form.control}
+              name="subscribed"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Select
+                      onValueChange={(value) => {
+                        setSelectedCategory(value);
+                        // setValue("");
+                        field.onChange(value);
+                      }}
+                    >
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectValue placeholder="Select Subscribed" />
+                      </SelectTrigger>
+                      <SelectContent className="rounded-xl">
+                        <SelectGroup>
+                          <SelectLabel>Subscribed</SelectLabel>
                           {productCategory.map((item) => (
                             <SelectItem key={item.value} value={item.value}>
                               {item.label}

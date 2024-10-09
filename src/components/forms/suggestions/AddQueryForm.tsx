@@ -67,7 +67,8 @@ const AddQueryForm = () => {
               <FormItem>
                 <FormControl>
                   <Textarea
-                    placeholder="Enter product query ..."
+                    placeholder="Enter your query ..."
+                    rows={8}
                     // type="text"
                     id="query"
                     className="outline-none focus:border-primary"

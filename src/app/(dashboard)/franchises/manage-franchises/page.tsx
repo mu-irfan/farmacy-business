@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
+import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -15,36 +15,29 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import {
-  Ban,
-  Check,
-  Filter,
-  MoveLeft,
-  Search,
-  Trash,
-  XCircle,
-} from "lucide-react";
+import { Ban, Check, Filter, Search, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
 import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
 import DataTable from "@/components/Table/DataTable";
 import { franchiseData } from "@/constant/data";
+import Header from "@/components/Header";
 
 const ManageFranchises = () => {
   const router = useRouter();
   const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] = useState(false);
   const [isBulkActivateModalOpen, setBulkActivateModalOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof searchProductsFormSchema>>({
-    resolver: zodResolver(searchProductsFormSchema),
+  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
+    resolver: zodResolver(filterProductsFormSchema),
     defaultValues: {
       category: "",
-      subCategory: "",
+      allSubCategories: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -63,8 +56,9 @@ const ManageFranchises = () => {
     accessor: FranchiseColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Manager Name", accessor: "name" },
-    { Header: "Contact", accessor: "contact" },
+    { Header: "Manager Name", accessor: "managerName" },
+    // { Header: "Franchise Name", accessor: "franchiseName" },
+    { Header: "Contact", accessor: "phoneNo" },
     { Header: "Address", accessor: "address" },
     { Header: "Tehsil", accessor: "tehsil" },
     {
@@ -78,10 +72,10 @@ const ManageFranchises = () => {
         ),
     },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-end gap-4">
           <Button
             size="sm"
             variant="outline"
@@ -105,19 +99,8 @@ const ManageFranchises = () => {
   return (
     <>
       <DashboardLayout>
-        <div className="md:flex items-center justify-between">
-          <h2 className="text-3xl font-bold text-primary">
-            Get Franchise List
-          </h2>
-          <h3
-            className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-            onClick={() => router.back()}
-          >
-            <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-            Back
-          </h3>
-        </div>
-        <p className="text-md lg:pl-2 font-normal text-left pb-3">
+        <Header title=" Get Franchise List" />
+        <p className="text-md lg:pl-2 font-normal text-left pb-3 dark:text-farmacieGrey">
           Find or update franchise in the franchise list
         </p>
         <Button
@@ -126,7 +109,7 @@ const ManageFranchises = () => {
         >
           Bulk Activate
         </Button>
-        <p className="text-md lg:pl-2 font-normal text-left pb-3">
+        <p className="text-md lg:pl-2 font-normal text-left pb-3 dark:text-farmacieGrey">
           Activate the franchises in bulk in a single click
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
@@ -142,7 +125,7 @@ const ManageFranchises = () => {
                         <FormItem className="relative">
                           <FormControl>
                             <Input
-                              placeholder="Search seed variety by name ..."
+                              placeholder="Search franchise by name..."
                               type="text"
                               id="varietyName"
                               className="outline-none border py-5 border-primary rounded-full pl-12"

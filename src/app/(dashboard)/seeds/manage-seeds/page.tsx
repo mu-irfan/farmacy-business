@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
+import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -28,15 +28,15 @@ const ManageSeeds = () => {
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
 
-  const form = useForm<z.infer<typeof searchProductsFormSchema>>({
-    resolver: zodResolver(searchProductsFormSchema),
+  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
+    resolver: zodResolver(filterProductsFormSchema),
     defaultValues: {
       category: "",
-      subCategory: "",
+      allSubCategories: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -61,7 +61,7 @@ const ManageSeeds = () => {
     { Header: "Crop Category", accessor: "category" },
     { Header: "Crop", accessor: "crop" },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
         <div className="flex items-center gap-4">

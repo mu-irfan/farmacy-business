@@ -2,9 +2,18 @@ import React from "react";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Form, FormField, FormItem, FormMessage } from "@/components/ui/form";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from "@/components/ui/form";
 import { queryResponseSchema } from "@/schemas/validation/validationSchema";
 import { Button } from "@/components/ui/button";
+import LabelInputContainer from "../LabelInputContainer";
+import { Input } from "@/components/ui/input";
+import { Plus } from "lucide-react";
 
 const Responses = ({ query, response }: any) => {
   const form = useForm<z.infer<typeof queryResponseSchema>>({
@@ -23,7 +32,7 @@ const Responses = ({ query, response }: any) => {
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="mb-4 flex justify-start">
-          <div className="max-w-[75%] bg-primary/10 dark:bg-primary/40 p-3 rounded-lg shadow-sm text-sm">
+          <div className="max-w-[75%] bg-primary/10 dark:bg-farmacieLightSecondary p-3 rounded-lg shadow-sm text-sm">
             <FormField
               control={form.control}
               name="query"
@@ -37,7 +46,7 @@ const Responses = ({ query, response }: any) => {
           </div>
         </div>
         <div className="mb-4 flex justify-end">
-          <div className="max-w-[75%]  text-white p-3 rounded-lg shadow-sm text-sm">
+          <div className="max-w-[75%]  dard:text-white p-3 border border-farmaciePlaceholderMuted rounded-lg shadow-sm text-sm">
             <FormField
               control={form.control}
               name="response"
@@ -50,50 +59,32 @@ const Responses = ({ query, response }: any) => {
             />
           </div>
         </div>
-        <div className="mb-4 flex justify-start">
-          <div className="max-w-[75%] bg-primary/10 dark:bg-primary/40 p-3 rounded-lg shadow-sm text-sm">
-            <FormField
-              control={form.control}
-              name="query"
-              render={({ field }) => (
-                <FormItem>
-                  <div>
-                    Ingredient list while adding the product in the global list.
-                    Kindly add this active ingredient.
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="mb-4 flex justify-end">
-          <div className="max-w-[75%] bg-primary/70 text-white p-3 rounded-lg shadow-sm text-sm">
-            <FormField
-              control={form.control}
-              name="response"
-              render={({ field }) => (
-                <FormItem>
-                  <div>
-                    Your active ingredient is successfully added in the global
-                    list.
-                  </div>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <Button
-          variant="outline"
-          className="w-full border-primary text-primary font-medium mt-8"
-          type="submit"
-        >
-          Mark as read
-        </Button>
-        <Button className="w-full text-white font-medium mt-2" type="submit">
-          Mark as read and delete
-        </Button>
+        <LabelInputContainer className="mt-20">
+          <FormField
+            control={form.control}
+            name="response"
+            render={({ field }) => (
+              <FormItem className="relative">
+                <FormControl>
+                  <Input
+                    placeholder="Query Further ..."
+                    type="text"
+                    id="varietyName"
+                    className="outline-none border py-6 border-primary rounded-full pl-5 pr-20 font-light"
+                    {...field}
+                  />
+                </FormControl>
+                <Button
+                  size="sm"
+                  className="absolute right-3.5 w-10 h-7 top-4 -translate-y-1/2 bottom-0.5 rounded-full"
+                >
+                  <Plus className="w-4 h-4" />
+                </Button>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </LabelInputContainer>
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
       </form>
     </Form>

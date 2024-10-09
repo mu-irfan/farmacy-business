@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
+import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -14,29 +14,29 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Ban, Check, Filter, Search, Trash } from "lucide-react";
+import { Ban, Check, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
-import NewProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
 import Header from "@/components/Header";
 import DataTable from "@/components/Table/DataTable";
 import { seedsData } from "@/constant/data";
 import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
+import FilterProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
 
 const SubscribeNewSeeds = () => {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
 
-  const form = useForm<z.infer<typeof searchProductsFormSchema>>({
-    resolver: zodResolver(searchProductsFormSchema),
+  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
+    resolver: zodResolver(filterProductsFormSchema),
     defaultValues: {
       category: "",
-      subCategory: "",
+      allSubCategories: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -91,7 +91,7 @@ const SubscribeNewSeeds = () => {
     <>
       <DashboardLayout>
         <Header title="Subscribe New Seed" />
-        <p className="text-md lg:pl-2 font-normal pb-4 text-left">
+        <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Search, find and subscribe seed from global list.
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
@@ -107,7 +107,7 @@ const SubscribeNewSeeds = () => {
                         <FormItem className="relative">
                           <FormControl>
                             <Input
-                              placeholder="Search product by name ..."
+                              placeholder="Search seed variety by name ..."
                               type="text"
                               id="varietyName"
                               className="outline-none border py-5 border-primary rounded-full pl-12"
@@ -135,7 +135,7 @@ const SubscribeNewSeeds = () => {
         </Card>
         <DataTable columns={seedColumns} data={seedsData as SeedTableRow[]} />
       </DashboardLayout>
-      <NewProductSubscribeModal
+      <FilterProductSubscribeModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
       />
@@ -143,6 +143,7 @@ const SubscribeNewSeeds = () => {
         open={isViewSeedsModalOpen}
         onOpenChange={setViewSeedsModalOpen}
         mode="view"
+        subscribe
         seedData={selectedSeedToView}
       />
     </>

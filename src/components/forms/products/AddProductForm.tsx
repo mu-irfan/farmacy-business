@@ -32,17 +32,17 @@ import {
 const AddProductForm = ({
   mode,
   productData,
+  subscribe,
 }: {
   mode: "add" | "view" | "edit";
   productData?: any;
+  subscribe?: boolean;
 }) => {
   const isViewMode = mode === "view";
   const [selectedCategory, setSelectedCategory] = useState(
     productData?.category || ""
   );
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
-
-  console.log(productData, "selected product");
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -353,6 +353,7 @@ const AddProductForm = ({
                 size="icon"
                 className="bg-primary text-farmacieWhite mt-5"
                 type="button"
+                disabled={isViewMode}
               >
                 <Plus className="w-4 h-4" />
               </Button>
@@ -360,6 +361,7 @@ const AddProductForm = ({
                 size="icon"
                 className="bg-red-500 hover:bg-red-600 text-black mt-5"
                 type="button"
+                disabled={isViewMode}
               >
                 <Trash className="w-4 h-4" />
               </Button>
@@ -542,8 +544,9 @@ const AddProductForm = ({
           />
         </LabelInputContainer>
         <Card
-          className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer"
+          className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer aria-disabled:cursor-not-allowed"
           onClick={handleCardClick}
+          aria-disabled={isViewMode}
         >
           <CardHeader className="space-y-0 pb-2">
             <CardTitle className="text-3xl lg:text-4xl font-medium">
@@ -584,7 +587,11 @@ const AddProductForm = ({
           type="submit"
           disabled={isViewMode}
         >
-          {mode === "edit" ? "Update Product" : "Submit"}
+          {mode === "edit"
+            ? "Update Product"
+            : subscribe
+            ? "Subscribe"
+            : "Submit"}
         </Button>
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
       </form>

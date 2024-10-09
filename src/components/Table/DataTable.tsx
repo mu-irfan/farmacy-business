@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/table";
 import { ChevronDown, ChevronUp, MoveLeft, MoveRight } from "lucide-react";
 import { Button } from "../ui/button";
+import { cn } from "@/lib/utils";
 
 interface ExtendedColumnInstance<T extends object> extends ColumnInstance<T> {
   isSorted?: boolean;
@@ -32,12 +33,14 @@ interface DataTableProps<T extends object> {
   }>;
   data: T[];
   paginate?: boolean;
+  extendWidth?: boolean;
 }
 
 const DataTable = <T extends object>({
   columns,
   data,
   paginate = false,
+  extendWidth,
 }: DataTableProps<T>) => {
   const memoizedColumns = useMemo(() => columns, [columns]);
   const memoizedData = useMemo(() => data, [data]);
@@ -72,7 +75,10 @@ const DataTable = <T extends object>({
 
   return (
     <>
-      <Table {...getTableProps()}>
+      <Table
+        {...getTableProps()}
+        className={cn("w-full", extendWidth && "table-fixed")}
+      >
         <TableHeader>
           {headerGroups.map((headerGroup, ind) => (
             <TableRow {...headerGroup.getHeaderGroupProps()} key={ind}>

@@ -44,18 +44,6 @@ const ManageSuggestions = () => {
       ),
     },
     {
-      Header: "Response",
-      accessor: "response",
-      Cell: ({ row }: any) => (
-        <div
-          className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
-          title={row.original.response}
-        >
-          {row.original.response}
-        </div>
-      ),
-    },
-    {
       Header: "Viewed",
       accessor: "viewed",
       Cell: () => <Check className="text-primary" />,
@@ -95,6 +83,7 @@ const ManageSuggestions = () => {
         <DataTable
           columns={suggestionsColumns}
           data={suggestionsData as SuggestionsTableActionRow[]}
+          extendWidth
         />
       </DashboardLayout>
       <QueryResponsesModal

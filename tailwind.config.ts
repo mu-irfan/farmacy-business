@@ -56,7 +56,10 @@ const config = {
         farmacieBlack: "#000000",
         farmacieGrey: "#9FADA2",
         farmacieLightGray: "#F5F5F5",
+        farmacieGrayModalText: "#707070",
         farmaciePlaceholderMuted: "#A4A4A4",
+        farmacieLightSecondary: "#131C1B",
+        farmacieLightPrimary: "#111513",
       },
       keyframes: {
         "accordion-down": {

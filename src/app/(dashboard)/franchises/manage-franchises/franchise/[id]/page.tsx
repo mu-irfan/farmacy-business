@@ -29,16 +29,6 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     return <p>Franchise not found.</p>;
   }
 
-  const franchiseAddressDetails = [
-    { label: "Manager Name", value: selectedFranchise.name },
-    { label: "Contact", value: selectedFranchise.contact },
-    { label: "Address", value: selectedFranchise.address },
-    { label: "Province", value: selectedFranchise.province },
-    { label: "District", value: selectedFranchise.district },
-    { label: "Tehsil", value: selectedFranchise.tehsil },
-    { label: "Active", value: selectedFranchise.active ? "True" : "False" },
-  ];
-
   const handleView = (seed: Product) => {
     setViewSeedsModalOpen(true);
     setSelectedSeedToView(seed);
@@ -71,7 +61,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     { Header: "Crop Category", accessor: "category" },
     { Header: "Crop", accessor: "crop" },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
         <div className="flex items-center gap-4">
@@ -105,7 +95,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     { Header: "Category", accessor: "category" },
     { Header: "Sub Category", accessor: "subCategory" },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
         <div className="flex items-center gap-4">
@@ -141,7 +131,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           Back
         </h3>
       </div>
-      <p className="text-md lg:pl-2 font-normal text-left pb-3">
+      <p className="text-md lg:pl-2 font-normal text-left pb-3 dark:text-farmacieGrey">
         Subscribe the products and seeds to make them available on farmacie in
         this franchise
       </p>
@@ -175,7 +165,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           </Button>
         )}
       </div>
-      <FranchiseStats franchiseStats={franchiseAddressDetails} />
+      <FranchiseStats franchiseStats={selectedFranchise} />
       <div className="flex items-center justify-end gap-3 mb-8">
         <Button
           variant="outline"

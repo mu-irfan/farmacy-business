@@ -5,21 +5,21 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import FilterSubscribedProductsForm from "@/components/forms/products/FilterSubscribedProductsForm";
+import FilterProductForm from "@/components/forms/products/FilterProductForm";
 
-const FilterProductSubscribeModal = ({ open, onOpenChange }: any) => {
+const FilterProductModal = ({ open, onOpenChange }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-md lg:max-w-lg">
         <DialogHeader>
           <DialogTitle className="text-primary text-xl font-bold">
-            Filter
+            Filter Product
           </DialogTitle>
         </DialogHeader>
-        <FilterSubscribedProductsForm />
+        <FilterProductForm />
       </DialogContent>
     </Dialog>
   );
 };
 
-export default FilterProductSubscribeModal;
+export default FilterProductModal;

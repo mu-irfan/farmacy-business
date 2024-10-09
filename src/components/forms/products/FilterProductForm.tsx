@@ -9,7 +9,7 @@ import {
   FormItem,
   FormMessage,
 } from "@/components/ui/form";
-import { filterFranchiceFormSchema } from "@/schemas/validation/validationSchema";
+import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
@@ -25,19 +25,18 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const FilterFranchiceForm = () => {
+const FilterProductForm = () => {
   const [selectedCategory, setSelectedCategory] = useState("province");
 
-  const form = useForm<z.infer<typeof filterFranchiceFormSchema>>({
-    resolver: zodResolver(filterFranchiceFormSchema),
+  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
+    resolver: zodResolver(filterProductsFormSchema),
     defaultValues: {
-      province: "",
-      district: "",
-      tehsil: "",
+      category: "",
+      allSubCategories: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof filterFranchiceFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -46,12 +45,12 @@ const FilterFranchiceForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="province" className="dark:text-farmacieGrey">
-              Province
+            <Label htmlFor="category" className="dark:text-farmacieGrey">
+              Crop Category
             </Label>
             <FormField
               control={form.control}
-              name="province"
+              name="category"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -62,11 +61,11 @@ const FilterFranchiceForm = () => {
                       }}
                     >
                       <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="All Pakistan" />
+                        <SelectValue placeholder="Select Crop Category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>Province</SelectLabel>
+                          <SelectLabel>Category</SelectLabel>
                           {productCategory.map((item) => (
                             <SelectItem key={item.value} value={item.value}>
                               {item.label}
@@ -82,12 +81,15 @@ const FilterFranchiceForm = () => {
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="district" className="dark:text-farmacieGrey">
-              District
+            <Label
+              htmlFor="allSubCategories"
+              className="dark:text-farmacieGrey"
+            >
+              All Sub-Categories
             </Label>
             <FormField
               control={form.control}
-              name="district"
+              name="allSubCategories"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
@@ -99,48 +101,11 @@ const FilterFranchiceForm = () => {
                       }}
                     >
                       <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="All districts" />
+                        <SelectValue placeholder="Select All Sub-Categories" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>District</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="tehsil" className="dark:text-farmacieGrey">
-              Tehsil
-            </Label>
-            <FormField
-              control={form.control}
-              name="tehsil"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
-                        field.onChange(value);
-                      }}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="All tehsils" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Tehsil</SelectLabel>
+                          <SelectLabel>All Sub-Categories</SelectLabel>
                           {productCategory.map((item) => (
                             <SelectItem key={item.value} value={item.value}>
                               {item.label}
@@ -165,4 +130,4 @@ const FilterFranchiceForm = () => {
   );
 };
 
-export default FilterFranchiceForm;
+export default FilterProductForm;

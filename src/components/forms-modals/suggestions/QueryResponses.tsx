@@ -30,9 +30,13 @@ const QueryResponsesModal = ({ open, onOpenChange, suggestion }: any) => {
               </Link>
             </div>
           </DialogTitle>
-          <DialogDescription className="!dark:text-farmacieLightGray">
+          <DialogDescription className="dark:text-farmacieLightGray">
             Response of your query we expect this would be helpful
           </DialogDescription>
+          <div className="flex justify-between my-8 text-sm dark:text-farmacieLightGray font-light">
+            <h2>Query</h2>
+            <h2>Response</h2>
+          </div>
         </DialogHeader>
         <Responses query={suggestion.query} response={suggestion.response} />
       </DialogContent>

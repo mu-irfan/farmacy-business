@@ -11,7 +11,13 @@ import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 
-const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
+const AddSeedModal = ({
+  open,
+  onOpenChange,
+  mode,
+  seedData,
+  subscribe,
+}: any) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
   useEffect(() => {
@@ -22,7 +28,7 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
+      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl h-[90vh] lg:h-[95vh] overflow-y-auto scrollbar-custom">
         <DialogHeader
           className={cn(
             currentMode === "view"
@@ -33,7 +39,7 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
           <DialogTitle className="text-primary text-xl font-bold">
             {currentMode === "add" ? "Add New Seed" : "Seed Details"}
           </DialogTitle>
-          {currentMode === "view" && (
+          {currentMode === "view" && !subscribe && (
             <Button size="sm" onClick={() => setCurrentMode("edit")}>
               Edit <Pencil className="w-3.5 h-3.5 ml-2" />
             </Button>
@@ -45,7 +51,7 @@ const AddSeedModal = ({ open, onOpenChange, mode, seedData }: any) => {
             </DialogDescription>
           )}
         </DialogHeader>
-        <AddSeedForm mode={currentMode} seed={seedData} />
+        <AddSeedForm mode={currentMode} seed={seedData} subscribe={subscribe} />
       </DialogContent>
     </Dialog>
   );

@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
 import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
@@ -14,20 +15,17 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { Ban, Check, Filter, Search } from "lucide-react";
+import { Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
-import FilterProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
 import DataTable from "@/components/Table/DataTable";
-import { productData } from "@/constant/data";
-import AddProductModal from "@/components/forms-modals/products/AddProduct";
+import { ManagersData } from "@/constant/data";
+import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
 import Header from "@/components/Header";
+import AddManagerModal from "@/components/forms-modals/franchice/AddNewManager";
 
-const SubscribeNewProduct = () => {
-  const [isNewSubscribedProductModalOpen, setNewSubscribedProductModalOpen] =
-    useState(false);
-  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
-  const [selectedProductToView, setSelectedProductToView] = useState({});
+const ManageManagers = () => {
+  const [isViewManagerModalOpen, setViewManagerModalOpen] = useState(false);
+  const [selectedManagerToView, setSelectedManagerToView] = useState({});
 
   const form = useForm<z.infer<typeof filterProductsFormSchema>>({
     resolver: zodResolver(filterProductsFormSchema),
@@ -41,59 +39,55 @@ const SubscribeNewProduct = () => {
     console.log("Submitting form data:", data);
   };
 
-  const handleView = (product: Product) => {
-    setViewProductModalOpen(true);
-    setSelectedProductToView(product);
+  const handleView = (manager: any) => {
+    setViewManagerModalOpen(true);
+    setSelectedManagerToView(manager);
   };
 
-  const handleDelete = (productId: number) => {
+  const handleDelete = (seedId: number) => {
     // Logic to delete the product
-    console.log("Delete product with ID:", productId);
+    console.log("Delete seed with ID:", seedId);
     // Add your delete logic here
   };
 
-  const productColumns: {
+  const ManagerColumns: {
     Header: string;
-    accessor: ProductColumnAccessor;
+    accessor: ManagersColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Product Name", accessor: "productName" },
-    { Header: "Brand Name", accessor: "brandName" },
-    { Header: "Category", accessor: "category" },
-    { Header: "Sub Category", accessor: "subCategory" },
-    {
-      Header: "Subscribed",
-      accessor: "subscribed",
-      Cell: ({ row }: any) =>
-        row.original.subscribed ? (
-          <Check className="text-primary ml-4" />
-        ) : (
-          <Ban className="text-yellow-500 w-5 h-5 ml-4" />
-        ),
-    },
+    { Header: "Manager Name", accessor: "managerName" },
+    { Header: "Phone Number", accessor: "phoneNo" },
     {
       Header: "",
       accessor: "actions",
-      Cell: ({ row }: any) =>
-        row.original.subscribed && (
+      Cell: ({ row }: any) => (
+        <div className="flex items-center gap-4">
           <Button
             size="sm"
             variant="outline"
             onClick={() => handleView(row.original)}
-            className="border-primary bg-primary/10  text-primary tracking-wider hover:text-primary/80"
+            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
           >
-            View & Subscribe
+            View
           </Button>
-        ),
+          <Button
+            size="icon"
+            onClick={() => handleDelete(row.original.id)}
+            className="bg-red-400 hover:bg-red-500 text-black"
+          >
+            <Trash className="w-4 h-4" />
+          </Button>
+        </div>
+      ),
     },
   ];
 
   return (
     <>
       <DashboardLayout>
-        <Header title="Subscribe New Product" />
+        <Header title="Managers" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
-          Search, find and subscribe product from global list.
+          Update the managers who are managing the franchises
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
@@ -108,7 +102,7 @@ const SubscribeNewProduct = () => {
                         <FormItem className="relative">
                           <FormControl>
                             <Input
-                              placeholder="Search product by name ..."
+                              placeholder="Search seed manger by name ..."
                               type="text"
                               id="varietyName"
                               className="outline-none border py-5 border-primary rounded-full pl-12"
@@ -121,39 +115,24 @@ const SubscribeNewProduct = () => {
                       )}
                     />
                   </LabelInputContainer>
-                  <Button
-                    className="text-farmacieWhite font-medium"
-                    type="button"
-                    onClick={() =>
-                      setNewSubscribedProductModalOpen((prev) => !prev)
-                    }
-                  >
-                    <Filter className="w-5 h-5 mr-1" />
-                    Filter
-                  </Button>
                 </div>
               </form>
             </Form>
           </CardContent>
         </Card>
         <DataTable
-          columns={productColumns}
-          data={productData as ProductTableRow[]}
+          columns={ManagerColumns}
+          data={ManagersData as ManagersTableRow[]}
         />
       </DashboardLayout>
-      <FilterProductSubscribeModal
-        open={isNewSubscribedProductModalOpen}
-        onOpenChange={setNewSubscribedProductModalOpen}
-      />
-      <AddProductModal
-        open={isViewProductModalOpen}
-        onOpenChange={setViewProductModalOpen}
+      <AddManagerModal
+        open={isViewManagerModalOpen}
+        onOpenChange={setViewManagerModalOpen}
         mode="view"
-        subscribe
-        productData={selectedProductToView}
+        manager={selectedManagerToView}
       />
     </>
   );
 };
 
-export default SubscribeNewProduct;
+export default ManageManagers;

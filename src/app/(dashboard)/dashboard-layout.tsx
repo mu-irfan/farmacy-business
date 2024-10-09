@@ -3,7 +3,7 @@ import { FC, ReactNode, useState } from "react";
 import { Sidebar, SidebarBody } from "@/components/sidebar/sidebar";
 import SidebarContent from "@/components/sidebar/sidebar-content";
 import { IconBrandTabler } from "@tabler/icons-react";
-import { Bean, Building, FileQuestion } from "lucide-react";
+import { Bean, Building, FileQuestion, UserRoundCheck } from "lucide-react";
 import { SidebarLink } from "@/components/sidebar/sidebar";
 import { ToggleTheme } from "@/components/theme/theme-provider";
 import Image from "next/image";
@@ -37,6 +37,13 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
       href: "/seeds",
       icon: (
         <Bean className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Managers",
+      href: "/managers",
+      icon: (
+        <UserRoundCheck className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {
@@ -81,10 +88,10 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
         </SidebarBody>
       </Sidebar>
 
-      <main className="flex flex-1 overflow-y-auto">
+      <main className="flex flex-1">
         <div
           className={cn(
-            "p-2 md:px-10 md:py-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-farmacieWhite dark:bg-neutral-900 flex flex-col gap-2 flex-1 w-full min-h-full",
+            "p-2 md:px-10 md:py-8 rounded-tl-2xl border border-neutral-200 dark:border-neutral-700 bg-farmacieWhite dark:bg-farmacieLightPrimary flex flex-col gap-2 flex-1 w-full min-h-full",
             contentAtCenter && "justify-center items-center"
           )}
         >

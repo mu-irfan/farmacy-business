@@ -45,7 +45,9 @@ const FilterSeedForm = () => {
       <form onSubmit={form.handleSubmit(onSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
-            <Label htmlFor="category">Crop Category</Label>
+            <Label htmlFor="category" className="dark:text-farmacieGrey">
+              Crop Category
+            </Label>
             <FormField
               control={form.control}
               name="category"
@@ -58,7 +60,7 @@ const FilterSeedForm = () => {
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop Category" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -79,7 +81,9 @@ const FilterSeedForm = () => {
             />
           </LabelInputContainer>
           <LabelInputContainer>
-            <Label htmlFor="crop">Crop</Label>
+            <Label htmlFor="crop" className="dark:text-farmacieGrey">
+              Crop
+            </Label>
             <FormField
               control={form.control}
               name="crop"
@@ -93,7 +97,7 @@ const FilterSeedForm = () => {
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
                         <SelectValue placeholder="Select Crop" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">

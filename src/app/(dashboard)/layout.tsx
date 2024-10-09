@@ -1,4 +1,5 @@
 import { ThemeProvider } from "@/components/theme/ToggleTheme";
+import { ContextProvider } from "@/context/Context";
 import { FC, ReactNode } from "react";
 
 export const metadata = {
@@ -14,7 +15,9 @@ const Layout: FC<{ children: ReactNode }> = async ({ children }) => {
       enableSystem
       disableTransitionOnChange
     >
-      <main>{children}</main>
+      <ContextProvider>
+        <main>{children}</main>
+      </ContextProvider>
     </ThemeProvider>
   );
 };

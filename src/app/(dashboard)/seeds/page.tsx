@@ -26,7 +26,7 @@ const Seeds = () => {
           <div className="absolute top-2 lg:-top-8 left-1/2 transform -translate-x-1/2 w-full mx-auto h-96 bg-primary/5 dark:bg-primary/10 rounded blur-3xl z-0" />
         </Card>
         <Card
-          className="w-full py-6 lg:py-8 max-w-xl lg:mt-4 rounded-xl text-center bg-muted/50 cards cursor-pointer"
+          className="w-full relative py-6 lg:py-8 max-w-xl lg:mt-4 rounded-xl text-center bg-muted/50 cards cursor-pointer"
           onClick={() => setAddSeedModalOpen((prev) => !prev)}
         >
           <CardHeader className="space-y-0 pb-2">

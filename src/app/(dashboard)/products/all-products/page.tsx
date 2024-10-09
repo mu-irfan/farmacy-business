@@ -4,7 +4,7 @@ import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../../dashboard-layout";
 import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { searchProductsFormSchema } from "@/schemas/validation/validationSchema";
+import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import {
@@ -16,33 +16,27 @@ import {
 } from "@/components/ui/form";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { productCategory, productData } from "@/constant/data";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Trash } from "lucide-react";
+import { productData } from "@/constant/data";
+import { Filter, Search, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
 import Header from "@/components/Header";
+import { Input } from "@/components/ui/input";
+import FilterProductModal from "@/components/forms-modals/products/FilterProduct";
 
 const AllProducts = () => {
   const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
   const [selectedProductToView, setSelectedProductToView] = useState({});
+  const [isProductFilterModalOpen, setProductFilterModalOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof searchProductsFormSchema>>({
-    resolver: zodResolver(searchProductsFormSchema),
+  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
+    resolver: zodResolver(filterProductsFormSchema),
     defaultValues: {
       category: "",
-      subCategory: "",
+      allSubCategories: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof searchProductsFormSchema>) => {
+  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
     console.log("Submitting form data:", data);
   };
 
@@ -67,10 +61,10 @@ const AllProducts = () => {
     { Header: "Category", accessor: "category" },
     { Header: "Sub Category", accessor: "subCategory" },
     {
-      Header: "Actions",
+      Header: "",
       accessor: "actions",
       Cell: ({ row }: any) => (
-        <div className="flex items-center gap-4">
+        <div className="flex items-center justify-end gap-4">
           <Button
             size="sm"
             variant="outline"
@@ -102,119 +96,35 @@ const AllProducts = () => {
           <CardContent>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="grid grid-cols-1 lg:grid-cols-12 gap-3">
-                  <LabelInputContainer className="lg:col-span-3">
+                <div className="flex justify-between items-center gap-2">
+                  <LabelInputContainer className="max-w-md lg:max-w-lg">
                     <FormField
                       control={form.control}
                       name="category"
                       render={({ field }) => (
-                        <FormItem>
+                        <FormItem className="relative">
                           <FormControl>
-                            <Select
-                              onValueChange={(value) => field.onChange(value)}
-                            >
-                              <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                                <SelectValue placeholder="Select Category" />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-xl">
-                                <SelectGroup>
-                                  <SelectLabel>Category</SelectLabel>
-                                  {productCategory.map((item) => (
-                                    <SelectItem
-                                      key={item.value}
-                                      value={item.value}
-                                    >
-                                      {item.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
+                            <Input
+                              placeholder="Search product variety by name ..."
+                              type="text"
+                              id="varietyName"
+                              className="outline-none border py-5 border-primary rounded-full pl-12"
+                              {...field}
+                            />
                           </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </LabelInputContainer>
-                  <LabelInputContainer className="lg:col-span-3">
-                    <FormField
-                      control={form.control}
-                      name="subCategory"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Select
-                              onValueChange={(value) => field.onChange(value)}
-                            >
-                              <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                                <SelectValue placeholder="All Subcategory" />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-xl">
-                                <SelectGroup>
-                                  <SelectLabel>Sub-Category</SelectLabel>
-                                  {productCategory.map((item) => (
-                                    <SelectItem
-                                      key={item.value}
-                                      value={item.value}
-                                    >
-                                      {item.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </LabelInputContainer>
-                  <LabelInputContainer className="lg:col-span-3">
-                    <FormField
-                      control={form.control}
-                      name="subCategory"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Select
-                              disabled
-                              onValueChange={(value) => field.onChange(value)}
-                            >
-                              <SelectTrigger className="p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                                <SelectValue placeholder="Sygenta Fixed" />
-                              </SelectTrigger>
-                              <SelectContent className="rounded-xl">
-                                <SelectGroup>
-                                  <SelectLabel>Another Field</SelectLabel>
-                                  {productCategory.map((item) => (
-                                    <SelectItem
-                                      key={item.value}
-                                      value={item.value}
-                                    >
-                                      {item.label}
-                                    </SelectItem>
-                                  ))}
-                                </SelectGroup>
-                              </SelectContent>
-                            </Select>
-                          </FormControl>
+                          <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
                           <FormMessage />
                         </FormItem>
                       )}
                     />
                   </LabelInputContainer>
                   <Button
-                    className="lg:col-span-1 w-full text-farmacieWhite font-medium"
-                    type="submit"
+                    className="text-farmacieWhite font-medium"
+                    type="button"
+                    onClick={() => setProductFilterModalOpen((prev) => !prev)}
                   >
-                    Get All
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="lg:col-span-1 w-full dark:text-farmacieWhite font-medium border border-primary"
-                    type="submit"
-                  >
-                    Search
+                    <Filter className="w-5 h-5 mr-1" />
+                    Filter
                   </Button>
                 </div>
               </form>
@@ -225,8 +135,13 @@ const AllProducts = () => {
           columns={productColumns}
           data={productData as ProductTableRow[]}
           paginate
+          extendWidth
         />
       </DashboardLayout>
+      <FilterProductModal
+        open={isProductFilterModalOpen}
+        onOpenChange={setProductFilterModalOpen}
+      />
       <div className="overflow-y-auto">
         <AddProductModal
           open={isViewProductModalOpen}

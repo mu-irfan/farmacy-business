@@ -63,10 +63,17 @@ interface Seed {
   description: string;
 }
 
+interface Manager {
+  id: number;
+  managerName: string;
+  phoneNo: string;
+}
+
 interface Franchise {
   id: number;
-  name: string;
-  contact: string;
+  managerName: string;
+  franchiseName: string;
+  phoneNo: string;
   address: string;
   province: string;
   district: string;
@@ -89,6 +96,10 @@ interface SeedTableRow extends Seed {
   actions?: never;
 }
 
+interface ManagersTableRow extends Manager {
+  actions?: never;
+}
+
 interface FranchiseTableRow extends Franchise {
   actions?: never;
 }
@@ -102,6 +113,8 @@ type ProductColumnAccessor = keyof Product | "actions";
 
 type SeedColumnAccessor = keyof Seed | "actions";
 
+type ManagersColumnAccessor = keyof Manager | "actions";
+
 type FranchiseColumnAccessor = keyof Franchise | "actions" | "active";
 
 type SuggestionsColumnAccessor = keyof Suggestions | "actions" | "viewed";
@@ -111,6 +124,7 @@ type AddProductModalProps = {
   onOpenChange: (open: boolean) => void;
   mode: "add" | "view" | "edit";
   productData?: any;
+  subscribe?: boolean;
 };
 
 interface Links {
@@ -123,4 +137,10 @@ interface SidebarContextProps {
   open: boolean;
   setOpen: React.Dispatch<React.SetStateAction<boolean>>;
   animate: boolean;
+}
+
+// Define types for context
+interface ModeContextType {
+  mode: "view" | "add" | "edit";
+  setMode: (newMode: "view" | "add" | "edit") => void;
 }
