@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { MoveRight } from "lucide-react";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -53,7 +54,7 @@ const LoginForm = () => {
             )}
           />
         </LabelInputContainer>
-        <LabelInputContainer className="mb-4">
+        <LabelInputContainer>
           <Label htmlFor="password">Password</Label>
           <FormField
             control={form.control}
@@ -99,8 +100,11 @@ const LoginForm = () => {
             )}
           />
         </LabelInputContainer>
+        <p className="dark:text-farmacieGrayModalText text-sm max-w-sm py-4 cursor-pointer underline">
+          Forget Password ?
+        </p>
         <Button className="w-full text-white font-medium" type="submit">
-          Login &rarr;
+          Login <MoveRight className="w-5 h-5 ml-1" />
         </Button>
 
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />

@@ -13,7 +13,7 @@ import { queryResponseSchema } from "@/schemas/validation/validationSchema";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
 import { Input } from "@/components/ui/input";
-import { Plus } from "lucide-react";
+import { CornerDownLeft, Plus } from "lucide-react";
 
 const Responses = ({ query, response }: any) => {
   const form = useForm<z.infer<typeof queryResponseSchema>>({
@@ -38,7 +38,7 @@ const Responses = ({ query, response }: any) => {
               name="query"
               render={({ field }) => (
                 <FormItem>
-                  <div>{query}</div>
+                  <div className="dark:text-farmacieDarkSecondary">{query}</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -52,7 +52,9 @@ const Responses = ({ query, response }: any) => {
               name="response"
               render={({ field }) => (
                 <FormItem>
-                  <div>{response}</div>
+                  <div className="dark:text-farmacieDarkSecondary">
+                    {response}
+                  </div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -75,10 +77,11 @@ const Responses = ({ query, response }: any) => {
                   />
                 </FormControl>
                 <Button
+                  type="submit"
                   size="sm"
-                  className="absolute right-3.5 w-10 h-7 top-4 -translate-y-1/2 bottom-0.5 rounded-full"
+                  className="ml-auto gap-1.5 absolute right-3.5 w-10 h-7 top-4 -translate-y-1/2 bottom-0.5 rounded-full"
                 >
-                  <Plus className="w-4 h-4" />
+                  <CornerDownLeft className="size-4" />
                 </Button>
                 <FormMessage />
               </FormItem>

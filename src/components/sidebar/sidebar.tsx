@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { IconMenu2, IconX } from "@tabler/icons-react";
 import { usePathname } from "next/navigation";
 import { active } from "@/lib/helper";
+import Image from "next/image";
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(
   undefined
@@ -79,14 +80,14 @@ export const DesktopSidebar = ({
     <>
       <motion.div
         className={cn(
-          "px-5 py-6 hidden  md:flex md:flex-col bg-neutral-200 dark:bg-farmacieLightSecondary w-[300px] flex-shrink-0",
+          "px-6 py-6 hidden md:flex md:flex-col bg-neutral-200 dark:bg-farmacieLightSecondary w-[300px] flex-shrink-0",
           className
         )}
         animate={{
-          width: animate ? (open ? "300px" : "60px") : "300px",
+          width: animate ? (open ? "300px" : "90px") : "300px",
         }}
-        // onMouseEnter={() => setOpen(true)}
-        // onMouseLeave={() => setOpen(false)}
+        onMouseEnter={() => setOpen(true)}
+        onMouseLeave={() => setOpen(false)}
         {...props}
       >
         {children}
@@ -109,7 +110,14 @@ export const MobileSidebar = ({
         )}
         {...props}
       >
-        <div className="flex justify-end z-20 w-full">
+        <div className="flex justify-between z-20 w-full">
+          <Image
+            src="/assets/images/logo.png"
+            className="w-8 h-8"
+            width={800}
+            height={800}
+            alt="Avatar"
+          />
           <IconMenu2
             className="text-farmacieLightSecondary dark:text-neutral-200"
             onClick={() => setOpen(!open)}
@@ -162,7 +170,7 @@ export const SidebarLink = ({
       href={link.href}
       className={cn(
         "flex items-center justify-start gap-3 group/sidebar py-2",
-        active(link.href, pathname),
+        active(link.href, pathname, open),
         className
       )}
       {...props}

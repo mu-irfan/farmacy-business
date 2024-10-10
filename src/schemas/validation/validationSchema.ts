@@ -78,7 +78,10 @@ const addProductFormSchema = z.object({
     message: "Covered area is required.",
   }),
   disease: z.string().nonempty({
-    message: "Packaging Type is required.",
+    message: "Disease is required.",
+  }),
+  price: z.string().nonempty({
+    message: "Disease is required.",
   }),
   description: z.string().nonempty({
     message: "Packaging Type is required.",
@@ -132,6 +135,9 @@ const addSeedFormSchema = z.object({
   packageType: z.string().nonempty({
     message: "Packaging Type is required.",
   }),
+  price: z.string().nonempty({
+    message: "Price is required.",
+  }),
   description: z.string().nonempty({
     message: "Description is required.",
   }),
@@ -171,6 +177,9 @@ const addFranchiseFormSchema = z.object({
   phoneNo: z.string().optional(),
   address: z.string().nonempty({
     message: "Address is required.",
+  }),
+  remainingDays: z.string().nonempty({
+    message: "Remaining Days is required.",
   }),
   province: z.string().nonempty({
     message: "Select Province",
@@ -227,6 +236,24 @@ const queryResponseSchema = z.object({
   response: z.string().optional(),
 });
 
+//user
+const profileFormSchema = z.object({
+  companyName: z.string(),
+  email: z
+    .string({
+      required_error: "Please select an email to display.",
+    })
+    .email(),
+  bio: z.string().max(160).min(4),
+  urls: z
+    .array(
+      z.object({
+        value: z.string().url({ message: "Please enter a valid URL." }),
+      })
+    )
+    .optional(),
+});
+
 export {
   createAccountFormSchema,
   loginAccountFormSchema,
@@ -240,4 +267,5 @@ export {
   addQueryFormSchema,
   queryResponseSchema,
   addManagerFormSchema,
+  profileFormSchema,
 };

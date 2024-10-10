@@ -49,11 +49,11 @@ const AddFranchiseModal = ({ open, onOpenChange, franchise }: any) => {
           <AddFranchiceForm franchise={franchise} />
         </DialogContent>
       </Dialog>
-
       <AddManagerModal
         open={isAddNewManagerModalOpen}
         onOpenChange={setAddNewManagerModalOpen}
         showInsList
+        mode="add"
       />
     </>
   );

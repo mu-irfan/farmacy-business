@@ -16,6 +16,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Icon } from "@/components/ui/icon";
 import { cn } from "@/lib/utils";
+import { MoveRight } from "lucide-react";
 
 const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
@@ -217,7 +218,7 @@ const RegistrationForm = () => {
           />
         </LabelInputContainer>
         <Button className="w-full text-white font-medium" type="submit">
-          Create Account &rarr;
+          Create Account <MoveRight className="w-5 h-5 ml-1" />
         </Button>
         <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
       </form>

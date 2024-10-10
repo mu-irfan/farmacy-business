@@ -1,19 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import {
-  useFarmacyDispatch,
-  useFarmacySelector,
-} from "@/redux/redux-hooks/hooks";
-import { decrement, increment } from "@/redux/features/slices/testSlice";
 import LoginForm from "@/components/forms/login/LoginForm";
-
 export default function Home() {
-  const justReduxTestingValue = useFarmacySelector(
-    (state: any) => state.farmacyTesting.value
-  );
-  const dispatch = useFarmacyDispatch();
-
   return (
     <div className="min-h-screen main-auth-div lg:flex">
       <div className="container lg:flex flex-grow">
@@ -23,22 +12,6 @@ export default function Home() {
               Login to Farmacie Business
             </h1>
             <p>Manage farmacie products, seeds, and companies</p>
-            {/* <div className="flex items-center gap-4">
-              <Button
-                variant="destructive"
-                onClick={() => dispatch(increment())}
-              >
-                Increment
-              </Button>
-              <p>{justReduxTestingValue}</p>
-              <Button
-                variant="destructive"
-                className="ml-2"
-                onClick={() => dispatch(decrement())}
-              >
-                Decrement
-              </Button>
-            </div> */}
           </div>
           <h1 className="text-farmacieWhite text-md !leading-tight text-center lg:text-left pb-10">
             POWERED BY{" "}

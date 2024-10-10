@@ -40,6 +40,7 @@ const AddFranchiceForm = ({ franchise }: any) => {
       province: "",
       district: "",
       tehsil: "",
+      remainingDays: "",
     },
   });
 
@@ -55,6 +56,7 @@ const AddFranchiceForm = ({ franchise }: any) => {
         province: franchise.province || "",
         district: franchise.district || "",
         tehsil: franchise.tehsil || "",
+        remainingDays: franchise.remainingDays || "",
       });
     }
   }, [franchise, reset]);
@@ -154,6 +156,29 @@ const AddFranchiceForm = ({ franchise }: any) => {
                       placeholder="0300 0000 000"
                       type="text"
                       id="phoneNo"
+                      className="outline-none focus:border-primary"
+                      {...field}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+          <LabelInputContainer>
+            <Label htmlFor="remainingDays" className="dark:text-farmacieGrey">
+              Remaining Days
+            </Label>
+            <FormField
+              control={form.control}
+              name="remainingDays"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="0300 0000 000"
+                      type="text"
+                      id="remainingDays"
                       className="outline-none focus:border-primary"
                       {...field}
                     />

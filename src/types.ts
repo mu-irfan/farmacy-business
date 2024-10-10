@@ -41,6 +41,7 @@ interface Product {
   packagingType: string;
   areaCovered: string;
   disease: string;
+  price: string;
   description: string;
   images: string[];
 }
@@ -60,6 +61,7 @@ interface Seed {
   maxHavestingDays: number;
   suitableRegion: string;
   packageType: string;
+  price: string;
   description: string;
 }
 
@@ -79,6 +81,7 @@ interface Franchise {
   district: string;
   tehsil: string;
   active: boolean;
+  remainingDays: number;
 }
 
 interface Suggestions {

@@ -58,6 +58,7 @@ const AddProductForm = ({
       weightUnit: "",
       packagingType: "",
       areaCovered: "",
+      price: "",
       disease: "",
       description: "",
     },
@@ -80,6 +81,7 @@ const AddProductForm = ({
         packagingType: productData.packagingType || "",
         areaCovered: productData.areaCovered || "",
         disease: productData.disease || "",
+        price: productData.price || "",
         description: productData.description || "",
       });
     }
@@ -495,30 +497,56 @@ const AddProductForm = ({
             />
           </LabelInputContainer>
         </div>
-        <LabelInputContainer className="mb-2.5">
-          <Label htmlFor="disease" className="dark:text-farmacieGrey">
-            Disease/Purpose
-          </Label>
-          <FormField
-            control={form.control}
-            name="disease"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="Enter purpose or disease keywords seperated by comma"
-                    type="text"
-                    id="disease"
-                    className="outline-none focus:border-primary disabled:bg-primary/20"
-                    {...field}
-                    disabled={isViewMode}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </LabelInputContainer>
+        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+          <LabelInputContainer>
+            <Label htmlFor="price" className="dark:text-farmacieGrey">
+              Price
+            </Label>
+            <FormField
+              control={form.control}
+              name="price"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter Price"
+                      type="text"
+                      id="price"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
+                      {...field}
+                      disabled={isViewMode}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+          <LabelInputContainer>
+            <Label htmlFor="disease" className="dark:text-farmacieGrey">
+              Disease/Purpose
+            </Label>
+            <FormField
+              control={form.control}
+              name="disease"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Input
+                      placeholder="Enter purpose or disease keywords seperated by comma"
+                      type="text"
+                      id="disease"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
+                      {...field}
+                      disabled={isViewMode}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+        </div>
         <LabelInputContainer className="mb-2.5">
           <Label htmlFor="description" className="dark:text-farmacieGrey">
             Description

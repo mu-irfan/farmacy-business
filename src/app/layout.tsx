@@ -7,8 +7,8 @@ import QueryProvider from "@/query/QueryProvider";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Business Farmacie Login",
-  description: "Business Farmacie Login",
+  title: "Business Farmacie - Login",
+  description: "Agronomics Business Farmacie (Login)",
   openGraph: {
     type: "website",
     locale: "en_US",

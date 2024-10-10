@@ -60,6 +60,8 @@ const config = {
         farmaciePlaceholderMuted: "#A4A4A4",
         farmacieLightSecondary: "#131C1B",
         farmacieLightPrimary: "#111513",
+        farmacieDarkGreen: "#51815D",
+        farmacieDarkSecondary: "#9FADA2",
       },
       keyframes: {
         "accordion-down": {

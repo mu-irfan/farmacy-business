@@ -41,7 +41,7 @@ const Suggestions = () => {
           </CardContent>
         </Card>
         <p className="text-sm text-left lg:pl-2 font-medium pb-4 w-full max-w-xl dark:text-farmacieGrey">
-          View and manage the responses of your suggestion.
+          Write a suggestion or ask query if something confusing you.
         </p>
         <Link
           href="/suggestions/manage-suggestions"

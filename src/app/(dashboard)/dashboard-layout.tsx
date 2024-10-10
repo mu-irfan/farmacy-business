@@ -6,8 +6,17 @@ import { IconBrandTabler } from "@tabler/icons-react";
 import { Bean, Building, FileQuestion, UserRoundCheck } from "lucide-react";
 import { SidebarLink } from "@/components/sidebar/sidebar";
 import { ToggleTheme } from "@/components/theme/theme-provider";
-import Image from "next/image";
 import { cn } from "@/lib/utils";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import Link from "next/link";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -23,7 +32,7 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
   children,
   contentAtCenter,
 }: any) => {
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const dashboardLinks = [
     {
       label: "Products",
@@ -66,21 +75,38 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
     <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden min-h-[100vh]">
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
-          <SidebarContent links={dashboardLinks} />
+          <SidebarContent links={dashboardLinks} open={open} />
           <div>
             <ToggleTheme />
             <SidebarLink
+              className="!px-0"
               link={{
-                label: "Irfan",
+                label: "",
                 href: "#",
                 icon: (
-                  <Image
-                    src="/assets/images/user.webp"
-                    className="h-7 w-7 flex-shrink-0 rounded-full"
-                    width={200}
-                    height={200}
-                    alt="Avatar"
-                  />
+                  <DropdownMenu>
+                    <DropdownMenuTrigger>
+                      <Avatar className="h-8 w-8 border-[2px] border-primary flex-shrink-0 rounded-full outline-none focus:outline-none">
+                        <AvatarImage src="/assets/images/user.png" />
+                        <AvatarFallback>CN</AvatarFallback>
+                      </Avatar>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent
+                      side="right"
+                      className="mb-3 ml-2 py-2"
+                    >
+                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild>
+                        <Link href="/profile" className="cursor-pointer">
+                          Profile
+                        </Link>
+                      </DropdownMenuItem>
+                      <DropdownMenuItem className="cursor-pointer">
+                        Logout
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 ),
               }}
             />

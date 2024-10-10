@@ -59,6 +59,7 @@ export const productData: Product[] = [
     packagingType: "Bag",
     areaCovered: "5",
     disease: "Pest control, Nutrient deficiency",
+    price: "2300",
     description: "A highly effective organic fertilizer for various plants.",
     images: [], // add image files here when selected
   },
@@ -76,6 +77,7 @@ export const productData: Product[] = [
     packagingType: "Bottle",
     areaCovered: "2",
     disease: "Insect infestation",
+    price: "2300",
     description: "Protect your crops from harmful insects with Plant Shield.",
     images: [],
   },
@@ -93,6 +95,7 @@ export const productData: Product[] = [
     packagingType: "Bottle",
     areaCovered: "3",
     disease: "Nutrient deficiency",
+    price: "2300",
     description: "Enhances root development and overall plant health.",
     images: [],
   },
@@ -110,6 +113,7 @@ export const productData: Product[] = [
     packagingType: "Spray",
     areaCovered: "4",
     disease: "Weed control",
+    price: "2300",
     description:
       "Effective solution for controlling weeds without harming crops.",
     images: [],
@@ -128,6 +132,7 @@ export const productData: Product[] = [
     packagingType: "Packet",
     areaCovered: "1",
     disease: "Fungal diseases",
+    price: "2300",
     description: "A powerful fungicide for protecting crops from diseases.",
     images: [],
   },
@@ -150,6 +155,7 @@ export const seedsData: Seed[] = [
     maxHavestingDays: 60,
     suitableRegion: "Global",
     packageType: "Box",
+    price: "750",
     description: "High-quality wireless headphones.",
   },
   {
@@ -167,6 +173,7 @@ export const seedsData: Seed[] = [
     maxHavestingDays: 75,
     suitableRegion: "Global",
     packageType: "Box",
+    price: "750",
     description: "Ultra HD 4K Smart TV with built-in apps.",
   },
   {
@@ -184,6 +191,7 @@ export const seedsData: Seed[] = [
     maxHavestingDays: 40,
     suitableRegion: "Global",
     packageType: "Box",
+    price: "750",
     description: "Lightweight running shoes designed for comfort.",
   },
   {
@@ -201,6 +209,7 @@ export const seedsData: Seed[] = [
     maxHavestingDays: 90,
     suitableRegion: "Global",
     packageType: "Box",
+    price: "750",
     description: "High-performance gaming laptop with advanced graphics.",
   },
   {
@@ -218,6 +227,7 @@ export const seedsData: Seed[] = [
     maxHavestingDays: 30,
     suitableRegion: "Global",
     packageType: "Box",
+    price: "750",
     description: "Advanced smartwatch with fitness tracking features.",
   },
 ];
@@ -256,6 +266,7 @@ export const franchiseData: Franchise[] = [
     province: "Punjab",
     district: "Kohat",
     tehsil: "Audio Devices",
+    remainingDays: 23,
     active: false,
   },
   {
@@ -267,6 +278,7 @@ export const franchiseData: Franchise[] = [
     province: "Punjab",
     district: "Kohat",
     tehsil: "Televisions",
+    remainingDays: 55,
     active: true,
   },
   {
@@ -278,6 +290,7 @@ export const franchiseData: Franchise[] = [
     province: "Punjab",
     district: "Kohat",
     tehsil: "Sports Shoes",
+    remainingDays: 11,
     active: false,
   },
   {
@@ -289,6 +302,7 @@ export const franchiseData: Franchise[] = [
     province: "Punjab",
     district: "Kohat",
     tehsil: "Laptops",
+    remainingDays: 76,
     active: true,
   },
   {
@@ -300,6 +314,7 @@ export const franchiseData: Franchise[] = [
     province: "Punjab",
     district: "Kohat",
     tehsil: "Smart Devices",
+    remainingDays: 23,
     active: true,
   },
 ];

@@ -1,6 +1,14 @@
 // active sidebar item
 
-export const active = (href: string, pathname: string): string =>
-  (href === "/" && pathname === "/") || pathname.startsWith(href)
-    ? "bg-green-600 px-4 rounded-lg py-3 !text-white"
-    : "";
+import { cn } from "./utils";
+export const active = (
+  href: string,
+  pathname: string,
+  open?: boolean
+): string =>
+  cn({
+    "bg-green-600 !text-white rounded-lg":
+      (href === "/" && pathname === "/") || pathname.startsWith(href),
+    "px-4 py-3": open,
+    "px-2.5 py-2": !open,
+  });

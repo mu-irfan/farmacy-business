@@ -71,6 +71,7 @@ const ManageFranchises = () => {
           <Ban className="text-yellow-500 w-5 h-5" />
         ),
     },
+    { Header: "Remaining Days", accessor: "remainingDays" },
     {
       Header: "",
       accessor: "actions",

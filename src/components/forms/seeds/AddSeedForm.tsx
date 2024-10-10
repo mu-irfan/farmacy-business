@@ -58,6 +58,7 @@ const AddSeedForm = ({
       maxHavestingDays: "",
       suitableRegion: "",
       packageType: "",
+      price: "",
       description: "",
     },
   });
@@ -79,6 +80,7 @@ const AddSeedForm = ({
         maxHavestingDays: seed.maxHavestingDays || "",
         suitableRegion: seed.suitableRegion || "",
         packageType: seed.packageType || "",
+        price: seed.price || "",
         description: seed.description || "",
       });
     }
@@ -477,6 +479,30 @@ const AddSeedForm = ({
             />
           </LabelInputContainer>
         </div>
+        <LabelInputContainer className="mb-4">
+          <Label htmlFor="price" className="dark:text-farmacieGrey">
+            Price
+          </Label>
+          <FormField
+            control={form.control}
+            name="price"
+            render={({ field }) => (
+              <FormItem>
+                <FormControl>
+                  <Input
+                    placeholder="Enter Price"
+                    type="text"
+                    id="price"
+                    className="outline-none focus:border-primary disabled:bg-primary/20"
+                    {...field}
+                    disabled={isViewMode}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </LabelInputContainer>
         <LabelInputContainer className="mb-2.5">
           <Label htmlFor="description" className="dark:text-farmacieGrey">
             Description
