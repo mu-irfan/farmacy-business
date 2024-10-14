@@ -153,6 +153,24 @@ const filterSeedFormSchema = z.object({
   }),
 });
 
+// add seed trial data
+
+//seed
+const addSeedTrailDataFormSchema = z.object({
+  sowingDate: z.string().nonempty({
+    message: "Sowing Date is required.",
+  }),
+  city: z.string().nonempty({
+    message: "City is required.",
+  }),
+  category: z.string().nonempty({
+    message: "Category is required.",
+  }),
+  crop: z.string().nonempty({
+    message: "Crop is required.",
+  }),
+});
+
 // filter subscribed product
 const filterSubscribedProduct = z.object({
   category: z.string().nonempty({
@@ -264,6 +282,7 @@ export {
   filterSubscribedProduct,
   addFranchiseFormSchema,
   filterFranchiceFormSchema,
+  addSeedTrailDataFormSchema,
   addQueryFormSchema,
   queryResponseSchema,
   addManagerFormSchema,

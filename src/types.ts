@@ -147,3 +147,9 @@ interface ModeContextType {
   mode: "view" | "add" | "edit";
   setMode: (newMode: "view" | "add" | "edit") => void;
 }
+
+interface CustomCheckboxProps {
+  checked: boolean;
+  onChange: () => void;
+  id: string;
+}

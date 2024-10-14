@@ -10,10 +10,21 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import { bulkFranchiseAddresses } from "@/constant/data";
 import ActivateFranchisePaymentModal from "./FranchiceActivatePayment";
+import CustomCheckbox from "@/components/ui/CustomCheckbox";
 
 const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
   const [isPaymentBulkActivateModalOpen, setPaymentBulkActivateModalOpen] =
     useState(false);
+
+  const [selectedAddresses, setSelectedAddresses] = useState<boolean[]>(
+    Array(6).fill(false)
+  );
+
+  const handleCheckboxChange = (index: number) => {
+    setSelectedAddresses((prev) =>
+      prev.map((selected, i) => (i === index ? !selected : selected))
+    );
+  };
 
   const handlePaymentBulkActivateModalOpen = () => {
     setPaymentBulkActivateModalOpen((prev) => !prev);
@@ -53,12 +64,24 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
           </DialogHeader>
           <Card className="w-full pt-4 rounded-xl text-center bg-primary/10">
             <div className="space-x-3 lg:space-x-6 pb-2 text-farmacieGrayModalText">
-              <span>Count: 5</span>
-              <span>Price: 5</span>
-              <span>Tax15%: 375</span>
+              <span>Count: {selectedAddresses.filter(Boolean).length}</span>
+              <span>
+                Price: {selectedAddresses.filter(Boolean).length * 500}
+              </span>
+              <span>
+                Tax15%:{" "}
+                {(
+                  selectedAddresses.filter(Boolean).length *
+                  500 *
+                  0.15
+                ).toFixed(2)}
+              </span>
             </div>
             <CardTitle className="text-3xl lg:text-5xl font-bold text-primary">
-              Rs: 2875.00
+              Rs:{" "}
+              {(selectedAddresses.filter(Boolean).length * 500 * 1.15).toFixed(
+                2
+              )}
             </CardTitle>
             <CardContent className="text-farmacieGrayModalText">
               <p className="text-sm pt-3">Total bill including 15% Tax</p>
@@ -71,19 +94,28 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
                 className="w-full pt-4 rounded-xl text-left bg-primary/10"
               >
                 <CardContent>
-                  <ul className="text-sm pl-3 space-y-2">
-                    {bulkFranchiseAddresses.map((item, index) => (
-                      <li
-                        key={index}
-                        className="grid grid-cols-[80px_1fr] gap-2"
-                      >
-                        <span className="text-farmacieGrey">{item.label}:</span>
-                        <span className="text-gray-800 font-light dark:text-white">
-                          {item.value}
-                        </span>
-                      </li>
-                    ))}
-                  </ul>
+                  <div className="flex items-center">
+                    <CustomCheckbox
+                      id={`checkbox-${cardIndex}`}
+                      checked={selectedAddresses[cardIndex]}
+                      onChange={() => handleCheckboxChange(cardIndex)}
+                    />
+                    <ul className="text-sm pl-10 space-y-2">
+                      {bulkFranchiseAddresses.map((item, index) => (
+                        <li
+                          key={index}
+                          className="grid grid-cols-[80px_1fr] gap-2"
+                        >
+                          <span className="text-farmacieGrey">
+                            {item.label}:
+                          </span>
+                          <span className="text-gray-800 font-light dark:text-white">
+                            {item.value}
+                          </span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
                 </CardContent>
               </Card>
             ))}
