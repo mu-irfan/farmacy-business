@@ -1,33 +1,50 @@
 import * as z from "zod";
 import { validatePhoneNo } from "./validate";
 
-const createAccountFormSchema = z.object({
-  compnayName: z.string().nonempty({
-    message: "Company Name is required.",
-  }),
-  email: z
-    .string()
-    .nonempty({
-      message: "Email is required.",
-    })
-    .email({
-      message: "Invalid email.",
+const createAccountFormSchema = z
+  .object({
+    companyName: z.string().nonempty({
+      message: "Company Name is required.",
     }),
-  phoneNo: validatePhoneNo(
-    z.string().nonempty({
-      message: "Phone is required.",
-    })
-  ),
-  ntn: z.string().nonempty({
-    message: "NTN is required.",
-  }),
-  password: z.string().nonempty({
-    message: "Password is required.",
-  }),
-  confirmPassword: z.string().nonempty({
-    message: "Confirm Password is required.",
-  }),
-});
+    email: z
+      .string()
+      .nonempty({
+        message: "Email is required.",
+      })
+      .email({
+        message: "Invalid email.",
+      }),
+    contact: validatePhoneNo(
+      z.string().nonempty({
+        message: "Phone is required.",
+      })
+    ),
+    ntn: z.string().nonempty({
+      message: "NTN is required.",
+    }),
+    password: z
+      .string()
+      .nonempty({
+        message: "Password is required.",
+      })
+      .min(8, "Password must be at least 8 characters long")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Password must contain at least one numeric digit")
+      .regex(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "Password must contain at least one special character"
+      ),
+    confirmPassword: z
+      .string()
+      .nonempty({
+        message: "Confirm Password is required.",
+      })
+      .min(8, "Password must be at least 8 characters long"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
 const loginAccountFormSchema = z.object({
   email: z
@@ -38,9 +55,18 @@ const loginAccountFormSchema = z.object({
     .email({
       message: "Invalid email.",
     }),
-  password: z.string().nonempty({
-    message: "Password is required.",
-  }),
+  password: z
+    .string()
+    .nonempty({
+      message: "Password is required.",
+    })
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(/[0-9]/, "Password must contain at least one numeric digit")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
 });
 
 const addProductFormSchema = z.object({

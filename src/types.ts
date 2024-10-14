@@ -153,3 +153,12 @@ interface CustomCheckboxProps {
   onChange: () => void;
   id: string;
 }
+
+interface RegisterCompanyPayload {
+  companyName: string;
+  email: string;
+  contact: string;
+  ntn: string;
+  password: string;
+  confirmPassword: string;
+}

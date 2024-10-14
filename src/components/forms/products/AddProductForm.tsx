@@ -28,6 +28,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import useDynamicFields from "@/hooks/useDynamicFields";
 
 const AddProductForm = ({
   mode,
@@ -43,6 +44,8 @@ const AddProductForm = ({
     productData?.category || ""
   );
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
+  const { inputFields, handleAddField, handleDeleteField } =
+    useDynamicFields(0);
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -355,21 +358,141 @@ const AddProductForm = ({
                 size="icon"
                 className="bg-primary text-farmacieWhite mt-5"
                 type="button"
+                onClick={handleAddField}
                 disabled={isViewMode}
               >
                 <Plus className="w-4 h-4" />
               </Button>
-              <Button
-                size="icon"
-                className="bg-red-500 hover:bg-red-600 text-black mt-5"
-                type="button"
-                disabled={isViewMode}
-              >
-                <Trash className="w-4 h-4" />
-              </Button>
             </div>
           </div>
         </div>
+
+        {inputFields.map((_, index) => (
+          <div
+            key={index}
+            className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4"
+          >
+            <LabelInputContainer>
+              <Label
+                htmlFor={`activeIngredient-${index}`}
+                className="dark:text-farmacieGrey"
+              >
+                Active Ingredient
+              </Label>
+              <FormField
+                control={form.control}
+                name="activeIngredient"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          // setValue("");
+                          field.onChange(value);
+                        }}
+                        disabled={isViewMode}
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                          <SelectValue placeholder="Select Active Ingredient" />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Active Ingredients</SelectLabel>
+                            {activeIngredients.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <div className="flex flex-col md:flex-row items-center w-full space-y-2 md:space-y-0 md:space-x-2">
+              <LabelInputContainer>
+                <Label
+                  htmlFor="concentration"
+                  className="dark:text-farmacieGrey"
+                >
+                  Concentration
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="concentration"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="John"
+                          type="text"
+                          id="concentration"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="units" className="dark:text-farmacieGrey">
+                  Unit
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="units"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCategory(value);
+                            // setValue("");
+                            field.onChange(value);
+                          }}
+                          disabled={isViewMode}
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                            <SelectValue placeholder="kg" />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>Select unit</SelectLabel>
+                              {units.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <div className="flex items-center gap-2">
+                <Button
+                  size="icon"
+                  className="bg-red-500 hover:bg-red-600 text-black mt-5"
+                  type="button"
+                  onClick={() => handleDeleteField(index)}
+                  disabled={isViewMode}
+                >
+                  <Trash className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </div>
+        ))}
         <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
           <LabelInputContainer>
             <Label htmlFor="packageWeight" className="dark:text-farmacieGrey">
