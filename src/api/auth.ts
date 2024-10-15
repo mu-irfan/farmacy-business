@@ -18,3 +18,36 @@ export const loginCompany = async (data: any) => {
     return error;
   }
 };
+
+export const forgotPassword = async (data: any) => {
+  try {
+    const res = await axios.post(
+      `${baseUrlForAuth}/auth/password/forgot`,
+      data
+    );
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const forgotPasswordOtpVerify = async (data: any) => {
+  try {
+    const res = await axios.post(
+      `${baseUrlForAuth}/auth/password/verify-otp`,
+      data
+    );
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+export const forgotPasswordResetPassword = async (data: any) => {
+  try {
+    const res = await axios.post(`${baseUrlForAuth}/auth/password/reset`, data);
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};

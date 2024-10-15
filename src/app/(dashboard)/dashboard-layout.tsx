@@ -17,6 +17,8 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
+import { useAuth } from "@/hooks/useAuth";
+import { Button } from "@/components/ui/button";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -71,6 +73,8 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
     },
   ];
 
+  const { logout } = useAuth();
+
   return (
     <div className="rounded-md flex flex-col md:flex-row bg-gray-100 dark:bg-neutral-800 w-full flex-1 mx-auto border border-neutral-200 dark:border-neutral-700 overflow-hidden min-h-[100vh]">
       <Sidebar open={open} setOpen={setOpen}>
@@ -103,7 +107,13 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
                         </Link>
                       </DropdownMenuItem>
                       <DropdownMenuItem className="cursor-pointer">
-                        Logout
+                        <Button
+                          variant="ghost"
+                          className="!px-0"
+                          onClick={() => logout()}
+                        >
+                          Logout
+                        </Button>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

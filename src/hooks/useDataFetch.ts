@@ -1,7 +1,14 @@
-import { loginCompany, registerCompany } from "@/api/auth";
+import {
+  forgotPassword,
+  forgotPasswordOtpVerify,
+  forgotPasswordResetPassword,
+  loginCompany,
+  registerCompany,
+} from "@/api/auth";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { useAuth } from "./useAuth";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -11,10 +18,8 @@ export const useRegisterCompany = () => {
       if (data?.success) {
         toast.success(data?.message);
         router.push("/");
-        console.log(data);
       } else {
         toast.error(data?.response?.data?.field);
-        console.log(data);
       }
     },
     onError: (error: any) => {
@@ -25,23 +30,67 @@ export const useRegisterCompany = () => {
 };
 
 export const useLoginCompany = () => {
-  const router = useRouter();
+  const { loginCompanyAuth } = useAuth();
   return useMutation({
     mutationFn: (data: any) => loginCompany(data),
     onSuccess: (data: any) => {
-      console.log(data, "login data");
       if (data?.success) {
         toast.success(data?.message);
-        router.push("/products");
-        console.log(data);
+        loginCompanyAuth(data?.data.accessToken);
       } else {
         toast.error(data?.response?.data?.message);
-        console.log(data);
       }
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
-      console.log(error, "login error");
+    },
+  });
+};
+
+export const useForgotPassword = () => {
+  return useMutation({
+    mutationFn: (data: any) => forgotPassword(data),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useForgotPasswordOtpVerify = () => {
+  return useMutation({
+    mutationFn: (data: any) => forgotPasswordOtpVerify(data),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useForgotPasswordResetPassword = () => {
+  return useMutation({
+    mutationFn: (data: any) => forgotPasswordResetPassword(data),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
     },
   });
 };

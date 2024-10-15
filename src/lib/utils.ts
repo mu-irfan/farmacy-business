@@ -6,5 +6,4 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 //base url
-export const baseUrlForAuth =
-  "https://normal-recently-viper.ngrok-free.app/api";
+export const baseUrlForAuth = "http://192.168.200.46:3035/api";

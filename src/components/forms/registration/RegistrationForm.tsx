@@ -24,7 +24,7 @@ const RegistrationForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
   const [confirmShowPassword, setConfirmShowPassword] =
     useState<boolean>(false);
-  const { mutate, isPending } = useRegisterCompany();
+  const { mutate: signupCompany, isPending: loading } = useRegisterCompany();
 
   const form = useForm<z.infer<typeof createAccountFormSchema>>({
     resolver: zodResolver(createAccountFormSchema),
@@ -39,7 +39,7 @@ const RegistrationForm = () => {
   });
 
   const onSubmit = (data: z.infer<typeof createAccountFormSchema>) => {
-    mutate(data);
+    signupCompany(data);
   };
 
   return (
@@ -230,7 +230,7 @@ const RegistrationForm = () => {
             />
           </LabelInputContainer>
           <Button className="w-full text-white font-medium" type="submit">
-            {isPending ? (
+            {loading ? (
               "Submitting..."
             ) : (
               <>

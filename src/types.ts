@@ -162,3 +162,8 @@ interface RegisterCompanyPayload {
   password: string;
   confirmPassword: string;
 }
+
+type ForgotPasswordFormValues =
+  | { email: string }
+  | { email: string; otp: string }
+  | { email: string; newPassword: string; confirmPassword: string };

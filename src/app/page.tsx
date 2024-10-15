@@ -2,7 +2,13 @@
 
 import Link from "next/link";
 import LoginForm from "@/components/forms/login/LoginForm";
+import { useEffect } from "react";
 export default function Home() {
+  useEffect(() => {
+    document.documentElement.setAttribute("data-theme", "light");
+    document.documentElement.classList.remove("dark");
+  }, []);
+
   return (
     <div className="min-h-screen main-auth-div lg:flex">
       <div className="container lg:flex flex-grow">
@@ -36,16 +42,10 @@ export default function Home() {
               <div className="flex items-center justify-center gap-3 pb-4 md:pb-0">
                 <Link
                   href="/create-account"
-                  className="text-cente
-                  r underline text-primary"
+                  className="text-center
+                   underline text-primary"
                 >
                   Create Account
-                </Link>
-                <Link
-                  href="/products"
-                  className="text-center underline text-primary"
-                >
-                  Dashboard
                 </Link>
               </div>
             </div>

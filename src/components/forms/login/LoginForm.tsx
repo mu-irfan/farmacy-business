@@ -19,10 +19,13 @@ import { cn } from "@/lib/utils";
 import { MoveRight } from "lucide-react";
 import { useLoginCompany } from "@/hooks/useDataFetch";
 import { Toaster } from "react-hot-toast";
+import ForgotPasswordModal from "@/components/forms-modals/auth/ForgotPassword";
 
 const LoginForm = () => {
   const [showPassword, setShowPassword] = useState<boolean>(false);
-  const { mutate, isPending } = useLoginCompany();
+  const [isForgotPasswordModalOpen, setForgotPasswordModalOpen] =
+    useState<boolean>(false);
+  const { mutate: companyLogin, isPending: loading } = useLoginCompany();
 
   const form = useForm<z.infer<typeof loginAccountFormSchema>>({
     resolver: zodResolver(loginAccountFormSchema),
@@ -31,10 +34,12 @@ const LoginForm = () => {
       password: "",
     },
   });
+
   const onSubmit = (data: z.infer<typeof loginAccountFormSchema>) => {
     console.log("Submitting form data:", data);
-    mutate(data);
+    companyLogin(data);
   };
+
   return (
     <>
       <Toaster />
@@ -107,11 +112,14 @@ const LoginForm = () => {
               )}
             />
           </LabelInputContainer>
-          <p className="dark:text-farmacieGrayModalText text-sm max-w-sm py-4 cursor-pointer underline">
+          <p
+            className="dark:text-farmacieGrayModalText text-sm max-w-sm py-4 cursor-pointer underline"
+            onClick={() => setForgotPasswordModalOpen((prev) => !prev)}
+          >
             Forget Password ?
           </p>
           <Button className="w-full text-white font-medium" type="submit">
-            {isPending ? (
+            {loading ? (
               "Submitting..."
             ) : (
               <>
@@ -123,6 +131,10 @@ const LoginForm = () => {
           <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
         </form>
       </Form>
+      <ForgotPasswordModal
+        open={isForgotPasswordModalOpen}
+        onOpenChange={setForgotPasswordModalOpen}
+      />
     </>
   );
 };

@@ -69,6 +69,43 @@ const loginAccountFormSchema = z.object({
     ),
 });
 
+const emailSchema = z.object({
+  email: z
+    .string()
+    .nonempty({ message: "Email is required." })
+    .email({ message: "Invalid email." }),
+});
+
+const otpSchema = z.object({
+  email: z.string(),
+  otp: z
+    .string()
+    .nonempty({ message: "OTP is required." })
+    .length(6, "OTP must be exactly 6 digits"),
+});
+
+const resetPasswordSchema = z
+  .object({
+    email: z.string(),
+    newPassword: z
+      .string()
+      .nonempty({ message: "Please enter your new password" })
+      .min(8, "Password must be at least 8 characters long")
+      .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+      .regex(/[0-9]/, "Password must contain at least one numeric digit")
+      .regex(
+        /[!@#$%^&*(),.?":{}|<>]/,
+        "Password must contain at least one special character"
+      ),
+    confirmPassword: z
+      .string()
+      .nonempty({ message: "Please confirm your new password" }),
+  })
+  .refine((data) => data.newPassword === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
 const addProductFormSchema = z.object({
   productName: z.string().nonempty({
     message: "Product Name is required.",
@@ -301,6 +338,9 @@ const profileFormSchema = z.object({
 export {
   createAccountFormSchema,
   loginAccountFormSchema,
+  emailSchema,
+  otpSchema,
+  resetPasswordSchema,
   addProductFormSchema,
   filterProductsFormSchema,
   addSeedFormSchema,
