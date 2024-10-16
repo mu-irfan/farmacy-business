@@ -67,8 +67,8 @@ interface Seed {
 
 interface Manager {
   id: number;
-  managerName: string;
-  phoneNo: string;
+  full_name: string;
+  contact: string;
 }
 
 interface Franchise {
@@ -146,6 +146,7 @@ interface SidebarContextProps {
 interface ModeContextType {
   mode: "view" | "add" | "edit";
   setMode: (newMode: "view" | "add" | "edit") => void;
+  token: string;
 }
 
 interface CustomCheckboxProps {

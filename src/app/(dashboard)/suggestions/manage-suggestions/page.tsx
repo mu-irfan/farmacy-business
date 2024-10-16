@@ -7,11 +7,20 @@ import DataTable from "@/components/Table/DataTable";
 import { suggestionsData } from "@/constant/data";
 import Header from "@/components/Header";
 import QueryResponsesModal from "@/components/forms-modals/suggestions/QueryResponses";
+import { useDeleteQuery, useGetAllTickets } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const ManageSuggestions = () => {
+  const { token } = useContextConsumer();
   const [isQueryResponsesModalOpen, setQueryResponsesModalOpen] =
     useState(false);
   const [selectedSuggestion, setSelectedSuggestion] = useState({});
+
+  const { data: queries, isLoading: loading } = useGetAllTickets(token);
+  const { mutate: deleteQuery, isPending: deletingQuery } =
+    useDeleteQuery(token);
+
+  console.log(queries, "queries");
 
   const handleView = (suggestion: Suggestions) => {
     console.log("View suggestion:", suggestion);
@@ -19,9 +28,9 @@ const ManageSuggestions = () => {
     setSelectedSuggestion(suggestion);
   };
 
-  const handleDelete = (suggestionId: number) => {
-    // Logic to delete the product
+  const handleDelete = (suggestionId: string) => {
     console.log("Delete suggestion with ID:", suggestionId);
+    deleteQuery(suggestionId);
     // Add your delete logic here
   };
 
@@ -65,6 +74,7 @@ const ManageSuggestions = () => {
             size="icon"
             onClick={() => handleDelete(row.original.id)}
             className="bg-red-400 hover:bg-red-500 text-black"
+            disabled={deletingQuery}
           >
             <Trash className="w-4 h-4" />
           </Button>

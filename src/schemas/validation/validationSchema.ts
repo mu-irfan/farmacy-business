@@ -275,10 +275,10 @@ const addFranchiseFormSchema = z.object({
 
 // add manager
 const addManagerFormSchema = z.object({
-  managerName: z.string().nonempty({
+  full_name: z.string().nonempty({
     message: "Manager Name is required.",
   }),
-  phoneNo: validatePhoneNo(
+  contact: validatePhoneNo(
     z.string().nonempty({
       message: "Phone is required.",
     })
@@ -299,14 +299,6 @@ const filterFranchiceFormSchema = z.object({
 });
 
 const addQueryFormSchema = z.object({
-  contactEmail: z
-    .string()
-    .nonempty({
-      message: "Email is required.",
-    })
-    .email({
-      message: "Invalid email.",
-    }),
   query: z.string().nonempty({
     message: "Please enter query",
   }),

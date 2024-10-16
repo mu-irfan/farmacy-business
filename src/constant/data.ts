@@ -235,23 +235,28 @@ export const seedsData: Seed[] = [
 export const ManagersData: Manager[] = [
   {
     id: 1,
-    managerName: "Inam Ullah",
-    phoneNo: "03334859485",
+    full_name: "Inam Ullah",
+    contact: "03334859488",
   },
   {
     id: 2,
-    managerName: "Inam Ullah",
-    phoneNo: "03334859485",
+    full_name: "Irfan",
+    contact: "03334859485",
   },
   {
     id: 3,
-    managerName: "Inam Ullah",
-    phoneNo: "03334859485",
+    full_name: "Noman",
+    contact: "03334859485",
   },
   {
     id: 4,
-    managerName: "Inam Ullah",
-    phoneNo: "03334859485",
+    full_name: "Khan",
+    contact: "03334859485",
+  },
+  {
+    id: 4,
+    full_name: "Khans",
+    contact: "03334859489",
   },
 ];
 
