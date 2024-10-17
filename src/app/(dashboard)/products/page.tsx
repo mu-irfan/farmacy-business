@@ -1,21 +1,38 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import { CirclePlus, Search } from "lucide-react";
 import ReportCard from "@/components/ReportCard";
-import { productsReports } from "@/constant/data";
+import { productsReportsTitles } from "@/constant/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../dashboard-layout";
 import Link from "next/link";
+import { useGetProductStats } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 export default function Dashboard() {
+  const { token } = useContextConsumer();
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+
+  //stats data
+  const { data: stats, isLoading: loading } = useGetProductStats(token);
+
+  const reportsWithStats = useMemo(() => {
+    return productsReportsTitles.map((report) => ({
+      title: report.title,
+      value:
+        stats?.data?.[report.key] < 10
+          ? `0${stats.data[report.key]}`
+          : stats?.data?.[report.key] || "00",
+    }));
+  }, [stats]);
+
   return (
     <>
       <DashboardLayout contentAtCenter>
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {productsReports.map((report, index) => (
+          {reportsWithStats.map((report, index) => (
             <ReportCard key={index} title={report.title} value={report.value} />
           ))}
         </div>

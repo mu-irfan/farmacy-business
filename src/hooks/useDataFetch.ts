@@ -21,6 +21,13 @@ import {
   getAllQueries,
   getQueriesChats,
 } from "@/api/suggestions";
+import {
+  deleteProduct,
+  getAllProducts,
+  getProduct,
+  getProductStats,
+} from "@/api/products";
+import { deleteSeed, getAllSeeds, getSeed, getSeedsStats } from "@/api/seeds";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -46,6 +53,8 @@ export const useLoginCompany = () => {
   return useMutation({
     mutationFn: (data: any) => loginCompany(data),
     onSuccess: (data: any) => {
+      console.log(data, "login company");
+
       if (data?.success) {
         toast.success(data?.message);
         loginCompanyAuth(data?.data.accessToken);
@@ -247,6 +256,161 @@ export const useDeleteQuery = (token: string) => {
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries(["alTickets", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+// Products  API's Functions
+
+export const useGetProductStats = (token: string) => {
+  return useQuery({
+    queryKey: ["productStats", token],
+    queryFn: () => getProductStats(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetAllProducts = (token: string) => {
+  return useQuery({
+    queryKey: ["allProducts", token],
+    queryFn: () => getAllProducts(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetProduct = (uuid: string, token: string) => {
+  return useQuery({
+    queryKey: ["product", uuid, token],
+    queryFn: () => getProduct(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!uuid,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useDeleteProduct = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: string) => deleteProduct(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["allProducts", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+// Seeds  API's Functions
+export const useGetSeedsStats = (token: string) => {
+  return useQuery({
+    queryKey: ["seedsStats", token],
+    queryFn: () => getSeedsStats(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetAllSeeds = (token: string) => {
+  return useQuery({
+    queryKey: ["allSeeds", token],
+    queryFn: () => getAllSeeds(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetSeed = (uuid: string, token: string) => {
+  return useQuery({
+    queryKey: ["seed", uuid, token],
+    queryFn: () => getSeed(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!uuid,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useDeleteSeed = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: string) => deleteSeed(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["allSeeds", token]);
       } else {
         toast.error(data?.response?.data?.message);
       }

@@ -28,10 +28,10 @@ interface DataTableProps<T extends object> {
 }
 //
 interface Product {
-  productName: string;
-  brandName: string;
+  name: string;
+  company_fk: string;
   category: string;
-  subCategory: string;
+  sub_category: string;
   activeIngredient: string;
   concentration: string;
   units: string;
@@ -48,19 +48,19 @@ interface Product {
 
 interface Seed {
   id: number;
-  varietyName: string;
-  brandName: string;
-  category: string;
+  seed_variety_name: string;
+  company_fk: string;
+  crop_category: string;
   crop: string;
   subscribed?: boolean;
   seedWeight: string;
   packageWeight: string;
-  germinationPercentage: string;
-  maturityPercentage: string;
+  germination_percentage: string;
+  maturity_percentage: string;
   minHarvestingDays: number;
   maxHavestingDays: number;
-  suitableRegion: string;
-  packageType: string;
+  suitable_region: string;
+  package_type: string;
   price: string;
   description: string;
 }

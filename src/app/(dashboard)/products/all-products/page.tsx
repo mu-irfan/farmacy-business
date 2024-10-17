@@ -1,65 +1,77 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../../dashboard-layout";
-import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
-import { productData } from "@/constant/data";
+import { debounce } from "lodash";
 import { Filter, Search, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
 import Header from "@/components/Header";
 import { Input } from "@/components/ui/input";
 import FilterProductModal from "@/components/forms-modals/products/FilterProduct";
+import {
+  useDeleteProduct,
+  useGetAllProducts,
+  useGetProduct,
+} from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const AllProducts = () => {
-  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
+  const { token } = useContextConsumer();
+  const [searchQuery, setSearchQuery] = useState<string>("");
+  const [isViewProductModalOpen, setViewProductModalOpen] =
+    useState<boolean>(false);
   const [selectedProductToView, setSelectedProductToView] = useState({});
-  const [isProductFilterModalOpen, setProductFilterModalOpen] = useState(false);
+  const [isProductFilterModalOpen, setProductFilterModalOpen] =
+    useState<boolean>(false);
+  const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
+    null
+  );
 
-  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
-    resolver: zodResolver(filterProductsFormSchema),
-    defaultValues: {
-      category: "",
-      allSubCategories: "",
-    },
-  });
+  const { data: products, isLoading: loading } = useGetAllProducts(token);
+  const { data: productDetails, isLoading: productLoading } = useGetProduct(
+    currentProductUuid!,
+    token
+  );
+  const { mutate: deleteProduct, isPending: deletingProduct } =
+    useDeleteProduct(token);
 
-  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
-    console.log("Submitting form data:", data);
-  };
+  const handleSearchChange = debounce((value: string) => {
+    setSearchQuery(value);
+  }, 300);
 
-  const handleView = (product: Product) => {
+  const filteredProducts = useMemo(() => {
+    if (!products || !products.data) return [];
+    return products.data.filter((product: any) =>
+      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [products, searchQuery]);
+
+  const handleView = (product: any) => {
     setViewProductModalOpen(true);
-    setSelectedProductToView(product);
+    setCurrentProductUuid(product.uuid);
   };
 
-  const handleDelete = (productId: number) => {
-    // Logic to delete the product
-    console.log("Delete product with ID:", productId);
-    // Add your delete logic here
+  const handleDelete = (productId: string) => {
+    deleteProduct(productId);
   };
+
+  useEffect(() => {
+    if (productDetails?.success && productDetails.data) {
+      setSelectedProductToView(productDetails.data);
+    }
+  }, [productDetails]);
 
   const productColumns: {
     Header: string;
     accessor: ProductColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Product Name", accessor: "productName" },
-    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Product Name", accessor: "name" },
+    { Header: "Brand Name", accessor: "company_fk" },
     { Header: "Category", accessor: "category" },
-    { Header: "Sub Category", accessor: "subCategory" },
+    { Header: "Sub Category", accessor: "sub_category" },
     {
       Header: "",
       accessor: "actions",
@@ -75,8 +87,9 @@ const AllProducts = () => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleDelete(row.original.id)}
+            onClick={() => handleDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
+            disabled={deletingProduct}
           >
             <Trash className="w-4 h-4" />
           </Button>
@@ -94,46 +107,30 @@ const AllProducts = () => {
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex justify-between items-center gap-2">
-                  <LabelInputContainer className="max-w-md lg:max-w-lg">
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem className="relative">
-                          <FormControl>
-                            <Input
-                              placeholder="Search product variety by name ..."
-                              type="text"
-                              id="varietyName"
-                              className="outline-none border py-5 border-primary rounded-full pl-12"
-                              {...field}
-                            />
-                          </FormControl>
-                          <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </LabelInputContainer>
-                  <Button
-                    className="text-farmacieWhite font-medium"
-                    type="button"
-                    onClick={() => setProductFilterModalOpen((prev) => !prev)}
-                  >
-                    <Filter className="w-5 h-5 mr-1" />
-                    Filter
-                  </Button>
-                </div>
-              </form>
-            </Form>
+            <div className="flex justify-between items-center gap-2">
+              <div className="relative max-w-md lg:max-w-lg w-full">
+                <Input
+                  placeholder="Search product variety by name ..."
+                  type="text"
+                  className="outline-none border py-5 border-primary rounded-full pl-12 w-full"
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                />
+                <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
+              </div>
+              <Button
+                className="text-farmacieWhite font-medium"
+                type="button"
+                onClick={() => setProductFilterModalOpen((prev) => !prev)}
+              >
+                <Filter className="w-5 h-5 mr-1" />
+                Filter
+              </Button>
+            </div>
           </CardContent>
         </Card>
         <DataTable
           columns={productColumns}
-          data={productData as ProductTableRow[]}
+          data={filteredProducts as ProductTableRow[]}
           paginate
           extendWidth
         />

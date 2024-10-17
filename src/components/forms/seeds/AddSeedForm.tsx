@@ -51,18 +51,18 @@ const AddSeedForm = ({
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
     resolver: zodResolver(addSeedFormSchema),
     defaultValues: {
-      varietyName: "",
-      brandName: "",
+      seed_variety_name: "",
+      company_fk: "",
       category: "",
       crop: "",
-      seedWeight: "",
-      packageWeight: "",
-      germinationPercentage: "",
-      maturityPercentage: "",
-      minHarvestingDays: "",
-      maxHavestingDays: "",
-      suitableRegion: "",
-      packageType: "",
+      seed_weight: "",
+      package_weight: "",
+      germination_percentage: "",
+      maturity_percentage: "",
+      min_harvesting_days: "",
+      max_harvesting_days: "",
+      suitable_region: "",
+      package_type: "",
       price: "",
       description: "",
     },
@@ -73,18 +73,18 @@ const AddSeedForm = ({
   useEffect(() => {
     if (seed) {
       reset({
-        varietyName: seed.varietyName || "",
-        brandName: seed.brandName || "",
+        seed_variety_name: seed.seed_variety_name || "",
+        company_fk: seed.company_fk || "",
         category: seed.category || "",
         crop: seed.crop || "",
-        seedWeight: seed.seedWeight || "",
-        packageWeight: seed.packageWeight || "",
-        germinationPercentage: seed.germinationPercentage || "",
-        maturityPercentage: seed.maturityPercentage || "",
-        minHarvestingDays: seed.minHarvestingDays || "",
-        maxHavestingDays: seed.maxHavestingDays || "",
-        suitableRegion: seed.suitableRegion || "",
-        packageType: seed.packageType || "",
+        seed_weight: seed.seed_weight || "",
+        package_weight: seed.package_weight || "",
+        germination_percentage: seed.germination_percentage || "",
+        maturity_percentage: seed.maturity_percentage || "",
+        min_harvesting_days: seed.min_harvesting_days || "",
+        max_harvesting_days: seed.max_harvesting_days || "",
+        suitable_region: seed.suitable_region || "",
+        package_type: seed.package_type || "",
         price: seed.price || "",
         description: seed.description || "",
       });
@@ -122,19 +122,22 @@ const AddSeedForm = ({
         <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="varietyName" className="dark:text-farmacieGrey">
+              <Label
+                htmlFor="seed_variety_name"
+                className="dark:text-farmacieGrey"
+              >
                 Seed Variety Name
               </Label>
               <FormField
                 control={form.control}
-                name="varietyName"
+                name="seed_variety_name"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter variety name"
                         type="text"
-                        id="varietyName"
+                        id="seed_variety_name"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -146,19 +149,19 @@ const AddSeedForm = ({
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="brandName" className="dark:text-farmacieGrey">
+              <Label htmlFor="company_fk" className="dark:text-farmacieGrey">
                 Brand Name
               </Label>
               <FormField
                 control={form.control}
-                name="brandName"
+                name="company_fk"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Sygenta fixed"
                         type="text"
-                        id="brandName"
+                        id="company_fk"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -189,7 +192,11 @@ const AddSeedForm = ({
                         disabled={isViewMode}
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                          <SelectValue placeholder="Select Crop Category" />
+                          <SelectValue
+                            placeholder={
+                              seed?.crop_category || "Select Crop Category"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
@@ -227,7 +234,9 @@ const AddSeedForm = ({
                         disabled={isViewMode}
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                          <SelectValue placeholder="Select Crop" />
+                          <SelectValue
+                            placeholder={seed?.crop || "Select Crop"}
+                          />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
@@ -249,19 +258,19 @@ const AddSeedForm = ({
           </div>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="seedWeight" className="dark:text-farmacieGrey">
+              <Label htmlFor="seed_weight" className="dark:text-farmacieGrey">
                 Seed weight (g)
               </Label>
               <FormField
                 control={form.control}
-                name="seedWeight"
+                name="seed_weight"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter seed in gram"
                         type="text"
-                        id="seedWeight"
+                        id="seed_weight"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -273,19 +282,22 @@ const AddSeedForm = ({
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="packageWeight" className="dark:text-farmacieGrey">
+              <Label
+                htmlFor="package_weight"
+                className="dark:text-farmacieGrey"
+              >
                 Package weight (kg)
               </Label>
               <FormField
                 control={form.control}
-                name="packageWeight"
+                name="package_weight"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter package weight in kg"
                         type="text"
-                        id="packageWeight"
+                        id="package_weight"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -300,21 +312,21 @@ const AddSeedForm = ({
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label
-                htmlFor="germinationPercentage"
+                htmlFor="germination_percentage"
                 className="dark:text-farmacieGrey"
               >
                 Germination Percentage
               </Label>
               <FormField
                 control={form.control}
-                name="germinationPercentage"
+                name="germination_percentage"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter Germination Percentage"
                         type="text"
-                        id="germinationPercentage"
+                        id="germination_percentage"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -327,21 +339,21 @@ const AddSeedForm = ({
             </LabelInputContainer>
             <LabelInputContainer>
               <Label
-                htmlFor="maturityPercentage"
+                htmlFor="maturity_percentage"
                 className="dark:text-farmacieGrey"
               >
                 Maturity Percentage
               </Label>
               <FormField
                 control={form.control}
-                name="maturityPercentage"
+                name="maturity_percentage"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter maturity percentage"
                         type="text"
-                        id="maturityPercentage"
+                        id="maturity_percentage"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -356,21 +368,21 @@ const AddSeedForm = ({
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label
-                htmlFor="minHarvestingDays"
+                htmlFor="min_harvesting_days"
                 className="dark:text-farmacieGrey"
               >
                 Min harvesting days
               </Label>
               <FormField
                 control={form.control}
-                name="minHarvestingDays"
+                name="min_harvesting_days"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter min days to reach harvesting"
                         type="text"
-                        id="minHarvestingDays"
+                        id="min_harvesting_days"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -383,21 +395,21 @@ const AddSeedForm = ({
             </LabelInputContainer>
             <LabelInputContainer>
               <Label
-                htmlFor="maxHavestingDays"
+                htmlFor="max_harvesting_days"
                 className="dark:text-farmacieGrey"
               >
                 Max havesting days
               </Label>
               <FormField
                 control={form.control}
-                name="maxHavestingDays"
+                name="max_harvesting_days"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter max days to reach harvesting"
                         type="text"
-                        id="maxHavestingDays"
+                        id="max_harvesting_days"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -412,14 +424,14 @@ const AddSeedForm = ({
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label
-                htmlFor="suitableRegion"
+                htmlFor="suitable_region"
                 className="dark:text-farmacieGrey"
               >
                 Suitable Region
               </Label>
               <FormField
                 control={form.control}
-                name="suitableRegion"
+                name="suitable_region"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -431,7 +443,11 @@ const AddSeedForm = ({
                         disabled={isViewMode}
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                          <SelectValue placeholder="Select Suitable region" />
+                          <SelectValue
+                            placeholder={
+                              seed?.suitable_region || "Select Suitable region"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
@@ -451,12 +467,12 @@ const AddSeedForm = ({
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="packageType" className="dark:text-farmacieGrey">
+              <Label htmlFor="package_type" className="dark:text-farmacieGrey">
                 Package Type
               </Label>
               <FormField
                 control={form.control}
-                name="packageType"
+                name="package_type"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -469,7 +485,11 @@ const AddSeedForm = ({
                         disabled={isViewMode}
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                          <SelectValue placeholder="Select package type" />
+                          <SelectValue
+                            placeholder={
+                              seed?.package_type || "Select package type"
+                            }
+                          />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>

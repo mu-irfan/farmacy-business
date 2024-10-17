@@ -5,9 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus, Search } from "lucide-react";
 import Link from "next/link";
 import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
+import { useGetSeedsStats } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const Seeds = () => {
+  const { token } = useContextConsumer();
   const [isAddSeedModalOpen, setAddSeedModalOpen] = useState(false);
+
+  //stats data
+  const { data: stats, isLoading: loading } = useGetSeedsStats(token);
 
   return (
     <>
@@ -15,7 +21,9 @@ const Seeds = () => {
         <Card className="relative w-full py-6 lg:py-8 max-w-xl rounded-xl text-center bg-primary/10">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-              40
+              {stats?.data?.seedCountglobalList < 10
+                ? `0${stats?.data?.seedCountglobalList}`
+                : stats?.data?.seedCountglobalList}
             </CardTitle>
           </CardHeader>
           <CardContent>

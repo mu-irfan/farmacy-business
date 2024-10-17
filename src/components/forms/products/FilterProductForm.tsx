@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/select";
 
 const FilterProductForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+  const [selectedCategory, setSelectedCategory] = useState("fertilizer");
 
   const form = useForm<z.infer<typeof filterProductsFormSchema>>({
     resolver: zodResolver(filterProductsFormSchema),
