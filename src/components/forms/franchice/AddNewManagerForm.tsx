@@ -22,10 +22,12 @@ const AddManagerForm = ({
   showInsList,
   manager,
   mode,
+  onClose,
 }: {
   showInsList?: boolean;
   manager: any;
   mode: "add" | "view" | "edit";
+  onClose: () => void;
 }) => {
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
@@ -53,10 +55,25 @@ const AddManagerForm = ({
 
   const onSubmit = (data: z.infer<typeof addManagerFormSchema>) => {
     if (mode === "add") {
-      addManager({ data, token });
+      addManager(
+        { data, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
     } else if (mode === "edit") {
-      const updatedData = { ...data, uuid: manager?.uuid };
-      updateManager(updatedData);
+      const updatedData = { full_name: data.full_name, uuid: manager?.uuid };
+      updateManager(updatedData, {
+        onSuccess: (log) => {
+          if (log?.success) {
+            onClose();
+          }
+        },
+      });
     }
   };
 
@@ -90,30 +107,33 @@ const AddManagerForm = ({
                 )}
               />
             </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="contact" className="dark:text-farmacieGrey">
-                Phone number
-              </Label>
-              <FormField
-                control={form.control}
-                name="contact"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Manager phone number"
-                        type="number"
-                        id="contact"
-                        className="outline-none focus:border-primary"
-                        {...field}
-                        disabled={isViewMode}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
+            {mode === "add" && (
+              <LabelInputContainer>
+                <Label htmlFor="contact" className="dark:text-farmacieGrey">
+                  Phone number
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="contact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Manager phone number"
+                          type="number"
+                          id="contact"
+                          className="outline-none focus:border-primary"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+            )}
+
             {showInsList && (
               <ul className="list-disc text-xs pl-8 space-y-2 text-yellow-600">
                 <li>The number should belongs to the franchise manager</li>

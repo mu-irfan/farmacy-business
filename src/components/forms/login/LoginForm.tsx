@@ -36,7 +36,6 @@ const LoginForm = () => {
   });
 
   const onSubmit = (data: z.infer<typeof loginAccountFormSchema>) => {
-    console.log("Submitting form data:", data);
     companyLogin(data);
   };
 

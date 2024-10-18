@@ -6,12 +6,19 @@ import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
 import DataTable from "@/components/Table/DataTable";
 import { Button } from "@/components/ui/button";
 import { franchiseData, productData, seedsData } from "@/constant/data";
+import { useContextConsumer } from "@/context/Context";
+import {
+  useGetAllFranchises,
+  useGetSubscribedProduct,
+  useGetSubscribedSeed,
+} from "@/hooks/useDataFetch";
 import { MoveLeft, ShieldCheck, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 
 const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
+  const { token } = useContextConsumer();
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
   const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
@@ -20,9 +27,15 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     null
   );
 
-  const franchiseId = parseInt(params.id, 10);
-  const selectedFranchise = franchiseData.find(
-    (franchise) => franchise.id === franchiseId
+  // franchise
+  const { data: franchises, isLoading: loading } = useGetAllFranchises(token);
+  const { data: subscribedProduct, isLoading: subsribedProductLoading } =
+    useGetSubscribedProduct(params.id!, token);
+  const { data: subscribedSeed, isLoading: subsribedSeedLoading } =
+    useGetSubscribedSeed(params.id!, token);
+
+  const selectedFranchise = franchises?.data?.find(
+    (franchise: any) => franchise.uuid === params.id
   );
 
   if (!selectedFranchise) {
@@ -90,10 +103,10 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     accessor: ProductColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Product Name", accessor: "productName" },
-    { Header: "Brand Name", accessor: "brandName" },
+    { Header: "Product Name", accessor: "name" },
+    { Header: "Brand Name", accessor: "company_fk" },
     { Header: "Category", accessor: "category" },
-    { Header: "Sub Category", accessor: "subCategory" },
+    { Header: "Sub Category", accessor: "sub_category" },
     {
       Header: "",
       accessor: "actions",
@@ -165,7 +178,11 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           </Button>
         )}
       </div>
-      <FranchiseStats franchiseStats={selectedFranchise} />
+      <FranchiseStats
+        franchiseStats={selectedFranchise}
+        totalSubscribedProduct={subscribedProduct?.data.length}
+        totalSubscribedSeed={subscribedSeed?.data.length}
+      />
       <div className="flex items-center justify-end gap-3 mb-8">
         <Button
           variant="outline"
@@ -190,7 +207,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
       {visibleTable === "products" && (
         <DataTable
           columns={productColumns}
-          data={productData as ProductTableRow[]}
+          data={subscribedProduct?.data as ProductTableRow[]}
           paginate
         />
       )}

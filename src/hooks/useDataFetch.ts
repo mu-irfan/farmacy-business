@@ -28,6 +28,19 @@ import {
   getProductStats,
 } from "@/api/products";
 import { deleteSeed, getAllSeeds, getSeed, getSeedsStats } from "@/api/seeds";
+import {
+  createFranchise,
+  deleteFranchise,
+  getAllFranchises,
+  getAllInActiveFranchise,
+  getFranchisesStats,
+  updateFranchise,
+} from "@/api/franchises";
+import {
+  getSubscribedProduct,
+  getSubscribedSeed,
+  getSubsribedsStats,
+} from "@/api/subscribe";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -53,8 +66,6 @@ export const useLoginCompany = () => {
   return useMutation({
     mutationFn: (data: any) => loginCompany(data),
     onSuccess: (data: any) => {
-      console.log(data, "login company");
-
       if (data?.success) {
         toast.success(data?.message);
         loginCompanyAuth(data?.data.accessToken);
@@ -122,7 +133,6 @@ export const useCreateManager = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createManager(data, token),
     onSuccess: (data: any) => {
-      console.log(data, "createManager");
       if (data?.success) {
         toast.success(data?.message);
       } else {
@@ -159,7 +169,6 @@ export const useUpdateManager = (token: string) => {
   return useMutation({
     mutationFn: (data: any) => updateManager(data, token),
     onSuccess: (data: any) => {
-      console.log(data, "updateManager");
       if (data?.success) {
         toast.success(data.message);
         queryClient.invalidateQueries(["allManagers", token]);
@@ -197,7 +206,6 @@ export const useCreateTicket = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createQuery(data, token),
     onSuccess: (data: any) => {
-      console.log(data, "create ticket");
       if (data?.success) {
         toast.success(data?.message);
       } else {
@@ -418,5 +426,178 @@ export const useDeleteSeed = (token: string) => {
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
     },
+  });
+};
+
+// Products  API's Functions
+
+export const useGetFranchiseStats = (token: string) => {
+  return useQuery({
+    queryKey: ["franchiseStats", token],
+    queryFn: () => getFranchisesStats(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useCreateFranchise = () => {
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createFranchise(data, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useGetAllFranchises = (token: string) => {
+  return useQuery({
+    queryKey: ["allFranchises", token],
+    queryFn: () => getAllFranchises(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetInActiveFranchises = (token: string) => {
+  return useQuery({
+    queryKey: ["inactiveFranchises", token],
+    queryFn: () => getAllInActiveFranchise(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useDeleteFranchise = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: string) => deleteFranchise(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["allFranchises", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useUpdateFranchise = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => updateFranchise(data, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries(["allFranchises", token]);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+  });
+};
+
+// Subscribed Integrations Functions
+export const useGetSubscribedProduct = (uuid: string, token: string) => {
+  return useQuery({
+    queryKey: ["subsribedProduct", uuid, token],
+    queryFn: () => getSubscribedProduct(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!uuid,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetSubscribedSeed = (uuid: string, token: string) => {
+  return useQuery({
+    queryKey: ["subsribedSeed", uuid, token],
+    queryFn: () => getSubscribedSeed(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!uuid,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetSubscribedStats = (uuid: string, token: string) => {
+  return useQuery({
+    queryKey: ["subsribedStats", uuid, token],
+    queryFn: () => getSubsribedsStats(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!uuid,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
   });
 };

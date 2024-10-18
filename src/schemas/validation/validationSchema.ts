@@ -249,18 +249,15 @@ const filterSubscribedProduct = z.object({
 
 // add franchise
 const addFranchiseFormSchema = z.object({
-  managerName: z.string().nonempty({
+  full_name: z.string().nonempty({
     message: "Manager Name is required.",
   }),
-  franchiseName: z.string().nonempty({
+  franchise_name: z.string().nonempty({
     message: "Franchise Name is required.",
   }),
-  phoneNo: z.string().optional(),
+  contact: z.string().optional(),
   address: z.string().nonempty({
     message: "Address is required.",
-  }),
-  remainingDays: z.string().nonempty({
-    message: "Remaining Days is required.",
   }),
   province: z.string().nonempty({
     message: "Select Province",
@@ -271,6 +268,7 @@ const addFranchiseFormSchema = z.object({
   tehsil: z.string().nonempty({
     message: "Select Tehil",
   }),
+  managerUuid: z.string().optional(),
 });
 
 // add manager
@@ -278,11 +276,9 @@ const addManagerFormSchema = z.object({
   full_name: z.string().nonempty({
     message: "Manager Name is required.",
   }),
-  contact: validatePhoneNo(
-    z.string().nonempty({
-      message: "Phone is required.",
-    })
-  ),
+  contact: z.string({
+    required_error: "Phone number is required.",
+  }),
 });
 
 // filter franchice

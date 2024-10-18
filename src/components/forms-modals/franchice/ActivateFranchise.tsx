@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -8,17 +8,28 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
-import { bulkFranchiseAddresses } from "@/constant/data";
 import ActivateFranchisePaymentModal from "./FranchiceActivatePayment";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
+import { useGetInActiveFranchises } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
+  const { token } = useContextConsumer();
   const [isPaymentBulkActivateModalOpen, setPaymentBulkActivateModalOpen] =
     useState(false);
+  const [selectedAddresses, setSelectedAddresses] = useState<boolean[]>([]);
 
-  const [selectedAddresses, setSelectedAddresses] = useState<boolean[]>(
-    Array(6).fill(false)
-  );
+  // franchise
+  const { data: inActiveFranchises, isLoading: loading } =
+    useGetInActiveFranchises(token);
+
+  useEffect(() => {
+    if (inActiveFranchises?.data) {
+      setSelectedAddresses(
+        new Array(inActiveFranchises.data.length).fill(false)
+      );
+    }
+  }, [inActiveFranchises]);
 
   const handleCheckboxChange = (index: number) => {
     setSelectedAddresses((prev) =>
@@ -88,37 +99,50 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
             </CardContent>
           </Card>
           <div className="max-h-[400px] overflow-y-auto space-y-4 scrollbar-custom">
-            {[...Array(6)].map((_, cardIndex) => (
-              <Card
-                key={cardIndex}
-                className="w-full pt-4 rounded-xl text-left bg-primary/10"
-              >
-                <CardContent>
-                  <div className="flex items-center">
-                    <CustomCheckbox
-                      id={`checkbox-${cardIndex}`}
-                      checked={selectedAddresses[cardIndex]}
-                      onChange={() => handleCheckboxChange(cardIndex)}
-                    />
-                    <ul className="text-sm pl-10 space-y-2">
-                      {bulkFranchiseAddresses.map((item, index) => (
-                        <li
-                          key={index}
-                          className="grid grid-cols-[80px_1fr] gap-2"
-                        >
-                          <span className="text-farmacieGrey">
-                            {item.label}:
-                          </span>
-                          <span className="text-gray-800 font-light dark:text-white">
-                            {item.value}
+            {inActiveFranchises?.data.map(
+              (franchise: any, cardIndex: number) => (
+                <Card
+                  key={franchise.uuid}
+                  className="w-full pt-4 rounded-xl text-left bg-primary/10"
+                >
+                  <CardContent>
+                    <div className="flex items-center">
+                      <CustomCheckbox
+                        id={`checkbox-${cardIndex}`}
+                        checked={selectedAddresses[cardIndex]}
+                        onChange={() => handleCheckboxChange(cardIndex)}
+                      />
+                      <ul className="text-sm pl-10 space-y-2">
+                        <li className="grid grid-cols-[80px_1fr] gap-2">
+                          <span className="text-farmacieGrey">Address:</span>
+                          <span className="text-gray-800 font-light dark:text-white capitalize">
+                            {franchise.address}
                           </span>
                         </li>
-                      ))}
-                    </ul>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+                        <li className="grid grid-cols-[80px_1fr] gap-2">
+                          <span className="text-farmacieGrey">Province:</span>
+                          <span className="text-gray-800 font-light dark:text-white capitalize">
+                            {franchise.province}
+                          </span>
+                        </li>
+                        <li className="grid grid-cols-[80px_1fr] gap-2">
+                          <span className="text-farmacieGrey">District:</span>
+                          <span className="text-gray-800 font-light dark:text-white capitalize">
+                            {franchise.district}
+                          </span>
+                        </li>
+                        <li className="grid grid-cols-[80px_1fr] gap-2">
+                          <span className="text-farmacieGrey">Tehsil:</span>
+                          <span className="text-gray-800 font-light dark:text-white capitalize">
+                            {franchise.tehsil}
+                          </span>
+                        </li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            )}
           </div>
           <Button
             className="w-full text-white font-medium"

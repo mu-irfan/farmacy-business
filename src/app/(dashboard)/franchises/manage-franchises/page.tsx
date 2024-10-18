@@ -1,19 +1,7 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
-import * as z from "zod";
 import { Card, CardContent } from "@/components/ui/card";
-import { filterProductsFormSchema } from "@/schemas/validation/validationSchema";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormMessage,
-} from "@/components/ui/form";
-import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Button } from "@/components/ui/button";
 import { Ban, Check, Filter, Search, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -23,42 +11,70 @@ import ActivateFranchiseModal from "@/components/forms-modals/franchice/Activate
 import DataTable from "@/components/Table/DataTable";
 import { franchiseData } from "@/constant/data";
 import Header from "@/components/Header";
+import { useDeleteFranchise, useGetAllFranchises } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
+import { debounce } from "lodash";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const ManageFranchises = () => {
   const router = useRouter();
+  const { token } = useContextConsumer();
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] = useState(false);
   const [isBulkActivateModalOpen, setBulkActivateModalOpen] = useState(false);
 
-  const form = useForm<z.infer<typeof filterProductsFormSchema>>({
-    resolver: zodResolver(filterProductsFormSchema),
-    defaultValues: {
-      category: "",
-      allSubCategories: "",
-    },
-  });
+  // franchises
+  const { data: franchises, isLoading: loading } = useGetAllFranchises(token);
+  const { mutate: deleteManager, isPending: deletingManager } =
+    useDeleteFranchise(token);
 
-  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
-    console.log("Submitting form data:", data);
+  const handleSearchChange = debounce((value: string) => {
+    setSearchQuery(value);
+  }, 300);
+
+  const filteredManagers = useMemo(() => {
+    if (!franchises || !franchises.data) return [];
+    return franchises.data.filter((franchise: any) =>
+      franchise.franchise_manager?.full_name
+        .toLowerCase()
+        .includes(searchQuery.toLowerCase())
+    );
+  }, [franchises, searchQuery]);
+
+  const handleView = (franchise: any) => {
+    router.push(`/franchises/manage-franchises/franchise/${franchise.uuid}`);
   };
 
-  const handleView = (franchise: Franchise) => {
-    router.push(`/franchises/manage-franchises/franchise/${franchise.id}`);
-  };
-
-  const handleDelete = (franchiseId: number) => {
-    // Logic to delete the product
-    console.log("Delete franchise with ID:", franchiseId);
-    // Add your delete logic here
+  const handleDelete = async (franchiseId: string) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Franchise?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteManager(franchiseId);
+    }
   };
 
   const franchiseColumns: {
     Header: string;
-    accessor: FranchiseColumnAccessor;
+    accessor: keyof Franchise | "actions";
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Manager Name", accessor: "managerName" },
+    {
+      Header: "Manager Name",
+      accessor: "full_name",
+      Cell: ({ row }: any) =>
+        row.original.franchise_manager?.full_name || "N/A",
+    },
     // { Header: "Franchise Name", accessor: "franchiseName" },
-    { Header: "Contact", accessor: "phoneNo" },
+    {
+      Header: "Contact",
+      accessor: "contact",
+      Cell: ({ row }: any) => row.original.franchise_manager?.contact || "N/A",
+    },
     { Header: "Address", accessor: "address" },
     { Header: "Tehsil", accessor: "tehsil" },
     {
@@ -87,8 +103,9 @@ const ManageFranchises = () => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleDelete(row.original.id)}
+            onClick={() => handleDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
+            disabled={deletingManager}
           >
             <Trash className="w-4 h-4" />
           </Button>
@@ -115,46 +132,30 @@ const ManageFranchises = () => {
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
           <CardContent>
-            <Form {...form}>
-              <form onSubmit={form.handleSubmit(onSubmit)}>
-                <div className="flex justify-between items-center gap-2">
-                  <LabelInputContainer className="max-w-md lg:max-w-lg">
-                    <FormField
-                      control={form.control}
-                      name="category"
-                      render={({ field }) => (
-                        <FormItem className="relative">
-                          <FormControl>
-                            <Input
-                              placeholder="Search franchise by name..."
-                              type="text"
-                              id="varietyName"
-                              className="outline-none border py-5 border-primary rounded-full pl-12"
-                              {...field}
-                            />
-                          </FormControl>
-                          <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </LabelInputContainer>
-                  <Button
-                    className="text-farmacieWhite font-medium"
-                    type="button"
-                    onClick={() => setAddFranchiceModalOpen((prev) => !prev)}
-                  >
-                    <Filter className="w-5 h-5 mr-1" />
-                    Filter
-                  </Button>
-                </div>
-              </form>
-            </Form>
+            <div className="flex justify-between items-center gap-2">
+              <div className="relative max-w-md lg:max-w-lg w-full">
+                <Input
+                  placeholder="Search franchise by name..."
+                  type="text"
+                  className="outline-none border py-5 border-primary rounded-full pl-12 w-full"
+                  onChange={(e) => handleSearchChange(e.target.value)}
+                />
+                <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
+              </div>
+              <Button
+                className="text-farmacieWhite font-medium"
+                type="button"
+                onClick={() => setAddFranchiceModalOpen((prev) => !prev)}
+              >
+                <Filter className="w-5 h-5 mr-1" />
+                Filter
+              </Button>
+            </div>
           </CardContent>
         </Card>
         <DataTable
           columns={franchiseColumns}
-          data={franchiseData as FranchiseTableRow[]}
+          data={filteredManagers as FranchiseTableRow[]}
         />
       </DashboardLayout>
       <FilterFranchiceModal

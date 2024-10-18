@@ -5,9 +5,9 @@ export const productsReportsTitles = [
 ];
 
 export const franchiseReports = [
-  { title: "Total Franchises", value: 40 },
-  { title: "Activated Franchises", value: 12 },
-  { title: "In-Active Franchises", value: 18 },
+  { title: "Total Franchises", key: "totalFranchises" },
+  { title: "Activated Franchises", key: "activeFranchises" },
+  { title: "In-Active Franchises", key: "inactiveFranchises" },
 ];
 
 export const productCategory = [
@@ -24,13 +24,6 @@ export const activeIngredients = [
 export const units = [
   { value: "kg", label: "Kg" },
   { value: "ml", label: "Ml" },
-];
-
-export const bulkFranchiseAddresses = [
-  { label: "Manager", value: "Ahmad Raza" },
-  { label: "Address", value: "Shop #1, BG-5, Mid city apartments" },
-  { label: "District", value: "Rawalpindi" },
-  { label: "Tehsil", value: "Rawalpindi" },
 ];
 
 export const bulkFranchiseAddressDetails = [
@@ -227,9 +220,9 @@ export const ManagersData: Manager[] = [
 export const franchiseData: Franchise[] = [
   {
     id: 1,
-    managerName: "Wireless Headphones",
+    full_name: "Wireless Headphones",
     franchiseName: "Wireless Headphones",
-    phoneNo: "0310-000 0000",
+    contact: "0310-000 0000",
     address: "Shop #1, BG-5, Mid city apartments",
     province: "Punjab",
     district: "Kohat",
@@ -239,9 +232,9 @@ export const franchiseData: Franchise[] = [
   },
   {
     id: 2,
-    managerName: "4K Smart TV",
+    full_name: "4K Smart TV",
     franchiseName: "Wireless Headphones",
-    phoneNo: "0310-000 0000",
+    contact: "0310-000 0000",
     address: "Shop #1, BG-5, Mid city apartments",
     province: "Punjab",
     district: "Kohat",
@@ -251,9 +244,9 @@ export const franchiseData: Franchise[] = [
   },
   {
     id: 3,
-    managerName: "Running Shoes",
+    full_name: "Running Shoes",
     franchiseName: "Wireless Headphones",
-    phoneNo: "0310-000 0000",
+    contact: "0310-000 0000",
     address: "Shop #1, BG-5, Mid city apartments",
     province: "Punjab",
     district: "Kohat",
@@ -263,9 +256,9 @@ export const franchiseData: Franchise[] = [
   },
   {
     id: 4,
-    managerName: "Gaming Laptop",
+    full_name: "Gaming Laptop",
     franchiseName: "Wireless Headphones",
-    phoneNo: "0310-000 0000",
+    contact: "0310-000 0000",
     address: "Shop #1, BG-5, Mid city apartments",
     province: "Punjab",
     district: "Kohat",
@@ -275,9 +268,9 @@ export const franchiseData: Franchise[] = [
   },
   {
     id: 5,
-    managerName: "Smartwatch",
+    full_name: "Smartwatch",
     franchiseName: "Wireless Headphones",
-    phoneNo: "0310-000 0000",
+    contact: "0310-000 0000",
     address: "Shop #1, BG-5, Mid city apartments",
     province: "Punjab",
     district: "Kohat",

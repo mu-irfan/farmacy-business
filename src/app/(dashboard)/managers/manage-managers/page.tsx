@@ -1,16 +1,18 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DataTable from "@/components/Table/DataTable";
-import { ManagersData } from "@/constant/data";
 import Header from "@/components/Header";
+import { ManagersData } from "@/constant/data";
 import AddManagerModal from "@/components/forms-modals/franchice/AddNewManager";
 import { useDeleteManager, useGetAllManagers } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import { debounce } from "lodash";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const ManageManagers = () => {
   const { token } = useContextConsumer();
@@ -19,23 +21,38 @@ const ManageManagers = () => {
     useState<boolean>(false);
   const [selectedManagerToView, setSelectedManagerToView] = useState({});
 
-  // managers data, utilize later
+  // managers
   const { data: managers, isLoading: loading } = useGetAllManagers(token);
   const { mutate: deleteManager, isPending: deletingManager } =
     useDeleteManager(token);
 
-  const managersData = ManagersData.filter((manager) =>
-    manager.full_name.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const handleSearchChange = debounce((value: string) => {
+    setSearchQuery(value);
+  }, 300);
+
+  const filteredManagers = useMemo(() => {
+    if (!managers || !managers.data) return [];
+    return managers.data.filter((manager: any) =>
+      manager.full_name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+  }, [managers, searchQuery]);
 
   const handleView = (manager: any) => {
     setViewManagerModalOpen(true);
     setSelectedManagerToView(manager);
   };
 
-  const handleDelete = (managerId: string) => {
-    console.log("Delete seed with ID:", managerId);
-    deleteManager(managerId);
+  const handleDelete = async (managerId: string) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Manager?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteManager(managerId);
+    }
   };
 
   const ManagerColumns: {
@@ -60,7 +77,7 @@ const ManageManagers = () => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleDelete(row.original.id)}
+            onClick={() => handleDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
             disabled={deletingManager}
           >
@@ -86,7 +103,7 @@ const ManageManagers = () => {
                   placeholder="Search seed manger by name ..."
                   type="text"
                   className="outline-none border py-5 border-primary rounded-full pl-12 w-full"
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleSearchChange(e.target.value)}
                 />
                 <Search className="absolute left-3.5 -translate-y-1/2 bottom-0.5 w-5 h-5 text-gray-400" />
               </div>
@@ -95,7 +112,7 @@ const ManageManagers = () => {
         </Card>
         <DataTable
           columns={ManagerColumns}
-          data={managersData as ManagersTableRow[]}
+          data={filteredManagers as ManagersTableRow[]}
         />
       </DashboardLayout>
       <AddManagerModal

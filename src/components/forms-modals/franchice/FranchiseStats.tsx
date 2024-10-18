@@ -5,7 +5,11 @@ import Image from "next/image";
 import { useContextConsumer } from "@/context/Context";
 import AddFranchiseModal from "./AddFranchise";
 
-const FranchiseStats = ({ franchiseStats }: any) => {
+const FranchiseStats = ({
+  franchiseStats,
+  totalSubscribedProduct,
+  totalSubscribedSeed,
+}: any) => {
   const { setMode } = useContextConsumer();
   const [isEditFranchiseModalOpen, setEditFranchiseModalOpen] = useState(false);
   const franchiseEntries = Object.entries(franchiseStats);
@@ -17,25 +21,47 @@ const FranchiseStats = ({ franchiseStats }: any) => {
           <CardContent className="flex-grow">
             <ul className="text-sm pl-3 space-y-4 py-6">
               {franchiseEntries.map(
-                ([key, value]: [string, any], index: number) => (
-                  <li key={index} className="grid grid-cols-[150px_1fr] gap-8">
-                    <span className="dark:text-farmacieGrey capitalize">
-                      {key}:
-                    </span>
-                    <span
-                      className={cn(
-                        "text-gray-800 font-light dark:text-white",
-                        key === "active" && value === false
-                          ? "!text-red-400"
-                          : key === "active" && value === true
-                          ? "!text-green-500"
-                          : ""
-                      )}
+                ([key, value]: [string, any], index: number) => {
+                  if (key === "uuid") return null;
+                  if (key === "franchise_manager") {
+                    return (
+                      <li
+                        key={index}
+                        className="grid grid-cols-[150px_1fr] gap-8"
+                      >
+                        <span className="dark:text-farmacieGrey capitalize">
+                          {key}:
+                        </span>
+                        <span className="text-gray-800 font-light capitalize dark:text-white">
+                          {value.full_name || "N/A"}
+                        </span>
+                      </li>
+                    );
+                  }
+
+                  return (
+                    <li
+                      key={index}
+                      className="grid grid-cols-[150px_1fr] gap-8"
                     >
-                      {value.toString()}
-                    </span>
-                  </li>
-                )
+                      <span className="dark:text-farmacieGrey capitalize">
+                        {key}:
+                      </span>
+                      <span
+                        className={cn(
+                          "text-gray-800 font-light dark:text-white capitalize",
+                          key === "active" && value === false
+                            ? "!text-red-400"
+                            : key === "active" && value === true
+                            ? "!text-green-500"
+                            : ""
+                        )}
+                      >
+                        {value != null ? value.toString() : "N/A"}
+                      </span>
+                    </li>
+                  );
+                }
               )}
             </ul>
           </CardContent>
@@ -59,7 +85,9 @@ const FranchiseStats = ({ franchiseStats }: any) => {
           <Card className="relative w-full pt-4 rounded-xl text-center bg-primary/10 overflow-hidden flex-grow min-h-[100px]">
             <CardHeader className="space-y-0 pb-2">
               <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-                12
+                {totalSubscribedProduct < 10
+                  ? `0${totalSubscribedProduct}`
+                  : totalSubscribedProduct}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -72,7 +100,9 @@ const FranchiseStats = ({ franchiseStats }: any) => {
           <Card className="relative w-full pt-4 rounded-xl text-center bg-primary/10 overflow-hidden flex-grow min-h-[100px]">
             <CardHeader className="space-y-0 pb-2">
               <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-                12
+                {totalSubscribedSeed < 10
+                  ? `0${totalSubscribedSeed}`
+                  : totalSubscribedSeed}
               </CardTitle>
             </CardHeader>
             <CardContent>

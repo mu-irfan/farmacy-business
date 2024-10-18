@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import DashboardLayout from "../dashboard-layout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus, Search } from "lucide-react";
@@ -8,16 +8,30 @@ import Link from "next/link";
 import ReportCard from "@/components/ReportCard";
 import { franchiseReports } from "@/constant/data";
 import { useContextConsumer } from "@/context/Context";
+import { useGetFranchiseStats } from "@/hooks/useDataFetch";
 
 const Franchises = () => {
+  const { token, setMode } = useContextConsumer();
   const [isAddFranchiseModalOpen, setAddFranchiseModalOpen] = useState(false);
-  const { setMode } = useContextConsumer();
+
+  //stats data
+  const { data: stats, isLoading: loading } = useGetFranchiseStats(token);
+
+  const reportsWithStats = useMemo(() => {
+    return franchiseReports.map((report) => ({
+      title: report.title,
+      value:
+        stats?.data?.[report.key] < 10
+          ? `0${stats.data[report.key]}`
+          : stats?.data?.[report.key] || "00",
+    }));
+  }, [stats]);
 
   return (
     <>
       <DashboardLayout contentAtCenter>
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {franchiseReports.map((report, index) => (
+          {reportsWithStats.map((report, index) => (
             <ReportCard key={index} title={report.title} value={report.value} />
           ))}
         </div>

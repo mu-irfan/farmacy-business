@@ -54,6 +54,7 @@ const AddManagerModal = ({
             mode={currentMode}
             manager={manager}
             showInsList={showInsList}
+            onClose={onOpenChange}
           />
         </DialogContent>
       </Dialog>

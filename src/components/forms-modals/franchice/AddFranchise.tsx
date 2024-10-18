@@ -46,7 +46,7 @@ const AddFranchiseModal = ({ open, onOpenChange, franchise }: any) => {
               Add New Manger
             </Button>
           </DialogHeader>
-          <AddFranchiceForm franchise={franchise} />
+          <AddFranchiceForm franchise={franchise} onClose={onOpenChange} />
         </DialogContent>
       </Dialog>
       <AddManagerModal

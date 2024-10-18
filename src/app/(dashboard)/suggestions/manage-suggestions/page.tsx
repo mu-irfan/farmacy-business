@@ -20,18 +20,13 @@ const ManageSuggestions = () => {
   const { mutate: deleteQuery, isPending: deletingQuery } =
     useDeleteQuery(token);
 
-  console.log(queries, "queries");
-
   const handleView = (suggestion: Suggestions) => {
-    console.log("View suggestion:", suggestion);
     setQueryResponsesModalOpen(true);
     setSelectedSuggestion(suggestion);
   };
 
   const handleDelete = (suggestionId: string) => {
-    console.log("Delete suggestion with ID:", suggestionId);
     deleteQuery(suggestionId);
-    // Add your delete logic here
   };
 
   const suggestionsColumns: {

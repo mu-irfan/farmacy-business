@@ -73,9 +73,9 @@ interface Manager {
 
 interface Franchise {
   id: number;
-  managerName: string;
+  full_name: string;
   franchiseName: string;
-  phoneNo: string;
+  contact: string;
   address: string;
   province: string;
   district: string;
