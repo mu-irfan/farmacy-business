@@ -1,20 +1,24 @@
 "use client";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 import FranchiseStats from "@/components/forms-modals/franchice/FranchiseStats";
 import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
 import DataTable from "@/components/Table/DataTable";
 import { Button } from "@/components/ui/button";
-import { franchiseData, productData, seedsData } from "@/constant/data";
 import { useContextConsumer } from "@/context/Context";
 import {
+  useDeleteSubscribedProduct,
+  useDeleteSubscribedSeed,
   useGetAllFranchises,
+  useGetProduct,
+  useGetSeed,
   useGetSubscribedProduct,
   useGetSubscribedSeed,
 } from "@/hooks/useDataFetch";
 import { MoveLeft, ShieldCheck, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -26,6 +30,9 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const [visibleTable, setVisibleTable] = useState<"seeds" | "products" | null>(
     null
   );
+  const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
+    null
+  );
 
   // franchise
   const { data: franchises, isLoading: loading } = useGetAllFranchises(token);
@@ -33,6 +40,42 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     useGetSubscribedProduct(params.id!, token);
   const { data: subscribedSeed, isLoading: subsribedSeedLoading } =
     useGetSubscribedSeed(params.id!, token);
+  const { mutate: deleteSubscribedProduct, isPending: deletingSubscribedSeed } =
+    useDeleteSubscribedProduct(token, params.id);
+  const { mutate: deleteSubscribedSeed, isPending: deletingSubscribedProduct } =
+    useDeleteSubscribedSeed(token, params.id);
+  const { data: productDetails, isLoading: productLoading } = useGetProduct(
+    currentProductUuid!,
+    token
+  );
+  const { data: seedDetails, isLoading: seedLoading } = useGetSeed(
+    currentProductUuid!,
+    token
+  );
+
+  const subscribedProductData = subscribedProduct?.data?.map((item: any) => {
+    const { product } = item;
+    return {
+      uuid: item.uuid,
+      product_uuid: product?.uuid,
+      category: product?.category,
+      company_fk: product?.company_fk,
+      name: product?.name,
+      sub_category: product?.sub_category,
+    };
+  });
+
+  const subscribedSeedData = subscribedSeed?.data?.map((item: any) => {
+    const { seed } = item;
+    return {
+      uuid: item.uuid,
+      seed_uuid: seed?.uuid,
+      crop_category: seed?.crop_category,
+      company_fk: seed?.company_fk,
+      seed_variety_name: seed?.seed_variety_name,
+      crop: seed?.crop,
+    };
+  });
 
   const selectedFranchise = franchises?.data?.find(
     (franchise: any) => franchise.uuid === params.id
@@ -42,36 +85,61 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     return <p>Franchise not found.</p>;
   }
 
-  const handleView = (seed: Product) => {
+  const handleView = (seed: any) => {
     setViewSeedsModalOpen(true);
-    setSelectedSeedToView(seed);
+    setCurrentProductUuid(seed.seed_uuid);
   };
 
-  const handleDelete = (seedId: number) => {
-    // Logic to delete the product
-    console.log("Delete seed with ID:", seedId);
-    // Add your delete logic here
-  };
-
-  const handleProductView = (product: Product) => {
+  const handleProductView = (product: any) => {
     setViewProductModalOpen(true);
-    setSelectedProductToView(product);
+    setCurrentProductUuid(product.product_uuid);
   };
 
-  const handleProductDelete = (productId: number) => {
-    // Logic to delete the product
-    console.log("Delete product with ID:", productId);
-    // Add your delete logic here
+  const handleDelete = async (seedId: string) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Subscribed Seed?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteSubscribedSeed(seedId);
+    }
   };
+
+  const handleProductDelete = async (productId: string) => {
+    console.log(productId, "Delete Product");
+
+    const isConfirmed = await SweetAlert(
+      "Delete Subscribed Product?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteSubscribedProduct(productId);
+    }
+  };
+
+  useEffect(() => {
+    if (productDetails?.success && productDetails.data) {
+      setSelectedProductToView(productDetails.data);
+    }
+    if (seedDetails?.success && seedDetails.data) {
+      setSelectedSeedToView(seedDetails.data);
+    }
+  }, [productDetails, seedDetails]);
 
   const seedColumns: {
     Header: string;
     accessor: SeedColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Seed Variety Name", accessor: "varietyName" },
-    { Header: "Brand Name", accessor: "brandName" },
-    { Header: "Crop Category", accessor: "category" },
+    { Header: "Seed Variety Name", accessor: "seed_variety_name" },
+    { Header: "Brand Name", accessor: "company_fk" },
+    { Header: "Crop Category", accessor: "crop_category" },
     { Header: "Crop", accessor: "crop" },
     {
       Header: "",
@@ -88,8 +156,9 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleDelete(row.original.id)}
+            onClick={() => handleDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
+            disabled={deletingSubscribedSeed}
           >
             <Trash className="w-4 h-4" />
           </Button>
@@ -122,8 +191,9 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleProductDelete(row.original.id)}
+            onClick={() => handleProductDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
+            disabled={deletingSubscribedProduct}
           >
             <Trash className="w-4 h-4" />
           </Button>
@@ -154,7 +224,9 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
             disabled={!selectedFranchise.active}
             className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-60 !disabled:cursor-not-allowed"
             onClick={() =>
-              router.push("/franchises/manage-franchises/subscribe-new-product")
+              router.push(
+                `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-product`
+              )
             }
             type="button"
           >
@@ -165,7 +237,9 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
             className="font-medium border-primary dark:border-yellow-400 mt-2 md:mt-0 w-60 !disabled:cursor-not-allowed"
             type="button"
             onClick={() =>
-              router.push("/franchises/manage-franchises/subscribe-new-seeds")
+              router.push(
+                `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-seeds`
+              )
             }
             disabled={!selectedFranchise.active}
           >
@@ -180,8 +254,8 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
       </div>
       <FranchiseStats
         franchiseStats={selectedFranchise}
-        totalSubscribedProduct={subscribedProduct?.data.length}
-        totalSubscribedSeed={subscribedSeed?.data.length}
+        totalSubscribedProduct={subscribedProduct?.data?.length}
+        totalSubscribedSeed={subscribedSeed?.data?.length}
       />
       <div className="flex items-center justify-end gap-3 mb-8">
         <Button
@@ -201,15 +275,28 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           View Subscribed Products
         </Button>
       </div>
-      {visibleTable === "seeds" && (
-        <DataTable columns={seedColumns} data={seedsData as SeedTableRow[]} />
+      {visibleTable === "seeds" && subscribedSeedData ? (
+        <DataTable
+          columns={seedColumns}
+          data={subscribedSeedData as SeedTableRow[]}
+        />
+      ) : (
+        visibleTable === "seeds" &&
+        subscribedSeedData === undefined && (
+          <p>No Subscribe Seeds Available...</p>
+        )
       )}
-      {visibleTable === "products" && (
+      {visibleTable === "products" && subscribedProductData ? (
         <DataTable
           columns={productColumns}
-          data={subscribedProduct?.data as ProductTableRow[]}
+          data={subscribedProductData as ProductTableRow[]}
           paginate
         />
+      ) : (
+        visibleTable === "products" &&
+        subscribedProductData === undefined && (
+          <p>No Subscribe Product Available...</p>
+        )
       )}
       <AddSeedModal
         open={isViewSeedsModalOpen}

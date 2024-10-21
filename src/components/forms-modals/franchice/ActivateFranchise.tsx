@@ -99,50 +99,52 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
             </CardContent>
           </Card>
           <div className="max-h-[400px] overflow-y-auto space-y-4 scrollbar-custom">
-            {inActiveFranchises?.data.map(
-              (franchise: any, cardIndex: number) => (
-                <Card
-                  key={franchise.uuid}
-                  className="w-full pt-4 rounded-xl text-left bg-primary/10"
-                >
-                  <CardContent>
-                    <div className="flex items-center">
-                      <CustomCheckbox
-                        id={`checkbox-${cardIndex}`}
-                        checked={selectedAddresses[cardIndex]}
-                        onChange={() => handleCheckboxChange(cardIndex)}
-                      />
-                      <ul className="text-sm pl-10 space-y-2">
-                        <li className="grid grid-cols-[80px_1fr] gap-2">
-                          <span className="text-farmacieGrey">Address:</span>
-                          <span className="text-gray-800 font-light dark:text-white capitalize">
-                            {franchise.address}
-                          </span>
-                        </li>
-                        <li className="grid grid-cols-[80px_1fr] gap-2">
-                          <span className="text-farmacieGrey">Province:</span>
-                          <span className="text-gray-800 font-light dark:text-white capitalize">
-                            {franchise.province}
-                          </span>
-                        </li>
-                        <li className="grid grid-cols-[80px_1fr] gap-2">
-                          <span className="text-farmacieGrey">District:</span>
-                          <span className="text-gray-800 font-light dark:text-white capitalize">
-                            {franchise.district}
-                          </span>
-                        </li>
-                        <li className="grid grid-cols-[80px_1fr] gap-2">
-                          <span className="text-farmacieGrey">Tehsil:</span>
-                          <span className="text-gray-800 font-light dark:text-white capitalize">
-                            {franchise.tehsil}
-                          </span>
-                        </li>
-                      </ul>
-                    </div>
-                  </CardContent>
-                </Card>
-              )
-            )}
+            {inActiveFranchises?.data &&
+              inActiveFranchises?.data?.length > 0 &&
+              inActiveFranchises?.data?.map(
+                (franchise: any, cardIndex: number) => (
+                  <Card
+                    key={franchise.uuid}
+                    className="w-full pt-4 rounded-xl text-left bg-primary/10"
+                  >
+                    <CardContent>
+                      <div className="flex items-center">
+                        <CustomCheckbox
+                          id={`checkbox-${cardIndex}`}
+                          checked={selectedAddresses[cardIndex]}
+                          onChange={() => handleCheckboxChange(cardIndex)}
+                        />
+                        <ul className="text-sm pl-10 space-y-2">
+                          <li className="grid grid-cols-[80px_1fr] gap-2">
+                            <span className="text-farmacieGrey">Address:</span>
+                            <span className="text-gray-800 font-light dark:text-white capitalize">
+                              {franchise.address}
+                            </span>
+                          </li>
+                          <li className="grid grid-cols-[80px_1fr] gap-2">
+                            <span className="text-farmacieGrey">Province:</span>
+                            <span className="text-gray-800 font-light dark:text-white capitalize">
+                              {franchise.province}
+                            </span>
+                          </li>
+                          <li className="grid grid-cols-[80px_1fr] gap-2">
+                            <span className="text-farmacieGrey">District:</span>
+                            <span className="text-gray-800 font-light dark:text-white capitalize">
+                              {franchise.district}
+                            </span>
+                          </li>
+                          <li className="grid grid-cols-[80px_1fr] gap-2">
+                            <span className="text-farmacieGrey">Tehsil:</span>
+                            <span className="text-gray-800 font-light dark:text-white capitalize">
+                              {franchise.tehsil}
+                            </span>
+                          </li>
+                        </ul>
+                      </div>
+                    </CardContent>
+                  </Card>
+                )
+              )}
           </div>
           <Button
             className="w-full text-white font-medium"

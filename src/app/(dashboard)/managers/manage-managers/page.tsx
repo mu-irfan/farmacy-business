@@ -7,7 +7,6 @@ import { Search, Trash } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import DataTable from "@/components/Table/DataTable";
 import Header from "@/components/Header";
-import { ManagersData } from "@/constant/data";
 import AddManagerModal from "@/components/forms-modals/franchice/AddNewManager";
 import { useDeleteManager, useGetAllManagers } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";

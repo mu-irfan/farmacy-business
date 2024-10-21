@@ -128,6 +128,7 @@ type AddProductModalProps = {
   mode: "add" | "view" | "edit";
   productData?: any;
   subscribe?: boolean;
+  currentFranchiseUuid?: string;
 };
 
 interface Links {

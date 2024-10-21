@@ -29,23 +29,34 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useDynamicFields from "@/hooks/useDynamicFields";
+import { useSubscribeProduct } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const AddProductForm = ({
   mode,
   productData,
   subscribe,
+  currentFranchiseUuid,
+  onClose,
 }: {
   mode: "add" | "view" | "edit";
   productData?: any;
   subscribe?: boolean;
+  currentFranchiseUuid?: string;
+  onClose: any;
 }) => {
   const isViewMode = mode === "view";
+  const { token } = useContextConsumer();
   const [selectedCategory, setSelectedCategory] = useState(
     productData?.category || ""
   );
+
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
   const { inputFields, handleAddField, handleDeleteField } =
     useDynamicFields(0);
+  const { mutate: subscribeProduct, isPending: subscribing } =
+    useSubscribeProduct();
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -95,7 +106,6 @@ const AddProductForm = ({
       alert("Please upload at least 5 images.");
       return;
     }
-    console.log("Submitting form data:", data);
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -112,6 +122,35 @@ const AddProductForm = ({
 
   const handleCardClick = () => {
     if (mode === "add") document.getElementById("fileInput")?.click();
+  };
+
+  const verifyToSubscribeProduct = async () => {
+    onClose();
+    const isConfirmed = await SweetAlert(
+      "Subscribe Product?",
+      "",
+      "question",
+      "Yes, subscribe it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      subscribeProduct(
+        {
+          data: {
+            franchise_fk: currentFranchiseUuid,
+            product_fk: productData?.uuid,
+          },
+          token,
+        },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -748,8 +787,9 @@ const AddProductForm = ({
         />
         <Button
           className="w-full text-white font-medium"
-          type="submit"
-          disabled={isViewMode}
+          type={subscribe ? "button" : "submit"}
+          disabled={isViewMode && !subscribe}
+          onClick={subscribe ? verifyToSubscribeProduct : undefined}
         >
           {mode === "edit"
             ? "Update Product"

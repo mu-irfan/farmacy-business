@@ -1,61 +1,53 @@
 "use client";
 import React, { useEffect, useMemo, useState } from "react";
-import AddProductModal from "@/components/forms-modals/products/AddProduct";
-import DashboardLayout from "../../dashboard-layout";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { debounce } from "lodash";
-import { Filter, Search, Trash } from "lucide-react";
-import DataTable from "@/components/Table/DataTable";
-import Header from "@/components/Header";
+import { Ban, Check, Filter, Search } from "lucide-react";
 import { Input } from "@/components/ui/input";
-import FilterProductModal from "@/components/forms-modals/products/FilterProduct";
-import {
-  useDeleteProduct,
-  useGetAllProducts,
-  useGetProduct,
-} from "@/hooks/useDataFetch";
+import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
+import FilterProductSubscribeModal from "@/components/forms-modals/products/SubscribeNewProductModal";
+import DataTable from "@/components/Table/DataTable";
+import AddProductModal from "@/components/forms-modals/products/AddProduct";
+import Header from "@/components/Header";
+import { useGetProduct, useGetUnSubscribedProduct } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import { debounce } from "lodash";
 
-const AllProducts = () => {
-  const { token } = useContextConsumer();
+const SubscribeNewProduct = ({ params }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
-  const [isViewProductModalOpen, setViewProductModalOpen] =
-    useState<boolean>(false);
+  const { token } = useContextConsumer();
+  const [isNewSubscribedProductModalOpen, setNewSubscribedProductModalOpen] =
+    useState(false);
+  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
   const [selectedProductToView, setSelectedProductToView] = useState({});
-  const [isProductFilterModalOpen, setProductFilterModalOpen] =
-    useState<boolean>(false);
   const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
     null
   );
 
-  const { data: products, isLoading: loading } = useGetAllProducts(token);
+  //
+  const { data: unSubProducts, isLoading: loading } = useGetUnSubscribedProduct(
+    token,
+    params.id
+  );
   const { data: productDetails, isLoading: productLoading } = useGetProduct(
     currentProductUuid!,
     token
   );
 
-  const { mutate: deleteProduct, isPending: deletingProduct } =
-    useDeleteProduct(token);
-
   const handleSearchChange = debounce((value: string) => {
     setSearchQuery(value);
   }, 300);
 
-  const filteredProducts = useMemo(() => {
-    if (!products || !products.data) return [];
-    return products.data.filter((product: any) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredUnsubProducts = useMemo(() => {
+    if (!unSubProducts || !unSubProducts.message) return [];
+    return unSubProducts?.message?.filter((unsubProd: any) =>
+      unsubProd?.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [products, searchQuery]);
+  }, [unSubProducts, searchQuery]);
 
   const handleView = (product: any) => {
     setViewProductModalOpen(true);
     setCurrentProductUuid(product.uuid);
-  };
-
-  const handleDelete = (productId: string) => {
-    deleteProduct(productId);
   };
 
   useEffect(() => {
@@ -74,44 +66,45 @@ const AllProducts = () => {
     { Header: "Category", accessor: "category" },
     { Header: "Sub Category", accessor: "sub_category" },
     {
+      Header: "Subscribed",
+      accessor: "subscribed",
+      Cell: ({ row }: any) =>
+        row.original.subscribed ? (
+          <Check className="text-primary ml-4" />
+        ) : (
+          <Ban className="text-yellow-500 w-5 h-5 ml-4" />
+        ),
+    },
+    {
       Header: "",
       accessor: "actions",
-      Cell: ({ row }: any) => (
-        <div className="flex items-center justify-end gap-4">
+      Cell: ({ row }: any) =>
+        !row.original.subscribed && (
           <Button
             size="sm"
             variant="outline"
             onClick={() => handleView(row.original)}
-            className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
+            className="border-primary bg-primary/10 text-primary tracking-wider hover:text-primary/80"
           >
-            View
+            View & Subscribe
           </Button>
-          <Button
-            size="icon"
-            onClick={() => handleDelete(row.original.uuid)}
-            className="bg-red-400 hover:bg-red-500 text-black"
-            disabled={deletingProduct}
-          >
-            <Trash className="w-4 h-4" />
-          </Button>
-        </div>
-      ),
+        ),
     },
   ];
 
   return (
     <>
       <DashboardLayout>
-        <Header title="Get Products" />
+        <Header title="Subscribe New Product" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
-          Filter and search the products from the product global list.
+          Search, find and subscribe product from global list.
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
-          <CardContent>
+          <CardContent className="p-0 px-6">
             <div className="flex justify-between items-center gap-2">
               <div className="relative max-w-md lg:max-w-lg w-full">
                 <Input
-                  placeholder="Search product variety by name ..."
+                  placeholder="Search product by name ..."
                   type="text"
                   className="outline-none border py-5 border-primary rounded-full pl-12 w-full"
                   onChange={(e) => handleSearchChange(e.target.value)}
@@ -121,7 +114,9 @@ const AllProducts = () => {
               <Button
                 className="text-farmacieWhite font-medium"
                 type="button"
-                onClick={() => setProductFilterModalOpen((prev) => !prev)}
+                onClick={() =>
+                  setNewSubscribedProductModalOpen((prev) => !prev)
+                }
               >
                 <Filter className="w-5 h-5 mr-1" />
                 Filter
@@ -131,25 +126,23 @@ const AllProducts = () => {
         </Card>
         <DataTable
           columns={productColumns}
-          data={filteredProducts as ProductTableRow[]}
-          paginate
-          extendWidth
+          data={filteredUnsubProducts as ProductTableRow[]}
         />
       </DashboardLayout>
-      <FilterProductModal
-        open={isProductFilterModalOpen}
-        onOpenChange={setProductFilterModalOpen}
+      <FilterProductSubscribeModal
+        open={isNewSubscribedProductModalOpen}
+        onOpenChange={setNewSubscribedProductModalOpen}
       />
-      <div className="overflow-y-auto">
-        <AddProductModal
-          open={isViewProductModalOpen}
-          onOpenChange={setViewProductModalOpen}
-          mode="view"
-          productData={selectedProductToView}
-        />
-      </div>
+      <AddProductModal
+        open={isViewProductModalOpen}
+        onOpenChange={setViewProductModalOpen}
+        mode="view"
+        subscribe
+        productData={selectedProductToView}
+        currentFranchiseUuid={params.id}
+      />
     </>
   );
 };
 
-export default AllProducts;
+export default SubscribeNewProduct;

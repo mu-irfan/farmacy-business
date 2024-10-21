@@ -17,6 +17,7 @@ const AddSeedModal = ({
   mode,
   seedData,
   subscribe,
+  currentFranchiseUuid,
 }: any) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
@@ -51,7 +52,13 @@ const AddSeedModal = ({
             </DialogDescription>
           )}
         </DialogHeader>
-        <AddSeedForm mode={currentMode} seed={seedData} subscribe={subscribe} />
+        <AddSeedForm
+          mode={currentMode}
+          seed={seedData}
+          subscribe={subscribe}
+          currentFranchiseUuid={currentFranchiseUuid}
+          onClose={onOpenChange}
+        />
       </DialogContent>
     </Dialog>
   );

@@ -37,9 +37,15 @@ import {
   updateFranchise,
 } from "@/api/franchises";
 import {
+  deleteSubscribedProduct,
+  deleteSubscribedSeed,
+  getAllUnSubProducts,
+  getAllUnSubSeeds,
   getSubscribedProduct,
   getSubscribedSeed,
   getSubsribedsStats,
+  subscribeProducts,
+  subscribeSeeds,
 } from "@/api/subscribe";
 
 export const useRegisterCompany = () => {
@@ -599,5 +605,121 @@ export const useGetSubscribedStats = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useDeleteSubscribedProduct = (token: string, fk: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: string) => deleteSubscribedProduct(uuid, token, fk),
+    onSuccess: (data: any) => {
+      console.log(data, "deleting");
+
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["subsribedProduct", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteSubscribedSeed = (token: string, fk: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: string) => deleteSubscribedSeed(uuid, token, fk),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["subsribedSeed", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useGetUnSubscribedProduct = (fk: string, token: string) => {
+  return useQuery({
+    queryKey: ["unSubsribedProduct", fk, token],
+    queryFn: () => getAllUnSubProducts(fk, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!fk,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useGetUnSubscribedSeed = (fk: string, token: string) => {
+  return useQuery({
+    queryKey: ["unSubsribedSeed", fk, token],
+    queryFn: () => getAllUnSubSeeds(fk, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    enabled: !!fk,
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useSubscribeProduct = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      subscribeProducts(data, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["unSubsribedProduct", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useSubscribeSeed = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      subscribeSeeds(data, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["unSubsribedSeed", token]);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };

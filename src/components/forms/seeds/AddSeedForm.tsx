@@ -28,17 +28,25 @@ import {
 } from "../../ui/select";
 import { productCategory } from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
+import { useSubscribeSeed } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const AddSeedForm = ({
   mode,
   seed,
   subscribe,
+  currentFranchiseUuid,
+  onClose,
 }: {
   mode: "add" | "view" | "edit";
   seed?: any;
   subscribe?: boolean;
+  currentFranchiseUuid?: string;
+  onClose: () => void;
 }) => {
   const isViewMode = mode === "view";
+  const { token } = useContextConsumer();
   const [selectedCategory, setSelectedCategory] = useState(
     seed?.category || ""
   );
@@ -47,6 +55,9 @@ const AddSeedForm = ({
     isAddSeedTrailDataInstructionModalOpen,
     setAddSeedTrailDataInstructionModalOpen,
   ] = useState(true);
+
+  //
+  const { mutate: subscribeSeed, isPending: subscribing } = useSubscribeSeed();
 
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
     resolver: zodResolver(addSeedFormSchema),
@@ -114,6 +125,35 @@ const AddSeedForm = ({
 
   const handleCardClick = () => {
     if (mode === "add") document.getElementById("fileInput")?.click();
+  };
+
+  const verifyToSubscribeSeed = async () => {
+    onClose();
+    const isConfirmed = await SweetAlert(
+      "Subscribe Seed?",
+      "",
+      "warning",
+      "Yes, subscribe it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      subscribeSeed(
+        {
+          data: {
+            franchise_fk: currentFranchiseUuid,
+            seed_fk: seed?.uuid,
+          },
+          token,
+        },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -598,8 +638,9 @@ const AddSeedForm = ({
           />
           <Button
             className="w-full text-white font-medium"
-            type="submit"
-            disabled={isViewMode}
+            type={subscribe ? "button" : "submit"}
+            disabled={isViewMode && !subscribe}
+            onClick={subscribe ? verifyToSubscribeSeed : undefined}
           >
             {mode === "edit"
               ? "Update Seed"

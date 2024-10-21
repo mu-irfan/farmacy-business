@@ -87,7 +87,7 @@ const FranchiseStats = ({
               <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
                 {totalSubscribedProduct < 10
                   ? `0${totalSubscribedProduct}`
-                  : totalSubscribedProduct}
+                  : totalSubscribedProduct || "00"}
               </CardTitle>
             </CardHeader>
             <CardContent>
@@ -102,7 +102,7 @@ const FranchiseStats = ({
               <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
                 {totalSubscribedSeed < 10
                   ? `0${totalSubscribedSeed}`
-                  : totalSubscribedSeed}
+                  : totalSubscribedSeed || "00"}
               </CardTitle>
             </CardHeader>
             <CardContent>
