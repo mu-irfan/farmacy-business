@@ -1,5 +1,6 @@
 "use client";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
+import NoData from "@/components/alerts/NoData";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
 import FranchiseStats from "@/components/forms-modals/franchice/FranchiseStats";
 import AddProductModal from "@/components/forms-modals/products/AddProduct";
@@ -275,27 +276,29 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           View Subscribed Products
         </Button>
       </div>
-      {visibleTable === "seeds" && subscribedSeedData ? (
+      {visibleTable === "seeds" &&
+      subscribedSeedData &&
+      subscribedSeedData.length > 0 ? (
         <DataTable
           columns={seedColumns}
           data={subscribedSeedData as SeedTableRow[]}
         />
       ) : (
-        visibleTable === "seeds" &&
-        subscribedSeedData === undefined && (
-          <p>No Subscribe Seeds Available...</p>
+        visibleTable === "seeds" && (
+          <NoData message="No Subscribe Seeds Available..." />
         )
       )}
-      {visibleTable === "products" && subscribedProductData ? (
+      {visibleTable === "products" &&
+      subscribedProductData &&
+      subscribedProductData.length > 0 ? (
         <DataTable
           columns={productColumns}
           data={subscribedProductData as ProductTableRow[]}
           paginate
         />
       ) : (
-        visibleTable === "products" &&
-        subscribedProductData === undefined && (
-          <p>No Subscribe Product Available...</p>
+        visibleTable === "products" && (
+          <NoData message="No Subscribe Products Available..." />
         )
       )}
       <AddSeedModal

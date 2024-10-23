@@ -1,11 +1,11 @@
-import { baseUrlForAuth } from "@/lib/utils";
+import { baseUrl } from "@/lib/utils";
 import axios from "axios";
 
 // get subsribed stats
 export const getSubsribedsStats = async (uuid: any, token: string) => {
   try {
     const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/stats?franchise_fk=${uuid}`,
+      `${baseUrl}/franchise/subscribe/stats?franchise_fk=${uuid}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -22,7 +22,7 @@ export const getSubsribedsStats = async (uuid: any, token: string) => {
 export const subscribeProducts = async (data: any, token: string) => {
   try {
     const res = await axios.post(
-      `${baseUrlForAuth}/franchise/subscribe/product`,
+      `${baseUrl}/franchise/subscribe/product`,
       data,
       {
         headers: {
@@ -39,15 +39,11 @@ export const subscribeProducts = async (data: any, token: string) => {
 // get subscribe products
 export const subscribeSeeds = async (data: any, token: string) => {
   try {
-    const res = await axios.post(
-      `${baseUrlForAuth}/franchise/subscribe/seed`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await axios.post(`${baseUrl}/franchise/subscribe/seed`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return res.data;
   } catch (error) {
     return error;
@@ -58,7 +54,7 @@ export const subscribeSeeds = async (data: any, token: string) => {
 export const getSubscribedProduct = async (uuid: any, token: string) => {
   try {
     const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/product?franchise_fk=${uuid}`,
+      `${baseUrl}/franchise/subscribe/product?franchise_fk=${uuid}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -75,7 +71,7 @@ export const getSubscribedProduct = async (uuid: any, token: string) => {
 export const getSubscribedSeed = async (uuid: any, token: string) => {
   try {
     const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/seed?franchise_fk=${uuid}`,
+      `${baseUrl}/franchise/subscribe/seed?franchise_fk=${uuid}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -92,7 +88,7 @@ export const getSubscribedSeed = async (uuid: any, token: string) => {
 export const getAllUnSubProducts = async (token: string, fk: string) => {
   try {
     const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/unsub-product?franchise_fk=${fk}`,
+      `${baseUrl}/franchise/subscribe/unsub-product?franchise_fk=${fk}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -109,24 +105,7 @@ export const getAllUnSubProducts = async (token: string, fk: string) => {
 export const getAllUnSubSeeds = async (token: string, fk: string) => {
   try {
     const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/unsub-seed?franchise_fk=${fk}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-    return res.data;
-  } catch (error) {
-    return error;
-  }
-};
-
-// subscribe products
-export const subsribeProduct = async (token: string, fk: string) => {
-  try {
-    const res = await axios.get(
-      `${baseUrlForAuth}/franchise/subscribe/unsub-seed?franchise_fk=${fk}`,
+      `${baseUrl}/franchise/subscribe/unsub-seed?franchise_fk=${fk}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -147,7 +126,7 @@ export const deleteSubscribedProduct = async (
 ) => {
   try {
     const res = await axios.delete(
-      `${baseUrlForAuth}/franchise/subscribe/product?uuid=${uuid}&franchise_fk=${fk}`,
+      `${baseUrl}/franchise/subscribe/product?uuid=${uuid}&franchise_fk=${fk}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -168,7 +147,7 @@ export const deleteSubscribedSeed = async (
 ) => {
   try {
     const res = await axios.delete(
-      `${baseUrlForAuth}/franchise/subscribe/seed?uuid=${uuid}&franchise_fk=${fk}`,
+      `${baseUrl}/franchise/subscribe/seed?uuid=${uuid}&franchise_fk=${fk}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,

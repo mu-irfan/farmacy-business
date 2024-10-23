@@ -1,10 +1,10 @@
-import { baseUrlForAuth } from "@/lib/utils";
+import { baseUrl } from "@/lib/utils";
 import axios from "axios";
 
 // get products stats
 export const getFranchisesStats = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/franchise/stats`, {
+    const res = await axios.get(`${baseUrl}/franchise/stats`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -18,7 +18,7 @@ export const getFranchisesStats = async (token: string) => {
 // create franchise
 export const createFranchise = async (data: any, token: string) => {
   try {
-    const res = await axios.post(`${baseUrlForAuth}/franchise`, data, {
+    const res = await axios.post(`${baseUrl}/franchise`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +32,7 @@ export const createFranchise = async (data: any, token: string) => {
 // get franchises
 export const getAllFranchises = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/franchise/all`, {
+    const res = await axios.get(`${baseUrl}/franchise/all`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -46,7 +46,7 @@ export const getAllFranchises = async (token: string) => {
 // get inactive franchises
 export const getAllInActiveFranchise = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/franchise/inactive`, {
+    const res = await axios.get(`${baseUrl}/franchise/inactive`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -61,7 +61,7 @@ export const getAllInActiveFranchise = async (token: string) => {
 export const updateFranchise = async (data: any, token: string) => {
   try {
     const res = await axios.patch(
-      `${baseUrlForAuth}/franchise?uuid=${data.uuid}`,
+      `${baseUrl}/franchise?uuid=${data.uuid}`,
       data,
       {
         headers: {
@@ -79,7 +79,7 @@ export const updateFranchise = async (data: any, token: string) => {
 // delete franchise
 export const deleteFranchise = async (uuid: any, token: string) => {
   try {
-    const res = await axios.delete(`${baseUrlForAuth}/franchise?uuid=${uuid}`, {
+    const res = await axios.delete(`${baseUrl}/franchise?uuid=${uuid}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

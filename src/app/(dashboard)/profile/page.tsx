@@ -15,21 +15,54 @@ import { Button } from "@/components/ui/button";
 import { profileFormSchema } from "@/schemas/validation/validationSchema";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Label } from "@/components/ui/label";
+import {
+  useGetCompanyProfile,
+  useUpdateCompanyProfile,
+} from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
+import { useEffect, useState } from "react";
+import { Pencil } from "lucide-react";
+import { cn } from "@/lib/utils";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
 export default function ProfileForm() {
+  const { token } = useContextConsumer();
+  const [isEditable, setIsEditable] = useState<boolean>(false);
+
+  //stats data
+  const { data: data, isLoading: loading } = useGetCompanyProfile(token);
+  const { mutate: updateCompany, isPending: updating } =
+    useUpdateCompanyProfile(token);
+
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
     defaultValues: {
       companyName: "",
       email: "",
-      bio: "",
+      contact: "",
+      ntn: "",
     },
   });
 
+  useEffect(() => {
+    if (data?.success) {
+      form.reset({
+        companyName: data.data.company_name,
+        email: data.data.email,
+        contact: data.data.contact,
+        ntn: data.data.ntn,
+      });
+    }
+  }, [data, form]);
+
   function onSubmit(data: ProfileFormValues) {
     console.log(data);
+    updateCompany(data, {
+      onSuccess: () => {
+        setIsEditable(false);
+      },
+    });
   }
 
   return (
@@ -45,6 +78,31 @@ export default function ProfileForm() {
           Update your profile information here to ensure your details are
           current and accurate.
         </p>
+        <div className="flex justify-end gap-1 w-full max-w-xl mb-4">
+          <Button
+            variant="outline"
+            size="sm"
+            disabled
+            type="button"
+            className={cn(
+              "py-2 px-4 cursor-not-allowed hover:bg-current",
+              data?.data?.verified
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
+            )}
+          >
+            {data?.data?.verified ? "Verified" : "Not Verified"}
+          </Button>
+          <Button
+            size="sm"
+            type="button"
+            onClick={() => setIsEditable(!isEditable)}
+            className="py-2 px-4"
+          >
+            {isEditable ? "Cancel" : "Edit"}
+            {!isEditable && <Pencil className="w-3.5 h-3.5 ml-2" />}
+          </Button>
+        </div>
         <Form {...form}>
           <form
             onSubmit={form.handleSubmit(onSubmit)}
@@ -66,6 +124,7 @@ export default function ProfileForm() {
                         id="companyName"
                         className="outline-none focus:border-primary py-5"
                         {...field}
+                        disabled={!isEditable}
                       />
                     </FormControl>
                     <FormMessage />
@@ -98,21 +157,22 @@ export default function ProfileForm() {
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="email" className="dark:text-farmacieGrey">
+              <Label htmlFor="contact" className="dark:text-farmacieGrey">
                 Company Contact
               </Label>
               <FormField
                 control={form.control}
-                name="email"
+                name="contact"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="03244534538"
                         type="text"
-                        id="phoneNo"
+                        id="contact"
                         className="outline-none focus:border-primary py-5"
                         {...field}
+                        disabled={!isEditable}
                       />
                     </FormControl>
                     <FormMessage />
@@ -121,12 +181,12 @@ export default function ProfileForm() {
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="email" className="dark:text-farmacieGrey">
+              <Label htmlFor="ntn" className="dark:text-farmacieGrey">
                 Company NTN
               </Label>
               <FormField
                 control={form.control}
-                name="email"
+                name="ntn"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -136,6 +196,7 @@ export default function ProfileForm() {
                         id="ntn"
                         className="outline-none focus:border-primary py-5"
                         {...field}
+                        disabled={!isEditable}
                       />
                     </FormControl>
                     <FormMessage />
@@ -143,8 +204,8 @@ export default function ProfileForm() {
                 )}
               />
             </LabelInputContainer>
-            <Button type="submit" className="my-4">
-              Update Profile
+            <Button type="submit" className="my-4" disabled={!isEditable}>
+              {updating ? "Updating" : "Update Profile"}
             </Button>
           </form>
         </Form>

@@ -1,10 +1,24 @@
-import { baseUrlForAuth } from "@/lib/utils";
+import { baseUrl } from "@/lib/utils";
 import axios from "axios";
+
+// get suggestions stats
+export const getSuggestionsStats = async (token: string) => {
+  try {
+    const res = await axios.get(`${baseUrl}/query/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
 
 // create query
 export const createQuery = async (data: any, token: string) => {
   try {
-    const res = await axios.post(`${baseUrlForAuth}/query/ticket`, data, {
+    const res = await axios.post(`${baseUrl}/query/ticket`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -18,7 +32,7 @@ export const createQuery = async (data: any, token: string) => {
 // get all queries
 export const getAllQueries = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/query/ticket`, {
+    const res = await axios.get(`${baseUrl}/query/ticket/all`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,8 +46,22 @@ export const getAllQueries = async (token: string) => {
 // get queries chats
 export const getQueriesChats = async (uuid: any, token: string) => {
   try {
-    const res = await axios.get(
-      `${baseUrlForAuth}/query/ticket-chat?uuid=${uuid}`,
+    const res = await axios.get(`${baseUrl}/query/ticket-chat?uuid=${uuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// create query
+export const queryResponseViewed = async (uuid: any, token: string) => {
+  try {
+    const res = await axios.post(
+      `${baseUrl}/query/response-viewed?uuid=${uuid}`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -49,14 +77,11 @@ export const getQueriesChats = async (uuid: any, token: string) => {
 // delete query
 export const deleteQuery = async (uuid: any, token: string) => {
   try {
-    const res = await axios.delete(
-      `${baseUrlForAuth}/query/ticket?uuid=${uuid}`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await axios.delete(`${baseUrl}/query/ticket?uuid=${uuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return res.data;
   } catch (error) {
     return error;

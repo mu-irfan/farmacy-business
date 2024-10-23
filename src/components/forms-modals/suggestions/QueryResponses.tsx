@@ -9,7 +9,7 @@ import {
 import Link from "next/link";
 import Responses from "@/components/forms/suggestions/Responses";
 
-const QueryResponsesModal = ({ open, onOpenChange, suggestion }: any) => {
+const QueryResponsesModal = ({ open, onOpenChange, currentQueryUuid }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-2xl">
@@ -36,7 +36,7 @@ const QueryResponsesModal = ({ open, onOpenChange, suggestion }: any) => {
             <h2>Response</h2>
           </div>
         </DialogHeader>
-        <Responses query={suggestion.query} response={suggestion.response} />
+        <Responses currentQueryUuid={currentQueryUuid} />
       </DialogContent>
     </Dialog>
   );

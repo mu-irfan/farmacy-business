@@ -13,6 +13,7 @@ import {
   createManager,
   deleteManager,
   getAllManagers,
+  getManagerStats,
   updateManager,
 } from "@/api/manager";
 import {
@@ -20,8 +21,11 @@ import {
   deleteQuery,
   getAllQueries,
   getQueriesChats,
+  getSuggestionsStats,
+  queryResponseViewed,
 } from "@/api/suggestions";
 import {
+  createProduct,
   deleteProduct,
   getAllProducts,
   getProduct,
@@ -47,6 +51,7 @@ import {
   subscribeProducts,
   subscribeSeeds,
 } from "@/api/subscribe";
+import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -74,7 +79,7 @@ export const useLoginCompany = () => {
     onSuccess: (data: any) => {
       if (data?.success) {
         toast.success(data?.message);
-        loginCompanyAuth(data?.data.accessToken);
+        loginCompanyAuth(data?.data.accessToken, data?.data.refreshToken);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -134,6 +139,25 @@ export const useForgotPasswordResetPassword = () => {
 };
 
 // managers API's Functions
+export const useGetManagerStats = (token: string) => {
+  return useQuery({
+    queryKey: ["managerStats", token],
+    queryFn: () => getManagerStats(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCreateManager = () => {
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
@@ -207,6 +231,25 @@ export const useDeleteManager = (token: string) => {
 };
 
 // Suggestion  API's Functions
+export const useGetSuggestionsStats = (token: string) => {
+  return useQuery({
+    queryKey: ["suggestionsStats", token],
+    queryFn: () => getSuggestionsStats(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
 export const useCreateTicket = () => {
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
@@ -262,6 +305,24 @@ export const useGetTicketsChats = (uuid: any, token: string) => {
   });
 };
 
+// needs to setup for frontend
+export const useQueryResponseViewed = () => {
+  return useMutation({
+    mutationFn: ({ uuid, token }: { uuid: any; token: string }) =>
+      queryResponseViewed(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
 export const useDeleteQuery = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -281,7 +342,6 @@ export const useDeleteQuery = (token: string) => {
 };
 
 // Products  API's Functions
-
 export const useGetProductStats = (token: string) => {
   return useQuery({
     queryKey: ["productStats", token],
@@ -317,6 +377,25 @@ export const useGetAllProducts = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useCreateProduct = () => {
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createProduct(data, token),
+    onSuccess: (data: any) => {
+      console.log(data, "adding product");
+
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };
 
@@ -375,6 +454,25 @@ export const useGetSeedsStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  });
+};
+
+export const useCreateSeed = () => {
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createManager(data, token),
+    onSuccess: (data: any) => {
+      console.log(data, "adding seed");
+
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };
 
@@ -720,6 +818,46 @@ export const useSubscribeSeed = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+// company profile
+export const useGetCompanyProfile = (token: string) => {
+  return useQuery({
+    queryKey: ["companyProfile", token],
+    queryFn: () => getCompanyProfile(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  });
+};
+
+export const useUpdateCompanyProfile = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (data: any) => updateCompanyProfile(data, token),
+    onSuccess: (data: any) => {
+      console.log(data, "update");
+
+      if (data?.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries(["companyProfile", token]);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
     },
   });
 };

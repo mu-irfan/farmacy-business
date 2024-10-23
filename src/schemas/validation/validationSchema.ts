@@ -119,7 +119,10 @@ const addProductFormSchema = z.object({
   sub_category: z.string().nonempty({
     message: "Subcategory is required.",
   }),
-  activeIngredient: z.string().nonempty({
+  active_ingredients: z.string().nonempty({
+    message: "ActiveIngredient is required.",
+  }),
+  type: z.string().nonempty({
     message: "ActiveIngredient is required.",
   }),
   concentration: z.string().nonempty({
@@ -308,19 +311,23 @@ const queryResponseSchema = z.object({
 //user
 const profileFormSchema = z.object({
   companyName: z.string(),
+  contact: z.string({
+    required_error: "Phone number is required.",
+  }),
   email: z
     .string({
       required_error: "Please select an email to display.",
     })
     .email(),
-  bio: z.string().max(160).min(4),
-  urls: z
-    .array(
-      z.object({
-        value: z.string().url({ message: "Please enter a valid URL." }),
-      })
-    )
-    .optional(),
+  // bio: z.string().max(160).min(4),
+  // urls: z
+  //   .array(
+  //     z.object({
+  //       value: z.string().url({ message: "Please enter a valid URL." }),
+  //     })
+  //   )
+  //   .optional(),
+  ntn: z.string(),
 });
 
 export {

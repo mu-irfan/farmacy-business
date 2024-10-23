@@ -12,6 +12,7 @@ import FilterProductSubscribeModal from "@/components/forms-modals/products/Subs
 import { useContextConsumer } from "@/context/Context";
 import { useGetSeed, useGetUnSubscribedSeed } from "@/hooks/useDataFetch";
 import { debounce } from "lodash";
+import NoData from "@/components/alerts/NoData";
 
 const SubscribeNewSeeds = ({ params }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -19,9 +20,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
-  const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
-    null
-  );
+  const [currentSeedUuid, setCurrentSeedUuid] = useState<string | null>(null);
 
   //
   const { data: unSubSeeds, isLoading: loading } = useGetUnSubscribedSeed(
@@ -30,7 +29,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
   );
 
   const { data: seedDetails, isLoading: seedLoading } = useGetSeed(
-    currentProductUuid!,
+    currentSeedUuid!,
     token
   );
 
@@ -49,7 +48,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
 
   const handleView = (seed: any) => {
     setViewSeedsModalOpen(true);
-    setCurrentProductUuid(seed.uuid);
+    setCurrentSeedUuid(seed.uuid);
   };
 
   useEffect(() => {
@@ -124,10 +123,14 @@ const SubscribeNewSeeds = ({ params }: any) => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={seedColumns}
-          data={filteredUnsubSeeds as SeedTableRow[]}
-        />
+        {filteredUnsubSeeds && filteredUnsubSeeds.length > 0 ? (
+          <DataTable
+            columns={seedColumns}
+            data={filteredUnsubSeeds as SeedTableRow[]}
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <FilterProductSubscribeModal
         open={isAddProductModalOpen}

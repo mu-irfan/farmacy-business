@@ -19,17 +19,26 @@ export const useAuth = () => {
     return Cookies.get("accessToken");
   };
 
-  const loginCompanyAuth = (token: any) => {
+  const loginCompanyAuth = (token: any, refreshToken: any) => {
     Cookies.set("accessToken", token, { expires: 2 });
+    Cookies.set("refreshToken", refreshToken, {
+      expires: 7,
+    });
     setIsAuthenticated(true);
     router.push("/products");
   };
 
   const logout = () => {
     Cookies.remove("accessToken");
+    Cookies.remove("refreshToken");
     setIsAuthenticated(false);
     router.push("/");
   };
 
-  return { isAuthenticated, loginCompanyAuth, logout, getAccessToken };
+  return {
+    isAuthenticated,
+    loginCompanyAuth,
+    logout,
+    getAccessToken,
+  };
 };

@@ -2,31 +2,44 @@
 import React, { useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
 import { Button } from "@/components/ui/button";
-import { Check, Trash } from "lucide-react";
+import { Ban, Check, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
-import { suggestionsData } from "@/constant/data";
 import Header from "@/components/Header";
 import QueryResponsesModal from "@/components/forms-modals/suggestions/QueryResponses";
 import { useDeleteQuery, useGetAllTickets } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import NoData from "@/components/alerts/NoData";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const ManageSuggestions = () => {
   const { token } = useContextConsumer();
   const [isQueryResponsesModalOpen, setQueryResponsesModalOpen] =
     useState(false);
+  const [currentQueryUuid, setCurrentQueryUuid] = useState<string | null>(null);
   const [selectedSuggestion, setSelectedSuggestion] = useState({});
 
+  // loading will be managed
   const { data: queries, isLoading: loading } = useGetAllTickets(token);
   const { mutate: deleteQuery, isPending: deletingQuery } =
     useDeleteQuery(token);
 
-  const handleView = (suggestion: Suggestions) => {
+  const handleView = (suggestion: any) => {
     setQueryResponsesModalOpen(true);
+    setCurrentQueryUuid(suggestion.uuid);
     setSelectedSuggestion(suggestion);
   };
 
-  const handleDelete = (suggestionId: string) => {
-    deleteQuery(suggestionId);
+  const handleDelete = async (suggestionId: string) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Query?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteQuery(suggestionId);
+    }
   };
 
   const suggestionsColumns: {
@@ -34,23 +47,28 @@ const ManageSuggestions = () => {
     accessor: SuggestionsColumnAccessor;
     Cell?: ({ row }: any) => JSX.Element;
   }[] = [
-    { Header: "Date", accessor: "date" },
+    { Header: "Date", accessor: "createdAt" },
     {
       Header: "Query",
-      accessor: "query",
+      accessor: "first_query",
       Cell: ({ row }: any) => (
         <div
           className="w-40 overflow-hidden text-ellipsis whitespace-nowrap"
-          title={row.original.query}
+          title={row.original.first_query}
         >
-          {row.original.query}
+          {row.original.first_query}
         </div>
       ),
     },
     {
       Header: "Viewed",
-      accessor: "viewed",
-      Cell: () => <Check className="text-primary" />,
+      accessor: "response_viewed",
+      Cell: ({ row }: any) =>
+        row.original.response_viewed ? (
+          <Check className="text-primary" />
+        ) : (
+          <Ban className="text-yellow-500 w-5 h-5" />
+        ),
     },
     {
       Header: "",
@@ -67,7 +85,7 @@ const ManageSuggestions = () => {
           </Button>
           <Button
             size="icon"
-            onClick={() => handleDelete(row.original.id)}
+            onClick={() => handleDelete(row.original.uuid)}
             className="bg-red-400 hover:bg-red-500 text-black"
             disabled={deletingQuery}
           >
@@ -85,16 +103,20 @@ const ManageSuggestions = () => {
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Responses of your suggestion and quries
         </p>
-        <DataTable
-          columns={suggestionsColumns}
-          data={suggestionsData as SuggestionsTableActionRow[]}
-          extendWidth
-        />
+        {queries?.data && queries?.data?.length > 0 ? (
+          <DataTable
+            columns={suggestionsColumns}
+            data={queries.data as SuggestionsTableActionRow[]}
+            extendWidth
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <QueryResponsesModal
         open={isQueryResponsesModalOpen}
         onOpenChange={setQueryResponsesModalOpen}
-        suggestion={selectedSuggestion}
+        currentQueryUuid={currentQueryUuid}
       />
     </>
   );

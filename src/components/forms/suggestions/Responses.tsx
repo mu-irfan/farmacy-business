@@ -13,9 +13,21 @@ import { queryResponseSchema } from "@/schemas/validation/validationSchema";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
 import { Input } from "@/components/ui/input";
-import { CornerDownLeft, Plus } from "lucide-react";
+import { CornerDownLeft } from "lucide-react";
+import { useGetTicketsChats } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
-const Responses = ({ query, response }: any) => {
+const Responses = ({ currentQueryUuid }: any) => {
+  const { token } = useContextConsumer();
+
+  //
+  const { data: chats, isLoading: productLoading } = useGetTicketsChats(
+    currentQueryUuid!,
+    token
+  );
+
+  console.log(chats, "chats");
+
   const form = useForm<z.infer<typeof queryResponseSchema>>({
     resolver: zodResolver(queryResponseSchema),
     defaultValues: {
@@ -38,7 +50,7 @@ const Responses = ({ query, response }: any) => {
               name="query"
               render={({ field }) => (
                 <FormItem>
-                  <div className="dark:text-farmacieDarkSecondary">{query}</div>
+                  <div className="dark:text-farmacieDarkSecondary">test</div>
                   <FormMessage />
                 </FormItem>
               )}
@@ -52,9 +64,7 @@ const Responses = ({ query, response }: any) => {
               name="response"
               render={({ field }) => (
                 <FormItem>
-                  <div className="dark:text-farmacieDarkSecondary">
-                    {response}
-                  </div>
+                  <div className="dark:text-farmacieDarkSecondary">test</div>
                   <FormMessage />
                 </FormItem>
               )}

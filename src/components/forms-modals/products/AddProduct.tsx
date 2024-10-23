@@ -18,6 +18,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   productData,
   subscribe,
   currentFranchiseUuid,
+  loading,
 }) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
@@ -58,6 +59,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
           subscribe={subscribe}
           currentFranchiseUuid={currentFranchiseUuid}
           onClose={onOpenChange}
+          loading={loading}
         />
       </DialogContent>
     </Dialog>

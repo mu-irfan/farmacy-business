@@ -29,9 +29,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useDynamicFields from "@/hooks/useDynamicFields";
-import { useSubscribeProduct } from "@/hooks/useDataFetch";
+import { useCreateProduct, useSubscribeProduct } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
+import { baseUrl } from "@/lib/utils";
+import Image from "next/image";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const AddProductForm = ({
   mode,
@@ -39,12 +42,14 @@ const AddProductForm = ({
   subscribe,
   currentFranchiseUuid,
   onClose,
+  loading: productDataLoading,
 }: {
   mode: "add" | "view" | "edit";
   productData?: any;
   subscribe?: boolean;
   currentFranchiseUuid?: string;
   onClose: any;
+  loading?: boolean;
 }) => {
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
@@ -55,8 +60,11 @@ const AddProductForm = ({
   const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
   const { inputFields, handleAddField, handleDeleteField } =
     useDynamicFields(0);
+
+  //
   const { mutate: subscribeProduct, isPending: subscribing } =
     useSubscribeProduct();
+  const { mutate: addProduct, isPending: loading } = useCreateProduct();
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -65,13 +73,14 @@ const AddProductForm = ({
       company_fk: "",
       category: "",
       sub_category: "",
-      activeIngredient: "",
+      active_ingredients: "",
       concentration: "",
       units: "",
       package_weight: "",
       weight_unit: "",
       package_type: "",
       area_covered: "",
+      type: "",
       price: "",
       disease_purpose: "",
       description: "",
@@ -87,13 +96,14 @@ const AddProductForm = ({
         company_fk: productData.company_fk || "",
         category: productData.category || "",
         sub_category: productData.sub_category || "",
-        activeIngredient: productData.activeIngredient || "",
+        active_ingredients: productData.active_ingredients || "",
         concentration: productData.concentration || "",
         units: productData.units || "",
         package_weight: productData.package_weight || "",
         weight_unit: productData.weight_unit || "",
         package_type: productData.package_type || "",
         area_covered: productData.area_covered || "",
+        type: productData.type || "",
         disease_purpose: productData.disease_purpose || "",
         price: productData.price || "",
         description: productData.description || "",
@@ -102,9 +112,21 @@ const AddProductForm = ({
   }, [productData, reset]);
 
   const onSubmit = (data: z.infer<typeof addProductFormSchema>) => {
-    if (mode === "add" && selectedImages.length < 5) {
-      alert("Please upload at least 5 images.");
+    if (mode === "add" && selectedImages.length < 1) {
+      alert("Please upload at least 1 images.");
       return;
+    }
+    if (mode === "add") {
+      addProduct(
+        { data, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
     }
   };
 
@@ -155,200 +177,25 @@ const AddProductForm = ({
 
   return (
     <Form {...form}>
-      <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="name" className="dark:text-farmacieGrey">
-              Product Name
-            </Label>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter Product name"
-                      type="text"
-                      id="name"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="company_fk" className="dark:text-farmacieGrey">
-              Brand Name
-            </Label>
-            <FormField
-              control={form.control}
-              name="company_fk"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Sygenta fixed"
-                      type="text"
-                      id="company_fk"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="category" className="dark:text-farmacieGrey">
-              Category
-            </Label>
-            <FormField
-              control={form.control}
-              name="category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        field.onChange(value);
-                      }}
-                      disabled={isViewMode}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue
-                          placeholder={
-                            productData?.category || "Select Category"
-                          }
-                          className=""
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Category</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="sub_category" className="dark:text-farmacieGrey">
-              Sub category
-            </Label>
-            <FormField
-              control={form.control}
-              name="sub_category"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
-                        field.onChange(value);
-                      }}
-                      disabled={isViewMode}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue
-                          placeholder={
-                            productData?.sub_category || "Select Sub Category"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Sub-Category</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label
-              htmlFor="activeIngredient"
-              className="dark:text-farmacieGrey"
-            >
-              Active Ingredient
-            </Label>
-            <FormField
-              control={form.control}
-              name="activeIngredient"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
-                        field.onChange(value);
-                      }}
-                      disabled={isViewMode}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue placeholder="Select Active Ingredient" />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Active Ingredients</SelectLabel>
-                          {activeIngredients.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <div className="flex flex-col md:flex-row items-center w-full space-y-2 md:space-y-0 md:space-x-2">
+      {productDataLoading ? (
+        <SkeletonCard className="h-[80vh] w-full" />
+      ) : (
+        <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="concentration" className="dark:text-farmacieGrey">
-                Concentration
+              <Label htmlFor="name" className="dark:text-farmacieGrey">
+                Product Name
               </Label>
               <FormField
                 control={form.control}
-                name="concentration"
+                name="name"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="John"
+                        placeholder="Enter Product name"
                         type="text"
-                        id="concentration"
+                        id="name"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                         disabled={isViewMode}
@@ -360,30 +207,60 @@ const AddProductForm = ({
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="units" className="dark:text-farmacieGrey">
-                Unit
+              <Label htmlFor="company_fk" className="dark:text-farmacieGrey">
+                Brand Name
               </Label>
               <FormField
                 control={form.control}
-                name="units"
+                name="company_fk"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Sygenta fixed"
+                        type="text"
+                        id="company_fk"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+          </div>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <LabelInputContainer>
+              <Label htmlFor="category" className="dark:text-farmacieGrey">
+                Category
+              </Label>
+              <FormField
+                control={form.control}
+                name="category"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
                           setSelectedCategory(value);
-                          // setValue("");
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                          <SelectValue placeholder="kg" />
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectValue
+                            placeholder={
+                              productData?.category || "Select Category"
+                            }
+                            className=""
+                          />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
-                            <SelectLabel>Select unit</SelectLabel>
-                            {units.map((item) => (
+                            <SelectLabel>Category</SelectLabel>
+                            {productCategory.map((item) => (
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>
@@ -397,35 +274,13 @@ const AddProductForm = ({
                 )}
               />
             </LabelInputContainer>
-            <div className="flex items-center gap-2">
-              <Button
-                size="icon"
-                className="bg-primary text-farmacieWhite mt-5"
-                type="button"
-                onClick={handleAddField}
-                disabled={isViewMode}
-              >
-                <Plus className="w-4 h-4" />
-              </Button>
-            </div>
-          </div>
-        </div>
-
-        {inputFields.map((_, index) => (
-          <div
-            key={index}
-            className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4"
-          >
             <LabelInputContainer>
-              <Label
-                htmlFor={`activeIngredient-${index}`}
-                className="dark:text-farmacieGrey"
-              >
-                Active Ingredient
+              <Label htmlFor="sub_category" className="dark:text-farmacieGrey">
+                Sub category
               </Label>
               <FormField
                 control={form.control}
-                name="activeIngredient"
+                name="sub_category"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -437,7 +292,54 @@ const AddProductForm = ({
                         }}
                         disabled={isViewMode}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectValue
+                            placeholder={
+                              productData?.sub_category || "Select Sub Category"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Sub-Category</SelectLabel>
+                            {productCategory.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+          </div>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <LabelInputContainer>
+              <Label
+                htmlFor="active_ingredients"
+                className="dark:text-farmacieGrey"
+              >
+                Active Ingredient
+              </Label>
+              <FormField
+                control={form.control}
+                name="active_ingredients"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          // setValue("");
+                          field.onChange(value);
+                        }}
+                        disabled={isViewMode}
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                           <SelectValue placeholder="Select Active Ingredient" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -503,7 +405,7 @@ const AddProductForm = ({
                           }}
                           disabled={isViewMode}
                         >
-                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                             <SelectValue placeholder="kg" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl">
@@ -526,279 +428,456 @@ const AddProductForm = ({
               <div className="flex items-center gap-2">
                 <Button
                   size="icon"
-                  className="bg-red-500 hover:bg-red-600 text-black mt-5"
+                  className="bg-primary text-farmacieWhite mt-5"
                   type="button"
-                  onClick={() => handleDeleteField(index)}
+                  onClick={handleAddField}
                   disabled={isViewMode}
                 >
-                  <Trash className="w-4 h-4" />
+                  <Plus className="w-4 h-4" />
                 </Button>
               </div>
             </div>
           </div>
-        ))}
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="package_weight" className="dark:text-farmacieGrey">
-              Package Weight
-            </Label>
-            <FormField
-              control={form.control}
-              name="package_weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter Package Weight"
-                      type="text"
-                      id="package_weight"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="weight_unit" className="dark:text-farmacieGrey">
-              Weight Unit
-            </Label>
-            <FormField
-              control={form.control}
-              name="weight_unit"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
-                        field.onChange(value);
-                      }}
-                      disabled={isViewMode}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue
-                          placeholder={
-                            productData?.weight_unit || "Select Weight Unit"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Weight-Unit</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="package_type" className="dark:text-farmacieGrey">
-              Packaging type
-            </Label>
-            <FormField
-              control={form.control}
-              name="package_type"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        field.onChange(value);
-                      }}
-                      disabled={isViewMode}
-                    >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
-                        <SelectValue
-                          placeholder={
-                            productData?.package_type || "Select Packaging type"
-                          }
-                        />
-                      </SelectTrigger>
-                      <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Packaging-Type</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="area_covered" className="dark:text-farmacieGrey">
-              Area covered (acre)
-            </Label>
-            <FormField
-              control={form.control}
-              name="area_covered"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter Area covered"
-                      type="text"
-                      id="area_covered"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-        </div>
-        <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-          <LabelInputContainer>
-            <Label htmlFor="price" className="dark:text-farmacieGrey">
-              Price
-            </Label>
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter Price"
-                      type="text"
-                      id="price"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-          <LabelInputContainer>
-            <Label htmlFor="disease_purpose" className="dark:text-farmacieGrey">
-              Disease/Purpose
-            </Label>
-            <FormField
-              control={form.control}
-              name="disease_purpose"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter purpose or Disease keywords seperated by comma"
-                      type="text"
-                      id="disease_purpose"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                      disabled={isViewMode}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
-        </div>
-        <LabelInputContainer className="mb-2.5">
-          <Label htmlFor="description" className="dark:text-farmacieGrey">
-            Description
-          </Label>
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Textarea
-                    placeholder="Enter product description ..."
-                    // type="text"
-                    id="description"
-                    className="outline-none focus:border-primary disabled:bg-primary/20"
-                    {...field}
-                    disabled={isViewMode}
+
+          {inputFields.map((_, index) => (
+            <div
+              key={index}
+              className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4"
+            >
+              <LabelInputContainer>
+                <Label
+                  htmlFor={`active_ingredients-${index}`}
+                  className="dark:text-farmacieGrey"
+                >
+                  Active Ingredient
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="active_ingredients"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCategory(value);
+                            // setValue("");
+                            field.onChange(value);
+                          }}
+                          disabled={isViewMode}
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                            <SelectValue placeholder="Select Active Ingredient" />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>Active Ingredients</SelectLabel>
+                              {activeIngredients.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <div className="flex flex-col md:flex-row items-center w-full space-y-2 md:space-y-0 md:space-x-2">
+                <LabelInputContainer>
+                  <Label
+                    htmlFor="concentration"
+                    className="dark:text-farmacieGrey"
+                  >
+                    Concentration
+                  </Label>
+                  <FormField
+                    control={form.control}
+                    name="concentration"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Input
+                            placeholder="John"
+                            type="text"
+                            id="concentration"
+                            className="outline-none focus:border-primary disabled:bg-primary/20"
+                            {...field}
+                            disabled={isViewMode}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
                   />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </LabelInputContainer>
-        <Card
-          className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer aria-disabled:cursor-not-allowed"
-          onClick={handleCardClick}
-          aria-disabled={isViewMode}
-        >
-          <CardHeader className="space-y-0 pb-2">
-            <CardTitle className="text-3xl lg:text-4xl font-medium">
-              {selectedImages.length > 0 ? (
-                <div className="flex flex-wrap justify-center">
-                  {selectedImages.map((image, index) => (
-                    <img
-                      key={index}
-                      src={URL.createObjectURL(image)}
-                      alt={`Selected image ${index + 1}`}
-                      className="h-20 w-20 object-cover m-1 rounded-md"
-                    />
-                  ))}
+                </LabelInputContainer>
+                <LabelInputContainer>
+                  <Label htmlFor="units" className="dark:text-farmacieGrey">
+                    Unit
+                  </Label>
+                  <FormField
+                    control={form.control}
+                    name="units"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormControl>
+                          <Select
+                            onValueChange={(value) => {
+                              setSelectedCategory(value);
+                              // setValue("");
+                              field.onChange(value);
+                            }}
+                            disabled={isViewMode}
+                          >
+                            <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                              <SelectValue placeholder="kg" />
+                            </SelectTrigger>
+                            <SelectContent className="rounded-xl">
+                              <SelectGroup>
+                                <SelectLabel>Select unit</SelectLabel>
+                                {units.map((item) => (
+                                  <SelectItem
+                                    key={item.value}
+                                    value={item.value}
+                                  >
+                                    {item.label}
+                                  </SelectItem>
+                                ))}
+                              </SelectGroup>
+                            </SelectContent>
+                          </Select>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </LabelInputContainer>
+                <div className="flex items-center gap-2">
+                  <Button
+                    size="icon"
+                    className="bg-red-500 hover:bg-red-600 text-black mt-5"
+                    type="button"
+                    onClick={() => handleDeleteField(index)}
+                    disabled={isViewMode}
+                  >
+                    <Trash className="w-4 h-4" />
+                  </Button>
                 </div>
-              ) : (
-                <CirclePlus className="h-5 w-5 mx-auto dark:text-green-500" />
-              )}
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-sm dark:text-green-500">
-              {selectedImages.length > 0
-                ? `${selectedImages.length} Images Selected`
-                : "Add Images"}
+              </div>
             </div>
-          </CardContent>
-        </Card>
-        <Input
-          id="fileInput"
-          type="file"
-          accept="image/*"
-          multiple
-          className="hidden"
-          onChange={handleImageChange}
-        />
-        <Button
-          className="w-full text-white font-medium"
-          type={subscribe ? "button" : "submit"}
-          disabled={isViewMode && !subscribe}
-          onClick={subscribe ? verifyToSubscribeProduct : undefined}
-        >
-          {mode === "edit"
-            ? "Update Product"
-            : subscribe
-            ? "Subscribe"
-            : "Submit"}
-        </Button>
-        <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
-      </form>
+          ))}
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <LabelInputContainer>
+              <Label
+                htmlFor="package_weight"
+                className="dark:text-farmacieGrey"
+              >
+                Package Weight
+              </Label>
+              <FormField
+                control={form.control}
+                name="package_weight"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter Package Weight"
+                        type="text"
+                        id="package_weight"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
+              <Label htmlFor="weight_unit" className="dark:text-farmacieGrey">
+                Weight Unit
+              </Label>
+              <FormField
+                control={form.control}
+                name="weight_unit"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          // setValue("");
+                          field.onChange(value);
+                        }}
+                        disabled={isViewMode}
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectValue
+                            placeholder={
+                              productData?.weight_unit || "Select Weight Unit"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Weight-Unit</SelectLabel>
+                            {productCategory.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+          </div>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <LabelInputContainer>
+              <Label htmlFor="package_type" className="dark:text-farmacieGrey">
+                Packaging type
+              </Label>
+              <FormField
+                control={form.control}
+                name="package_type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          field.onChange(value);
+                        }}
+                        disabled={isViewMode}
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectValue
+                            placeholder={
+                              productData?.package_type ||
+                              "Select Packaging type"
+                            }
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Packaging-Type</SelectLabel>
+                            {productCategory.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
+              <Label htmlFor="area_covered" className="dark:text-farmacieGrey">
+                Area covered (acre)
+              </Label>
+              <FormField
+                control={form.control}
+                name="area_covered"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter Area covered"
+                        type="text"
+                        id="area_covered"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
+              <Label htmlFor="type" className="dark:text-farmacieGrey">
+                Type
+              </Label>
+              <FormField
+                control={form.control}
+                name="type"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter Type"
+                        type="text"
+                        id="type"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+          </div>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+            <LabelInputContainer>
+              <Label htmlFor="price" className="dark:text-farmacieGrey">
+                Price
+              </Label>
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter Price"
+                        type="text"
+                        id="price"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
+              <Label
+                htmlFor="disease_purpose"
+                className="dark:text-farmacieGrey"
+              >
+                Disease/Purpose
+              </Label>
+              <FormField
+                control={form.control}
+                name="disease_purpose"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter purpose or Disease keywords seperated by comma"
+                        type="text"
+                        id="disease_purpose"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                        disabled={isViewMode}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+          </div>
+          <LabelInputContainer className="mb-2.5">
+            <Label htmlFor="description" className="dark:text-farmacieGrey">
+              Description
+            </Label>
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Enter product description ..."
+                      // type="text"
+                      id="description"
+                      className="outline-none focus:border-primary disabled:bg-primary/20"
+                      {...field}
+                      disabled={isViewMode}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </LabelInputContainer>
+          {!isViewMode && (
+            <Card
+              className="w-full mb-3 rounded-xl text-center bg-primary/10 border border-primary cursor-pointer aria-disabled:cursor-not-allowed"
+              aria-disabled={isViewMode}
+              onClick={handleCardClick}
+            >
+              <CardHeader className="space-y-0 pb-2">
+                <CardTitle className="text-3xl lg:text-4xl font-medium">
+                  {selectedImages.length > 0 ? (
+                    <div className="flex flex-wrap justify-center">
+                      {selectedImages.map((image, index) => (
+                        <img
+                          key={index}
+                          src={URL.createObjectURL(image)}
+                          alt={`Selected image ${index + 1}`}
+                          className="h-20 w-20 object-cover m-1 rounded-md"
+                        />
+                      ))}
+                    </div>
+                  ) : (
+                    <CirclePlus className="h-5 w-5 mx-auto dark:text-green-500" />
+                  )}
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="text-sm dark:text-green-500">
+                  {selectedImages.length > 0
+                    ? `${selectedImages.length} Images Selected`
+                    : "Add Images"}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+          {isViewMode && subscribe && productData?.seed_image?.length > 0 && (
+            <div className="flex flex-wrap mb-4">
+              {productData.seed_image.map((image: any, index: number) => (
+                <Image
+                  key={index}
+                  src={`${baseUrl.replace("/api", "")}${image.image_url}`}
+                  alt={`Seed image ${index + 1}`}
+                  className="h-32 w-32 object-cover m-1 rounded-md"
+                  width={80}
+                  height={80}
+                />
+              ))}
+            </div>
+          )}
+          <Input
+            id="fileInput"
+            type="file"
+            accept="image/*"
+            multiple
+            className="hidden"
+            onChange={handleImageChange}
+          />
+          <Button
+            className="w-full text-white font-medium"
+            type={subscribe ? "button" : "submit"}
+            disabled={isViewMode && !subscribe}
+            onClick={subscribe ? verifyToSubscribeProduct : undefined}
+          >
+            {mode === "edit"
+              ? "Update Product"
+              : subscribe
+              ? "Subscribe"
+              : "Submit"}
+          </Button>
+          <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
+        </form>
+      )}
     </Form>
   );
 };

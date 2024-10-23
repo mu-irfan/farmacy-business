@@ -18,6 +18,7 @@ const AddSeedModal = ({
   seedData,
   subscribe,
   currentFranchiseUuid,
+  loading,
 }: any) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
@@ -58,6 +59,7 @@ const AddSeedModal = ({
           subscribe={subscribe}
           currentFranchiseUuid={currentFranchiseUuid}
           onClose={onOpenChange}
+          loading={loading}
         />
       </DialogContent>
     </Dialog>

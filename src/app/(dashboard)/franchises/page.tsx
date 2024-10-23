@@ -9,6 +9,7 @@ import ReportCard from "@/components/ReportCard";
 import { franchiseReports } from "@/constant/data";
 import { useContextConsumer } from "@/context/Context";
 import { useGetFranchiseStats } from "@/hooks/useDataFetch";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const Franchises = () => {
   const { token, setMode } = useContextConsumer();
@@ -30,10 +31,18 @@ const Franchises = () => {
   return (
     <>
       <DashboardLayout contentAtCenter>
-        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {reportsWithStats.map((report, index) => (
-            <ReportCard key={index} title={report.title} value={report.value} />
-          ))}
+        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+          {loading ? (
+            <SkeletonCard className="h-60 w-full col-span-3" />
+          ) : (
+            reportsWithStats.map((report, index) => (
+              <ReportCard
+                key={index}
+                title={report.title}
+                value={report.value}
+              />
+            ))
+          )}
         </div>
         <Card
           className="w-full relative py-6 lg:py-8 max-w-xl lg:mt-4 rounded-xl text-center bg-muted/50 cards cursor-pointer"

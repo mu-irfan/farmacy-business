@@ -4,7 +4,6 @@ import { Sidebar, SidebarBody } from "@/components/sidebar/sidebar";
 import SidebarContent from "@/components/sidebar/sidebar-content";
 import { IconBrandTabler } from "@tabler/icons-react";
 import { Bean, Building, FileQuestion, UserRoundCheck } from "lucide-react";
-import { SidebarLink } from "@/components/sidebar/sidebar";
 import { ToggleTheme } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 import {
@@ -18,7 +17,6 @@ import {
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import Link from "next/link";
 import { useAuth } from "@/hooks/useAuth";
-import { Button } from "@/components/ui/button";
 
 interface DashboardLayoutProps {
   children: ReactNode;
@@ -80,46 +78,31 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
       <Sidebar open={open} setOpen={setOpen}>
         <SidebarBody className="justify-between gap-10">
           <SidebarContent links={dashboardLinks} open={open} />
-          <div>
+          <div className="flex flex-col gap-4">
             <ToggleTheme />
-            <SidebarLink
-              className="!px-0"
-              link={{
-                label: "",
-                href: "#",
-                icon: (
-                  <DropdownMenu>
-                    <DropdownMenuTrigger>
-                      <Avatar className="h-8 w-8 border-[2px] border-primary flex-shrink-0 rounded-full outline-none focus:outline-none">
-                        <AvatarImage src="/assets/images/user.png" />
-                        <AvatarFallback>CN</AvatarFallback>
-                      </Avatar>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent
-                      side="right"
-                      className="mb-3 ml-2 py-2"
-                    >
-                      <DropdownMenuLabel>My Account</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
-                      <DropdownMenuItem asChild>
-                        <Link href="/profile" className="cursor-pointer">
-                          Profile
-                        </Link>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem className="cursor-pointer">
-                        <Button
-                          variant="ghost"
-                          className="!px-0"
-                          onClick={() => logout()}
-                        >
-                          Logout
-                        </Button>
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                ),
-              }}
-            />
+            <DropdownMenu>
+              <DropdownMenuTrigger>
+                <Avatar className="h-8 w-8 border-[2px] border-primary flex-shrink-0 rounded-full outline-none focus:outline-none">
+                  <AvatarImage src="/assets/images/user.png" />
+                  <AvatarFallback>CN</AvatarFallback>
+                </Avatar>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent side="top" className="mb-3 ml-4 py-2">
+                <DropdownMenuLabel>My Account</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem>
+                  <Link href="/profile" className="cursor-pointer">
+                    Profile
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem
+                  className="cursor-pointer"
+                  onClick={() => logout()}
+                >
+                  Logout
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           </div>
         </SidebarBody>
       </Sidebar>

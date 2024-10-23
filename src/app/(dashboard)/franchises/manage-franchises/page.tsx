@@ -15,6 +15,8 @@ import { useDeleteFranchise, useGetAllFranchises } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
+import NoData from "@/components/alerts/NoData";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const ManageFranchises = () => {
   const router = useRouter();
@@ -131,7 +133,7 @@ const ManageFranchises = () => {
           Activate the franchises in bulk in a single click
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
-          <CardContent>
+          <CardContent className="p-0 px-6">
             <div className="flex justify-between items-center gap-2">
               <div className="relative max-w-md lg:max-w-lg w-full">
                 <Input
@@ -153,10 +155,16 @@ const ManageFranchises = () => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={franchiseColumns}
-          data={filteredManagers as FranchiseTableRow[]}
-        />
+        {loading ? (
+          <SkeletonCard className="w-full h-80" />
+        ) : filteredManagers && filteredManagers.length > 0 ? (
+          <DataTable
+            columns={franchiseColumns}
+            data={filteredManagers as FranchiseTableRow[]}
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <FilterFranchiceModal
         open={isAddFranchiceModalOpen}

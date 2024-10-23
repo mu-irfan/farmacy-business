@@ -86,9 +86,9 @@ interface Franchise {
 
 interface Suggestions {
   id: number;
-  date: string;
-  query: string;
-  response: string;
+  createdAt: string;
+  first_query: string;
+  response_viewed: boolean;
 }
 
 interface ProductTableRow extends Product {
@@ -129,6 +129,7 @@ type AddProductModalProps = {
   productData?: any;
   subscribe?: boolean;
   currentFranchiseUuid?: string;
+  loading?: boolean;
 };
 
 interface Links {

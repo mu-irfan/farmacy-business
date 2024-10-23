@@ -12,6 +12,8 @@ import { useDeleteManager, useGetAllManagers } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
+import NoData from "@/components/alerts/NoData";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const ManageManagers = () => {
   const { token } = useContextConsumer();
@@ -95,7 +97,7 @@ const ManageManagers = () => {
           Update the managers who are managing the franchises
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
-          <CardContent>
+          <CardContent className="p-0 px-6">
             <div className="flex justify-between items-center gap-2">
               <div className="relative max-w-md lg:max-w-lg w-full">
                 <Input
@@ -109,10 +111,16 @@ const ManageManagers = () => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={ManagerColumns}
-          data={filteredManagers as ManagersTableRow[]}
-        />
+        {loading ? (
+          <SkeletonCard className="w-full h-80" />
+        ) : filteredManagers && filteredManagers.length > 0 ? (
+          <DataTable
+            columns={ManagerColumns}
+            data={filteredManagers as ManagersTableRow[]}
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <AddManagerModal
         open={isViewManagerModalOpen}

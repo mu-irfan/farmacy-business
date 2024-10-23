@@ -12,6 +12,7 @@ import Header from "@/components/Header";
 import { useGetProduct, useGetUnSubscribedProduct } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
+import NoData from "@/components/alerts/NoData";
 
 const SubscribeNewProduct = ({ params }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -124,10 +125,14 @@ const SubscribeNewProduct = ({ params }: any) => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={productColumns}
-          data={filteredUnsubProducts as ProductTableRow[]}
-        />
+        {filteredUnsubProducts && filteredUnsubProducts.length > 0 ? (
+          <DataTable
+            columns={productColumns}
+            data={filteredUnsubProducts as ProductTableRow[]}
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <FilterProductSubscribeModal
         open={isNewSubscribedProductModalOpen}

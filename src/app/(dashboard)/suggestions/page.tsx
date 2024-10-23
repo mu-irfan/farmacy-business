@@ -5,9 +5,15 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { CirclePlus, Search } from "lucide-react";
 import AddQueryModal from "@/components/forms-modals/suggestions/AddQuery";
 import Link from "next/link";
+import { useGetSuggestionsStats } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const Suggestions = () => {
+  const { token } = useContextConsumer();
   const [isAddProductModalOpen, setAddProductModalOpen] = useState(false);
+
+  //stats data
+  const { data: stats, isLoading: loading } = useGetSuggestionsStats(token);
 
   return (
     <>
@@ -15,7 +21,9 @@ const Suggestions = () => {
         <Card className="relative w-full py-6 lg:py-8 max-w-xl rounded-xl text-center bg-primary/10">
           <CardHeader className="space-y-0 pb-2">
             <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
-              12
+              {stats?.data?.newResponsesCount < 10
+                ? `0${stats?.data?.newResponsesCount}`
+                : stats?.data?.newResponsesCount || "00"}
             </CardTitle>
           </CardHeader>
           <CardContent>

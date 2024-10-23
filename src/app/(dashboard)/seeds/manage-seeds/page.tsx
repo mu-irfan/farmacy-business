@@ -16,6 +16,8 @@ import {
 } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
+import NoData from "@/components/alerts/NoData";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const ManageSeeds = () => {
   const { token } = useContextConsumer();
@@ -106,7 +108,7 @@ const ManageSeeds = () => {
           Filter search and update the seed varieties of global list
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
-          <CardContent>
+          <CardContent className="p-0 px-6">
             <div className="flex justify-between items-center gap-2">
               <div className="relative max-w-md lg:max-w-lg w-full">
                 <Input
@@ -128,10 +130,16 @@ const ManageSeeds = () => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={seedColumns}
-          data={filteredSeeds as SeedTableRow[]}
-        />
+        {loading ? (
+          <SkeletonCard className="w-full h-80" />
+        ) : filteredSeeds && filteredSeeds.length > 0 ? (
+          <DataTable
+            columns={seedColumns}
+            data={filteredSeeds as SeedTableRow[]}
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <FilterSeedModal
         open={isAddProductModalOpen}
@@ -142,6 +150,7 @@ const ManageSeeds = () => {
         onOpenChange={setViewSeedsModalOpen}
         mode="view"
         seedData={selectedSeedToView}
+        loading={seedLoading}
       />
     </>
   );

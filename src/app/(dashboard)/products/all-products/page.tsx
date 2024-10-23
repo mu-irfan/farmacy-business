@@ -16,6 +16,8 @@ import {
   useGetProduct,
 } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import NoData from "@/components/alerts/NoData";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const AllProducts = () => {
   const { token } = useContextConsumer();
@@ -107,7 +109,7 @@ const AllProducts = () => {
           Filter and search the products from the product global list.
         </p>
         <Card className="w-full py-6 rounded-xl text-center bg-primary/10 mb-8">
-          <CardContent>
+          <CardContent className="p-0 px-6">
             <div className="flex justify-between items-center gap-2">
               <div className="relative max-w-md lg:max-w-lg w-full">
                 <Input
@@ -129,12 +131,18 @@ const AllProducts = () => {
             </div>
           </CardContent>
         </Card>
-        <DataTable
-          columns={productColumns}
-          data={filteredProducts as ProductTableRow[]}
-          paginate
-          extendWidth
-        />
+        {loading ? (
+          <SkeletonCard className="w-full h-80" />
+        ) : filteredProducts && filteredProducts.length > 0 ? (
+          <DataTable
+            columns={productColumns}
+            data={filteredProducts as ProductTableRow[]}
+            paginate
+            extendWidth
+          />
+        ) : (
+          <NoData message="No Data Available" />
+        )}
       </DashboardLayout>
       <FilterProductModal
         open={isProductFilterModalOpen}
@@ -146,6 +154,7 @@ const AllProducts = () => {
           onOpenChange={setViewProductModalOpen}
           mode="view"
           productData={selectedProductToView}
+          loading={productLoading}
         />
       </div>
     </>

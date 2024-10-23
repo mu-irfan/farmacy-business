@@ -1,10 +1,24 @@
-import { baseUrlForAuth } from "@/lib/utils";
+import { baseUrl } from "@/lib/utils";
 import axios from "axios";
 
 // get products stats
 export const getProductStats = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/product/stats`, {
+    const res = await axios.get(`${baseUrl}/product/stats`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// create seed
+export const createProduct = async (data: any, token: string) => {
+  try {
+    const res = await axios.post(`${baseUrl}/product`, data, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -18,7 +32,7 @@ export const getProductStats = async (token: string) => {
 // get all products
 export const getAllProducts = async (token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/product/all`, {
+    const res = await axios.get(`${baseUrl}/product/all`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -32,7 +46,7 @@ export const getAllProducts = async (token: string) => {
 // get product
 export const getProduct = async (uuid: any, token: string) => {
   try {
-    const res = await axios.get(`${baseUrlForAuth}/product/?uuid=${uuid}`, {
+    const res = await axios.get(`${baseUrl}/product/?uuid=${uuid}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -46,7 +60,7 @@ export const getProduct = async (uuid: any, token: string) => {
 // delete product
 export const deleteProduct = async (uuid: any, token: string) => {
   try {
-    const res = await axios.delete(`${baseUrlForAuth}/product?uuid=${uuid}`, {
+    const res = await axios.delete(`${baseUrl}/product?uuid=${uuid}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
