@@ -9,7 +9,6 @@ import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
 import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
 import DataTable from "@/components/Table/DataTable";
-import { franchiseData } from "@/constant/data";
 import Header from "@/components/Header";
 import { useDeleteFranchise, useGetAllFranchises } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";

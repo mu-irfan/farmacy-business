@@ -31,9 +31,9 @@ const QueryResponsesModal = ({ open, onOpenChange, currentQueryUuid }: any) => {
           <DialogDescription className="!dark:text-farmacieLightGray">
             Response of your query we expect this would be helpful
           </DialogDescription>
-          <div className="flex justify-between my-8 text-sm dark:text-farmacieLightGray font-light">
-            <h2>Query</h2>
+          <div className="flex justify-between my-8 text-sm dark:text-farmacieLightGray font-light mt-4">
             <h2>Response</h2>
+            <h2>Query</h2>
           </div>
         </DialogHeader>
         <Responses currentQueryUuid={currentQueryUuid} />

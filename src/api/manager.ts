@@ -16,7 +16,7 @@ export const getManagerStats = async (token: string) => {
 };
 
 // create manager
-export const createManager = async (data: any, token: string) => {
+export const createManager = async (data: any, token: any) => {
   try {
     const res = await axios.post(`${baseUrl}/franchise/manager`, data, {
       headers: {

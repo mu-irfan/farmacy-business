@@ -32,7 +32,7 @@ const AddQueryModal = ({ open, onOpenChange }: any) => {
             Write a suggestion or query if something is confusing you
           </DialogDescription>
         </DialogHeader>
-        <AddQueryForm />
+        <AddQueryForm onClose={onOpenChange} />
       </DialogContent>
     </Dialog>
   );

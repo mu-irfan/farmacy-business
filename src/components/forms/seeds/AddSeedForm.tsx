@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CirclePlus } from "lucide-react";
+import { CirclePlus, CircleX } from "lucide-react";
 import { Textarea } from "../../ui/textarea";
 import {
   Select,
@@ -26,9 +26,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { productCategory } from "@/constant/data";
+import { productCategory, suitahleRegion } from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
-import { useCreateSeed, useSubscribeSeed } from "@/hooks/useDataFetch";
+import {
+  useCreateSeed,
+  useDeleteSeedImage,
+  useSubscribeSeed,
+  useUpdateSeed,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
 import { baseUrl } from "@/lib/utils";
@@ -66,13 +71,18 @@ const AddSeedForm = ({
   //
   const { mutate: subscribeSeed, isPending: subscribing } = useSubscribeSeed();
   const { mutate: addSeed, isPending: loading } = useCreateSeed();
+  const { mutate: deleteSeedImage, isPending: deletingImage } =
+    useDeleteSeedImage(token);
+  const { mutate: updateSeed, isPending: updating } = useUpdateSeed(token);
+
+  console.log(updateSeed, "updatessssssSeed");
 
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
     resolver: zodResolver(addSeedFormSchema),
     defaultValues: {
       seed_variety_name: "",
       company_fk: "",
-      category: "",
+      crop_category: "",
       crop: "",
       seed_weight: "",
       package_weight: "",
@@ -94,7 +104,7 @@ const AddSeedForm = ({
       reset({
         seed_variety_name: seed.seed_variety_name || "",
         company_fk: seed.company_fk || "",
-        category: seed.category || "",
+        crop_category: seed.crop_category || "",
         crop: seed.crop || "",
         seed_weight: seed.seed_weight || "",
         package_weight: seed.package_weight || "",
@@ -111,13 +121,40 @@ const AddSeedForm = ({
   }, [seed, reset]);
 
   const onSubmit = (data: z.infer<typeof addSeedFormSchema>) => {
+    // setAddSeedTrailDataInstructionModalOpen(true);
+
+    const formData = new FormData();
+    formData.append("seed_variety_name", data.seed_variety_name);
+    formData.append("company_fk", data.company_fk);
+    formData.append("crop_category", data.crop_category);
+    formData.append("crop", data.crop);
+    formData.append("seed_weight", data.seed_weight);
+    formData.append("package_weight", data.package_weight);
+    formData.append("germination_percentage", data.germination_percentage);
+    formData.append("maturity_percentage", data.maturity_percentage);
+    formData.append("min_harvesting_days", data.min_harvesting_days);
+    formData.append("max_harvesting_days", data.max_harvesting_days);
+    formData.append("suitable_region", data.suitable_region);
+    formData.append("package_type", data.package_type);
+    formData.append("price", data.price);
+    formData.append("description", data.description);
+
     if (mode === "add" && selectedImages.length < 1) {
       alert("Please upload at least 1 image.");
       return;
     }
+
+    selectedImages.forEach((image) => {
+      formData.append(`images`, image);
+    });
+
+    for (const [key, value] of formData.entries()) {
+      console.log(`${key}: ${typeof value}`, "fadsfadsffasdfdsaf");
+    }
+
     if (mode === "add") {
       addSeed(
-        { data, token },
+        { data: formData, token },
         {
           onSuccess: (log) => {
             if (log?.success) {
@@ -127,9 +164,21 @@ const AddSeedForm = ({
         }
       );
     }
-    setAddSeedTrailDataInstructionModalOpen(true);
-    console.log("Submitting form data:", data);
+    if (mode === "edit") {
+      updateSeed(
+        { data: formData, uuid: seed.uuid },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
+    }
   };
+
+  console.log(seed, "seeeeeeed");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -239,12 +288,15 @@ const AddSeedForm = ({
             </div>
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
               <LabelInputContainer>
-                <Label htmlFor="category" className="dark:text-farmacieGrey">
+                <Label
+                  htmlFor="crop_category"
+                  className="dark:text-farmacieGrey"
+                >
                   Crop Category
                 </Label>
                 <FormField
                   control={form.control}
-                  name="category"
+                  name="crop_category"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -517,7 +569,7 @@ const AddSeedForm = ({
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
                               <SelectLabel>Suitable Region</SelectLabel>
-                              {productCategory.map((item) => (
+                              {suitahleRegion.map((item) => (
                                 <SelectItem key={item.value} value={item.value}>
                                   {item.label}
                                 </SelectItem>
@@ -658,20 +710,31 @@ const AddSeedForm = ({
                 </CardContent>
               </Card>
             )}
-            {isViewMode && subscribe && seed?.seed_image?.length > 0 && (
-              <div className="flex flex-wrap mb-4">
-                {seed.seed_image.map((image: any, index: number) => (
-                  <Image
-                    key={index}
-                    src={`${baseUrl.replace("/api", "")}${image.image_url}`}
-                    alt={`Seed image ${index + 1}`}
-                    className="h-32 w-32 object-cover m-1 rounded-md"
-                    width={80}
-                    height={80}
-                  />
-                ))}
-              </div>
-            )}
+            {(isViewMode && subscribe) ||
+              (seed?.seed_image?.length > 0 && (
+                <div className="flex flex-wrap mb-4" aria-disabled={isViewMode}>
+                  {seed.seed_image.map((image: any, index: number) => (
+                    <div key={index} className="relative h-32 w-32 m-1">
+                      <Image
+                        src={`${baseUrl.replace("/api", "")}${image.image_url}`}
+                        alt={`Seed image ${index + 1}`}
+                        className="h-full w-full object-cover rounded-md"
+                        width={80}
+                        height={80}
+                      />
+                      {mode === "edit" && (
+                        <button
+                          onClick={() => deleteSeedImage(image.uuid)}
+                          type="button"
+                          className="absolute top-0 right-0 p-1.5 bg-white rounded-full shadow-lg"
+                        >
+                          <CircleX className="h-4 w-4 text-red-600" />{" "}
+                        </button>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ))}
             <Input
               id="fileInput"
               type="file"

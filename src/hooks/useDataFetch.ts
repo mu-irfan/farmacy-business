@@ -5,7 +5,12 @@ import {
   loginCompany,
   registerCompany,
 } from "@/api/auth";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { useAuth } from "./useAuth";
@@ -17,6 +22,7 @@ import {
   updateManager,
 } from "@/api/manager";
 import {
+  createFurtherQuery,
   createQuery,
   deleteQuery,
   getAllQueries,
@@ -27,11 +33,21 @@ import {
 import {
   createProduct,
   deleteProduct,
+  deleteProductImage,
   getAllProducts,
   getProduct,
   getProductStats,
+  updateProduct,
 } from "@/api/products";
-import { deleteSeed, getAllSeeds, getSeed, getSeedsStats } from "@/api/seeds";
+import {
+  createSeed,
+  deleteSeed,
+  deleteSeedImage,
+  getAllSeeds,
+  getSeed,
+  getSeedsStats,
+  updateSeed,
+} from "@/api/seeds";
 import {
   createFranchise,
   deleteFranchise,
@@ -52,6 +68,7 @@ import {
   subscribeSeeds,
 } from "@/api/subscribe";
 import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
+import { createBulkPayment } from "@/api/payment";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -155,16 +172,18 @@ export const useGetManagerStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useCreateManager = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createManager(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries(["allManagers", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -191,17 +210,17 @@ export const useGetAllManagers = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useUpdateManager = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => updateManager(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
-        queryClient.invalidateQueries(["allManagers", token]);
+        queryClient.invalidateQueries(["allManagers", variables.token] as any);
       } else {
         toast.error(data?.message);
       }
@@ -215,11 +234,11 @@ export const useUpdateManager = (token: string) => {
 export const useDeleteManager = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteManager(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteManager(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["allManagers", token]);
+        queryClient.invalidateQueries(["allManagers", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -247,16 +266,18 @@ export const useGetSuggestionsStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useCreateTicket = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createQuery(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries(["alTickets", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -283,7 +304,7 @@ export const useGetAllTickets = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetTicketsChats = (uuid: any, token: string) => {
@@ -300,19 +321,41 @@ export const useGetTicketsChats = (uuid: any, token: string) => {
     onError: (error: any) => {
       toast.error(error?.response?.data?.message);
     },
-    staleTime: 60000,
+    staleTime: 0,
     refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
+export const useQueryResponseViewed = (token: any) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: any) => queryResponseViewed(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: any }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["alTickets", variables.token] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };
 
-// needs to setup for frontend
-export const useQueryResponseViewed = () => {
+export const useCreateFurtherQuery = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ uuid, token }: { uuid: any; token: string }) =>
-      queryResponseViewed(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createFurtherQuery(data, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries([
+          "alTicketsChats",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -326,11 +369,11 @@ export const useQueryResponseViewed = () => {
 export const useDeleteQuery = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteQuery(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteQuery(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["alTickets", token]);
+        queryClient.invalidateQueries(["alTickets", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -358,7 +401,7 @@ export const useGetProductStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetAllProducts = (token: string) => {
@@ -377,18 +420,19 @@ export const useGetAllProducts = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useCreateProduct = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createProduct(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       console.log(data, "adding product");
-
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries(["allProducts", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -416,17 +460,53 @@ export const useGetProduct = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
+export const useUpdateProduct = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data }: { data: any }) => updateProduct(data, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries(["allProducts", token] as any);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteProductImage = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: any) => deleteProductImage(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["product", variables.token] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };
 
 export const useDeleteProduct = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteProduct(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteProduct(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["allProducts", token]);
+        queryClient.invalidateQueries(["allProducts", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -454,18 +534,20 @@ export const useGetSeedsStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useCreateSeed = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
-      createManager(data, token),
-    onSuccess: (data: any) => {
-      console.log(data, "adding seed");
+      createSeed(data, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      console.log(data, "addingseed");
 
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries(["allSeeds", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -492,7 +574,7 @@ export const useGetAllSeeds = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetSeed = (uuid: string, token: string) => {
@@ -512,17 +594,55 @@ export const useGetSeed = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
+export const useUpdateSeed = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, uuid }: { data: any; uuid: any }) =>
+      updateSeed(data, uuid, token),
+    onSuccess: (data: any) => {
+      console.log(data, "updateSeed");
+      if (data?.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries(["allSeeds", token] as any);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+  });
+};
+
+export const useDeleteSeedImage = (token: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: (uuid: any) => deleteSeedImage(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries(["seed", variables.token] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
   });
 };
 
 export const useDeleteSeed = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteSeed(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteSeed(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["allSeeds", token]);
+        queryClient.invalidateQueries(["allSeeds", variables.token] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -551,16 +671,21 @@ export const useGetFranchiseStats = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useCreateFranchise = () => {
+  const queryClient = useQueryClient();
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createFranchise(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
+        queryClient.invalidateQueries([
+          "allFranchises",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -585,9 +710,9 @@ export const useGetAllFranchises = (token: string) => {
     onError: (error: any) => {
       toast.error(error?.response?.data?.message);
     },
-    staleTime: 60000,
+    staleTime: 0,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetInActiveFranchises = (token: string) => {
@@ -606,17 +731,20 @@ export const useGetInActiveFranchises = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useDeleteFranchise = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteFranchise(uuid, token),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteFranchise(uuid, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["allFranchises", token]);
+        queryClient.invalidateQueries([
+          "allFranchises",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -631,10 +759,13 @@ export const useUpdateFranchise = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => updateFranchise(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
-        queryClient.invalidateQueries(["allFranchises", token]);
+        queryClient.invalidateQueries([
+          "allFranchises",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.message);
       }
@@ -663,7 +794,7 @@ export const useGetSubscribedProduct = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetSubscribedSeed = (uuid: string, token: string) => {
@@ -683,7 +814,7 @@ export const useGetSubscribedSeed = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetSubscribedStats = (uuid: string, token: string) => {
@@ -703,19 +834,20 @@ export const useGetSubscribedStats = (uuid: string, token: string) => {
     enabled: !!uuid,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useDeleteSubscribedProduct = (token: string, fk: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteSubscribedProduct(uuid, token, fk),
-    onSuccess: (data: any) => {
-      console.log(data, "deleting");
-
+    mutationFn: (uuid: any) => deleteSubscribedProduct(uuid, token, fk),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["subsribedProduct", token]);
+        queryClient.invalidateQueries([
+          "subsribedProduct",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -729,11 +861,14 @@ export const useDeleteSubscribedProduct = (token: string, fk: string) => {
 export const useDeleteSubscribedSeed = (token: string, fk: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (uuid: string) => deleteSubscribedSeed(uuid, token, fk),
-    onSuccess: (data: any) => {
+    mutationFn: (uuid: any) => deleteSubscribedSeed(uuid, token, fk),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["subsribedSeed", token]);
+        queryClient.invalidateQueries([
+          "subsribedSeed",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -761,7 +896,7 @@ export const useGetUnSubscribedProduct = (fk: string, token: string) => {
     enabled: !!fk,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useGetUnSubscribedSeed = (fk: string, token: string) => {
@@ -781,7 +916,7 @@ export const useGetUnSubscribedSeed = (fk: string, token: string) => {
     enabled: !!fk,
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useSubscribeProduct = () => {
@@ -789,10 +924,13 @@ export const useSubscribeProduct = () => {
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       subscribeProducts(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["unSubsribedProduct", token]);
+        queryClient.invalidateQueries([
+          "unSubsribedProduct",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -808,10 +946,13 @@ export const useSubscribeSeed = () => {
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       subscribeSeeds(data, token),
-    onSuccess: (data: any) => {
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);
-        queryClient.invalidateQueries(["unSubsribedSeed", token]);
+        queryClient.invalidateQueries([
+          "unSubsribedSeed",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.response?.data?.message);
       }
@@ -839,25 +980,49 @@ export const useGetCompanyProfile = (token: string) => {
     },
     staleTime: 60000,
     refetchOnWindowFocus: false,
-  });
+  } as UseQueryOptions);
 };
 
 export const useUpdateCompanyProfile = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: (data: any) => updateCompanyProfile(data, token),
-    onSuccess: (data: any) => {
-      console.log(data, "update");
-
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
-        queryClient.invalidateQueries(["companyProfile", token]);
+        queryClient.invalidateQueries([
+          "companyProfile",
+          variables.token,
+        ] as any);
       } else {
         toast.error(data?.message);
       }
     },
     onError: (error: any) => {
       toast.error(error?.response?.data?.message);
+    },
+  });
+};
+
+// payment
+export const useCreateBulkPayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createBulkPayment(data, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries([
+          "allFranchises",
+          variables.token,
+        ] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
     },
   });
 };

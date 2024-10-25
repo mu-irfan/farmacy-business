@@ -18,6 +18,8 @@ import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
 import NoData from "@/components/alerts/NoData";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
+import { Toaster } from "react-hot-toast";
 
 const ManageSeeds = () => {
   const { token } = useContextConsumer();
@@ -55,8 +57,17 @@ const ManageSeeds = () => {
     setCurrentSeedUuid(seed.uuid);
   };
 
-  const handleDelete = (seedId: string) => {
-    deleteSeed(seedId);
+  const handleDelete = async (seedId: string) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Seed?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteSeed(seedId);
+    }
   };
 
   useEffect(() => {
@@ -102,6 +113,7 @@ const ManageSeeds = () => {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout>
         <Header title="Manage Seed Varieties" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">

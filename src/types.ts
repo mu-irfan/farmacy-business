@@ -170,3 +170,20 @@ type ForgotPasswordFormValues =
   | { email: string }
   | { email: string; otp: string }
   | { email: string; newPassword: string; confirmPassword: string };
+
+// chats types
+interface Chat {
+  uuid: string;
+  message: string;
+  is_query: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+interface ActivateFranchisePaymentModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  franchiseUUIDs: string[];
+  amount: number;
+  onClose: any;
+}

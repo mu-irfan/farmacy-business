@@ -57,6 +57,39 @@ export const getProduct = async (uuid: any, token: string) => {
   }
 };
 
+// update product
+export const updateProduct = async (data: any, token: string) => {
+  try {
+    const res = await axios.patch(
+      `${baseUrl}/product?uuid=${data.uuid}`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// delete product
+export const deleteProductImage = async (uuid: any, token: string) => {
+  try {
+    const res = await axios.delete(`${baseUrl}/product/image?imgUid=${uuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 // delete product
 export const deleteProduct = async (uuid: any, token: string) => {
   try {

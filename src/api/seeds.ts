@@ -58,6 +58,34 @@ export const getSeed = async (uuid: any, token: string) => {
 };
 
 // delete seed
+export const deleteSeedImage = async (uuid: any, token: string) => {
+  try {
+    const res = await axios.delete(`${baseUrl}/seed/image?imgUid=${uuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// update seed
+export const updateSeed = async (data: any, uuid: any, token: string) => {
+  try {
+    const res = await axios.patch(`${baseUrl}/seed?uuid=${uuid}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// delete seed
 export const deleteSeed = async (uuid: any, token: string) => {
   try {
     const res = await axios.delete(`${baseUrl}/seed?uuid=${uuid}`, {

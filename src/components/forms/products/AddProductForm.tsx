@@ -14,9 +14,15 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CirclePlus, Plus, Trash } from "lucide-react";
+import { CirclePlus, CircleX, Plus, Trash } from "lucide-react";
 
-import { activeIngredients, productCategory, units } from "@/constant/data";
+import {
+  activeIngredients,
+  productCategory,
+  productsList,
+  productType,
+  units,
+} from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -29,7 +35,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import useDynamicFields from "@/hooks/useDynamicFields";
-import { useCreateProduct, useSubscribeProduct } from "@/hooks/useDataFetch";
+import {
+  useCreateProduct,
+  useDeleteProductImage,
+  useSubscribeProduct,
+  useUpdateProduct,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
 import { baseUrl } from "@/lib/utils";
@@ -56,8 +67,7 @@ const AddProductForm = ({
   const [selectedCategory, setSelectedCategory] = useState(
     productData?.category || ""
   );
-
-  const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const { inputFields, handleAddField, handleDeleteField } =
     useDynamicFields(0);
 
@@ -65,6 +75,10 @@ const AddProductForm = ({
   const { mutate: subscribeProduct, isPending: subscribing } =
     useSubscribeProduct();
   const { mutate: addProduct, isPending: loading } = useCreateProduct();
+  const { mutate: updateProduct, isPending: updating } =
+    useUpdateProduct(token);
+  const { mutate: deleteProductImage, isPending: deletingImage } =
+    useDeleteProductImage(token);
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
@@ -112,13 +126,65 @@ const AddProductForm = ({
   }, [productData, reset]);
 
   const onSubmit = (data: z.infer<typeof addProductFormSchema>) => {
+    const activeIngredientsArray = inputFields.map((_, index) => ({
+      ingredient_name: data.active_ingredients,
+      concentration: data.concentration,
+      unit: data.units,
+    }));
+
+    const formData = new FormData();
+
+    formData.append("name", data.name);
+    formData.append("company_fk", data.company_fk);
+    formData.append("category", data.category);
+    formData.append("sub_category", data.sub_category);
+    formData.append("description", data.description);
+    formData.append("price", data.price);
+    formData.append("area_covered", data.area_covered);
+    formData.append("disease_purpose", data.disease_purpose);
+    formData.append("type", data.type);
+    formData.append("package_type", data.package_type);
+    formData.append("package_weight", data.package_weight);
+    formData.append("units", data.units);
+    formData.append("weight_unit", data.weight_unit);
+
+    activeIngredientsArray.forEach((ingredient, index) => {
+      formData.append(
+        `active_ingredients[${index}][ingredient_name]`,
+        ingredient.ingredient_name
+      );
+      formData.append(
+        `active_ingredients[${index}][concentration]`,
+        ingredient.concentration
+      );
+      formData.append(`active_ingredients[${index}][unit]`, ingredient.unit);
+    });
+
+    selectedImages.forEach((image, index) => {
+      formData.append(`images`, image);
+    });
+
     if (mode === "add" && selectedImages.length < 1) {
-      alert("Please upload at least 1 images.");
+      alert("Please upload at least 1 image.");
       return;
     }
+
     if (mode === "add") {
       addProduct(
-        { data, token },
+        { data: formData, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
+    }
+
+    if (mode === "edit") {
+      updateProduct(
+        { data: formData },
         {
           onSuccess: (log) => {
             if (log?.success) {
@@ -245,6 +311,7 @@ const AddProductForm = ({
                       <Select
                         onValueChange={(value) => {
                           setSelectedCategory(value);
+                          form.setValue("sub_category", "");
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -286,7 +353,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
                           // setValue("");
                           field.onChange(value);
                         }}
@@ -302,11 +368,14 @@ const AddProductForm = ({
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
                             <SelectLabel>Sub-Category</SelectLabel>
-                            {productCategory.map((item) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
-                              </SelectItem>
-                            ))}
+                            {selectedCategory &&
+                              productsList[selectedCategory]?.map(
+                                (subCategory: any, ind: number) => (
+                                  <SelectItem key={ind} value={subCategory}>
+                                    {subCategory}
+                                  </SelectItem>
+                                )
+                              )}
                           </SelectGroup>
                         </SelectContent>
                       </Select>
@@ -584,7 +653,7 @@ const AddProductForm = ({
                     <FormControl>
                       <Input
                         placeholder="Enter Package Weight"
-                        type="text"
+                        type="number"
                         id="package_weight"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
@@ -694,7 +763,7 @@ const AddProductForm = ({
                     <FormControl>
                       <Input
                         placeholder="Enter Area covered"
-                        type="text"
+                        type="number"
                         id="area_covered"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
@@ -708,7 +777,7 @@ const AddProductForm = ({
             </LabelInputContainer>
             <LabelInputContainer>
               <Label htmlFor="type" className="dark:text-farmacieGrey">
-                Type
+                Bio/Chemical
               </Label>
               <FormField
                 control={form.control}
@@ -716,14 +785,29 @@ const AddProductForm = ({
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
-                      <Input
-                        placeholder="Enter Type"
-                        type="text"
-                        id="type"
-                        className="outline-none focus:border-primary disabled:bg-primary/20"
-                        {...field}
+                      <Select
+                        onValueChange={(value) => {
+                          setSelectedCategory(value);
+                          field.onChange(value);
+                        }}
                         disabled={isViewMode}
-                      />
+                      >
+                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectValue
+                            placeholder={productData?.type || "Select Type"}
+                          />
+                        </SelectTrigger>
+                        <SelectContent className="rounded-xl">
+                          <SelectGroup>
+                            <SelectLabel>Type</SelectLabel>
+                            {productType.map((item) => (
+                              <SelectItem key={item.value} value={item.value}>
+                                {item.label}
+                              </SelectItem>
+                            ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -744,7 +828,7 @@ const AddProductForm = ({
                     <FormControl>
                       <Input
                         placeholder="Enter Price"
-                        type="text"
+                        type="number"
                         id="price"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
@@ -841,20 +925,31 @@ const AddProductForm = ({
               </CardContent>
             </Card>
           )}
-          {isViewMode && subscribe && productData?.seed_image?.length > 0 && (
-            <div className="flex flex-wrap mb-4">
-              {productData.seed_image.map((image: any, index: number) => (
-                <Image
-                  key={index}
-                  src={`${baseUrl.replace("/api", "")}${image.image_url}`}
-                  alt={`Seed image ${index + 1}`}
-                  className="h-32 w-32 object-cover m-1 rounded-md"
-                  width={80}
-                  height={80}
-                />
-              ))}
-            </div>
-          )}
+          {(isViewMode && subscribe) ||
+            (productData?.product_image?.length > 0 && (
+              <div className="flex flex-wrap mb-4">
+                {productData.product_image.map((image: any, index: number) => (
+                  <div key={index} className="relative h-32 w-32 m-1">
+                    <Image
+                      src={`${baseUrl.replace("/api", "")}${image.image_url}`}
+                      alt={`Product image ${index + 1}`}
+                      className="h-32 w-32 object-cover m-1 rounded-md"
+                      width={80}
+                      height={80}
+                    />
+                    {mode === "edit" && (
+                      <button
+                        onClick={() => deleteProductImage(image.uuid)}
+                        type="button"
+                        className="absolute top-0 right-0 p-1.5 bg-white rounded-full shadow-lg"
+                      >
+                        <CircleX className="h-4 w-4 text-red-600" />{" "}
+                      </button>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ))}
           <Input
             id="fileInput"
             type="file"

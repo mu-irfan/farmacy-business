@@ -58,16 +58,32 @@ export const getQueriesChats = async (uuid: any, token: string) => {
 };
 
 // create query
-export const queryResponseViewed = async (uuid: any, token: string) => {
+export const queryResponseViewed = async (uuid: any, token: any) => {
   try {
     const res = await axios.post(
       `${baseUrl}/query/response-viewed?uuid=${uuid}`,
+      {},
       {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       }
     );
+
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// create further chat
+export const createFurtherQuery = async (data: any, token: string) => {
+  try {
+    const res = await axios.post(`${baseUrl}/query/further`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     return res.data;
   } catch (error) {
     return error;

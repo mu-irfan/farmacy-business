@@ -20,7 +20,7 @@ export const useAuth = () => {
   };
 
   const loginCompanyAuth = (token: any, refreshToken: any) => {
-    Cookies.set("accessToken", token, { expires: 2 });
+    Cookies.set("accessToken", token, { expires: 8 });
     Cookies.set("refreshToken", refreshToken, {
       expires: 7,
     });

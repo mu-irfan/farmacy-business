@@ -141,7 +141,7 @@ const addProductFormSchema = z.object({
     message: "Packaging Type is required.",
   }),
   area_covered: z.string().nonempty({
-    message: "Covered area is required.",
+    message: "Area covered is required.",
   }),
   disease_purpose: z.string().nonempty({
     message: "Disease is required.",
@@ -171,7 +171,7 @@ const addSeedFormSchema = z.object({
   company_fk: z.string().nonempty({
     message: "Brand Name is required.",
   }),
-  category: z.string().nonempty({
+  crop_category: z.string().nonempty({
     message: "Category is required.",
   }),
   crop: z.string().nonempty({
@@ -305,7 +305,6 @@ const addQueryFormSchema = z.object({
 
 const queryResponseSchema = z.object({
   query: z.string().optional(),
-  response: z.string().optional(),
 });
 
 //user
@@ -319,15 +318,17 @@ const profileFormSchema = z.object({
       required_error: "Please select an email to display.",
     })
     .email(),
-  // bio: z.string().max(160).min(4),
-  // urls: z
-  //   .array(
-  //     z.object({
-  //       value: z.string().url({ message: "Please enter a valid URL." }),
-  //     })
-  //   )
-  //   .optional(),
   ntn: z.string(),
+});
+
+// payment
+const addPaymentFormSchema = z.object({
+  phone: z.string({
+    required_error: "Phone number is required.",
+  }),
+  cnic_last6: z.string().nonempty({
+    message: "Enter CNIC last 6 digits",
+  }),
 });
 
 export {
@@ -339,6 +340,7 @@ export {
   addProductFormSchema,
   filterProductsFormSchema,
   addSeedFormSchema,
+  addPaymentFormSchema,
   filterSeedFormSchema,
   filterSubscribedProduct,
   addFranchiseFormSchema,

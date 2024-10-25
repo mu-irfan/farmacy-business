@@ -19,7 +19,7 @@ import { useCreateTicket } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { Toaster } from "react-hot-toast";
 
-const AddQueryForm = () => {
+const AddQueryForm = ({ onClose }: any) => {
   const { mutate: addQuery, isPending: loading } = useCreateTicket();
   const { token } = useContextConsumer();
 
@@ -31,7 +31,16 @@ const AddQueryForm = () => {
   });
 
   const onSubmit = (data: z.infer<typeof addQueryFormSchema>) => {
-    addQuery({ data, token });
+    addQuery(
+      { data, token },
+      {
+        onSuccess: (log) => {
+          if (log?.success) {
+            onClose();
+          }
+        },
+      }
+    );
   };
 
   return (

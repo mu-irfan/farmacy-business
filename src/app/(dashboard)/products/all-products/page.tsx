@@ -18,6 +18,7 @@ import {
 import { useContextConsumer } from "@/context/Context";
 import NoData from "@/components/alerts/NoData";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import { SweetAlert } from "@/components/alerts/SweetAlert";
 
 const AllProducts = () => {
   const { token } = useContextConsumer();
@@ -56,8 +57,17 @@ const AllProducts = () => {
     setCurrentProductUuid(product.uuid);
   };
 
-  const handleDelete = (productId: string) => {
-    deleteProduct(productId);
+  const handleDelete = async (productId: any) => {
+    const isConfirmed = await SweetAlert(
+      "Delete Product?",
+      "",
+      "warning",
+      "Yes, delete it!",
+      "#15803D"
+    );
+    if (isConfirmed) {
+      deleteProduct(productId);
+    }
   };
 
   useEffect(() => {

@@ -13,7 +13,48 @@ export const franchiseReports = [
 export const productCategory = [
   { value: "fertilizer", label: "Fertilizer" },
   { value: "pesticide", label: "Pesticide" },
-  { value: "crop_nuetiration", label: "Crop Nuetiration" },
+  { value: "crop_nutrition", label: "Crop Nutrition" },
+];
+
+export const suitahleRegion = [
+  { value: "irrigated", label: "Irrigated" },
+  { value: "rainfed", label: "Rainfed" },
+  { value: "drought", label: "Drought" },
+];
+
+export const productsList = {
+  fertilizer: [
+    "Anti Stress Fertilizers",
+    "Basic Fertilizers",
+    "Bio Fertilizers (Organic Fertilizers)",
+    "Growth Stimulaters",
+    "Imported Fertilizers",
+    "Liquid Fertilizers",
+    "Organic Fertilizers",
+    "Soil Conditioners",
+  ],
+  pesticide: [
+    "Adjuvants",
+    "Fumigants",
+    "Fungicides",
+    "Fungicides And Bactericides",
+    "Granules Insecticides (Poisions)",
+    "Herbicides / Weedicides",
+    "Insecticides",
+    "Seed Treatments",
+  ],
+  crop_nutrition: [
+    "Amino Acids",
+    "Gibberellic Acids",
+    "Micronutrients",
+    "PGPR's (Plant Growth-Promoting Rhizobacteria)",
+    "Plant Growth Regulaters",
+  ],
+};
+
+export const productType = [
+  { value: "bio", label: "Bio" },
+  { value: "chemical", label: "Chemical" },
 ];
 
 export const activeIngredients = [
@@ -213,113 +254,5 @@ export const ManagersData: Manager[] = [
     id: 4,
     full_name: "Khans",
     contact: "03334859489",
-  },
-];
-
-//franchise
-export const franchiseData: Franchise[] = [
-  {
-    id: 1,
-    full_name: "Wireless Headphones",
-    franchiseName: "Wireless Headphones",
-    contact: "0310-000 0000",
-    address: "Shop #1, BG-5, Mid city apartments",
-    province: "Punjab",
-    district: "Kohat",
-    tehsil: "Audio Devices",
-    remainingDays: 23,
-    active: false,
-  },
-  {
-    id: 2,
-    full_name: "4K Smart TV",
-    franchiseName: "Wireless Headphones",
-    contact: "0310-000 0000",
-    address: "Shop #1, BG-5, Mid city apartments",
-    province: "Punjab",
-    district: "Kohat",
-    tehsil: "Televisions",
-    remainingDays: 55,
-    active: true,
-  },
-  {
-    id: 3,
-    full_name: "Running Shoes",
-    franchiseName: "Wireless Headphones",
-    contact: "0310-000 0000",
-    address: "Shop #1, BG-5, Mid city apartments",
-    province: "Punjab",
-    district: "Kohat",
-    tehsil: "Sports Shoes",
-    remainingDays: 11,
-    active: false,
-  },
-  {
-    id: 4,
-    full_name: "Gaming Laptop",
-    franchiseName: "Wireless Headphones",
-    contact: "0310-000 0000",
-    address: "Shop #1, BG-5, Mid city apartments",
-    province: "Punjab",
-    district: "Kohat",
-    tehsil: "Laptops",
-    remainingDays: 76,
-    active: true,
-  },
-  {
-    id: 5,
-    full_name: "Smartwatch",
-    franchiseName: "Wireless Headphones",
-    contact: "0310-000 0000",
-    address: "Shop #1, BG-5, Mid city apartments",
-    province: "Punjab",
-    district: "Kohat",
-    tehsil: "Smart Devices",
-    remainingDays: 23,
-    active: true,
-  },
-];
-
-//suggestions
-export const suggestionsData: Suggestions[] = [
-  {
-    id: 1,
-    date: "2024-09-01",
-    query:
-      "There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
-    response:
-      " Your active ingredient is successfully added in the global list.",
-  },
-  {
-    id: 2,
-    date: "2024-09-01",
-    query:
-      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
-    response:
-      " Your active ingredient is successfully added in the global list.",
-  },
-  {
-    id: 3,
-    date: "2024-09-01",
-    query:
-      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
-    response:
-      " Your active ingredient is successfully added in the global list.",
-  },
-  {
-    id: 4,
-    date: "2024-09-01",
-    query:
-      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
-    response:
-      " Your active ingredient is successfully added in the global list.",
-  },
-  {
-    id: 5,
-    date: "2024-09-01",
-    query:
-      " There is an active ingredient name Nitrogen that is missingin the select active ingredient list.",
-    response:
-      " Your active ingredient is successfully added in the global list.",
   },
 ];

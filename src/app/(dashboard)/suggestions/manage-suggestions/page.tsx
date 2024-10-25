@@ -6,30 +6,37 @@ import { Ban, Check, Trash } from "lucide-react";
 import DataTable from "@/components/Table/DataTable";
 import Header from "@/components/Header";
 import QueryResponsesModal from "@/components/forms-modals/suggestions/QueryResponses";
-import { useDeleteQuery, useGetAllTickets } from "@/hooks/useDataFetch";
+import {
+  useDeleteQuery,
+  useGetAllTickets,
+  useQueryResponseViewed,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import NoData from "@/components/alerts/NoData";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
+import { SkeletonCard } from "@/components/SkeletonLoader";
+import { Toaster } from "react-hot-toast";
 
 const ManageSuggestions = () => {
   const { token } = useContextConsumer();
   const [isQueryResponsesModalOpen, setQueryResponsesModalOpen] =
     useState(false);
   const [currentQueryUuid, setCurrentQueryUuid] = useState<string | null>(null);
-  const [selectedSuggestion, setSelectedSuggestion] = useState({});
 
-  // loading will be managed
+  //
   const { data: queries, isLoading: loading } = useGetAllTickets(token);
   const { mutate: deleteQuery, isPending: deletingQuery } =
     useDeleteQuery(token);
+  const { mutate: responseViewed, isPending: viewing } =
+    useQueryResponseViewed(token);
 
   const handleView = (suggestion: any) => {
     setQueryResponsesModalOpen(true);
     setCurrentQueryUuid(suggestion.uuid);
-    setSelectedSuggestion(suggestion);
+    responseViewed(suggestion.uuid);
   };
 
-  const handleDelete = async (suggestionId: string) => {
+  const handleDelete = async (suggestionId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Query?",
       "",
@@ -98,12 +105,15 @@ const ManageSuggestions = () => {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout>
         <Header title="Responses" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">
           Responses of your suggestion and quries
         </p>
-        {queries?.data && queries?.data?.length > 0 ? (
+        {loading ? (
+          <SkeletonCard className="w-full h-80" />
+        ) : queries?.data && queries?.data?.length > 0 ? (
           <DataTable
             columns={suggestionsColumns}
             data={queries.data as SuggestionsTableActionRow[]}
