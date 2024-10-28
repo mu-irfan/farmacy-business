@@ -57,7 +57,6 @@ export default function ProfileForm() {
   }, [data, form]);
 
   function onSubmit(data: ProfileFormValues) {
-    console.log(data);
     updateCompany(data, {
       onSuccess: () => {
         setIsEditable(false);

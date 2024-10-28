@@ -3,7 +3,13 @@ import { FC, ReactNode, useState } from "react";
 import { Sidebar, SidebarBody } from "@/components/sidebar/sidebar";
 import SidebarContent from "@/components/sidebar/sidebar-content";
 import { IconBrandTabler } from "@tabler/icons-react";
-import { Bean, Building, FileQuestion, UserRoundCheck } from "lucide-react";
+import {
+  Bean,
+  Building,
+  FileQuestion,
+  PanelsTopLeft,
+  UserRoundCheck,
+} from "lucide-react";
 import { ToggleTheme } from "@/components/theme/theme-provider";
 import { cn } from "@/lib/utils";
 import {
@@ -46,6 +52,13 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({
       href: "/seeds",
       icon: (
         <Bean className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
+      ),
+    },
+    {
+      label: "Seed Trial",
+      href: "/speed-trial",
+      icon: (
+        <PanelsTopLeft className="text-neutral-700 dark:text-neutral-200 h-5 w-5 flex-shrink-0" />
       ),
     },
     {

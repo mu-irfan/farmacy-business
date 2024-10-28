@@ -13,7 +13,7 @@ import { filterSeedFormSchema } from "@/schemas/validation/validationSchema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import { productCategory } from "@/constant/data";
+import { cropCategories, cropCategoriesOptions } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import {
   Select,
@@ -66,7 +66,7 @@ const FilterSeedForm = () => {
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
                           <SelectLabel>Category</SelectLabel>
-                          {productCategory.map((item) => (
+                          {cropCategories.map((item) => (
                             <SelectItem key={item.value} value={item.value}>
                               {item.label}
                             </SelectItem>
@@ -92,8 +92,6 @@ const FilterSeedForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
                         field.onChange(value);
                       }}
                     >
@@ -103,11 +101,14 @@ const FilterSeedForm = () => {
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
                           <SelectLabel>Crop</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
+                          {selectedCategory &&
+                            cropCategoriesOptions[selectedCategory]?.map(
+                              (crop: any, ind: number) => (
+                                <SelectItem key={ind} value={crop}>
+                                  {crop}
+                                </SelectItem>
+                              )
+                            )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

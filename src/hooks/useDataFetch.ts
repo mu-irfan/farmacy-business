@@ -68,7 +68,7 @@ import {
   subscribeSeeds,
 } from "@/api/subscribe";
 import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
-import { createBulkPayment } from "@/api/payment";
+import { createBulkPayment, inquiryPayment } from "@/api/payment";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -386,7 +386,7 @@ export const useDeleteQuery = (token: string) => {
 
 // Products  API's Functions
 export const useGetProductStats = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["productStats", token],
     queryFn: () => getProductStats(token),
     onSuccess: (data: any) => {
@@ -405,7 +405,7 @@ export const useGetProductStats = (token: string) => {
 };
 
 export const useGetAllProducts = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["allProducts", token],
     queryFn: () => getAllProducts(token),
     onSuccess: (data: any) => {
@@ -429,7 +429,6 @@ export const useCreateProduct = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createProduct(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
-      console.log(data, "adding product");
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries(["allProducts", variables.token] as any);
@@ -444,7 +443,7 @@ export const useCreateProduct = () => {
 };
 
 export const useGetProduct = (uuid: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["product", uuid, token],
     queryFn: () => getProduct(uuid, token),
     onSuccess: (data: any) => {
@@ -543,8 +542,6 @@ export const useCreateSeed = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createSeed(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
-      console.log(data, "addingseed");
-
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries(["allSeeds", variables.token] as any);
@@ -603,7 +600,6 @@ export const useUpdateSeed = (token: string) => {
     mutationFn: ({ data, uuid }: { data: any; uuid: any }) =>
       updateSeed(data, uuid, token),
     onSuccess: (data: any) => {
-      console.log(data, "updateSeed");
       if (data?.success) {
         toast.success(data.message);
         queryClient.invalidateQueries(["allSeeds", token] as any);
@@ -1025,4 +1021,24 @@ export const useCreateBulkPayment = () => {
       toast.error(error.response?.data?.message);
     },
   });
+};
+
+export const useGetInquiryPayment = (token: string) => {
+  return useQuery({
+    queryKey: ["", token],
+    queryFn: () => inquiryPayment(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    enabled: false,
+  } as UseQueryOptions);
 };

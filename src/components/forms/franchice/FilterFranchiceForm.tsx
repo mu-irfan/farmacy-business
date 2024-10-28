@@ -13,7 +13,7 @@ import { filterFranchiceFormSchema } from "@/schemas/validation/validationSchema
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import { productCategory } from "@/constant/data";
+import { pakistanData } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import {
   Select,
@@ -26,7 +26,8 @@ import {
 } from "@/components/ui/select";
 
 const FilterFranchiceForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [tehsilOptions, setTehsilOptions] = useState([]);
 
   const form = useForm<z.infer<typeof filterFranchiceFormSchema>>({
     resolver: zodResolver(filterFranchiceFormSchema),
@@ -36,6 +37,17 @@ const FilterFranchiceForm = () => {
       tehsil: "",
     },
   });
+
+  const handleProvinceChange = (value: string) => {
+    const districts = pakistanData[`districts_${value}`] || [];
+    setDistrictOptions(districts);
+    setTehsilOptions([]);
+  };
+
+  const handleDistrictChange = (value: string) => {
+    const tehsils = pakistanData[`tehsils_${value}`] || [];
+    setTehsilOptions(tehsils);
+  };
 
   const onSubmit = (data: z.infer<typeof filterFranchiceFormSchema>) => {
     console.log("Submitting form data:", data);
@@ -57,7 +69,7 @@ const FilterFranchiceForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
+                        handleProvinceChange(value);
                         field.onChange(value);
                       }}
                     >
@@ -67,7 +79,7 @@ const FilterFranchiceForm = () => {
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
                           <SelectLabel>Province</SelectLabel>
-                          {productCategory.map((item) => (
+                          {pakistanData.provinces.map((item) => (
                             <SelectItem key={item.value} value={item.value}>
                               {item.label}
                             </SelectItem>
@@ -93,8 +105,7 @@ const FilterFranchiceForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
+                        handleDistrictChange(value);
                         field.onChange(value);
                       }}
                     >
@@ -103,10 +114,13 @@ const FilterFranchiceForm = () => {
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>District</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
+                          <SelectLabel>Select District</SelectLabel>
+                          {districtOptions.map((district) => (
+                            <SelectItem
+                              key={district.value}
+                              value={district.value}
+                            >
+                              {district.label}
                             </SelectItem>
                           ))}
                         </SelectGroup>
@@ -130,8 +144,6 @@ const FilterFranchiceForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
                         field.onChange(value);
                       }}
                     >
@@ -139,14 +151,11 @@ const FilterFranchiceForm = () => {
                         <SelectValue placeholder="All tehsils" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
-                        <SelectGroup>
-                          <SelectLabel>Tehsil</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
-                        </SelectGroup>
+                        {tehsilOptions.map((tehsil) => (
+                          <SelectItem key={tehsil.value} value={tehsil.value}>
+                            {tehsil.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>

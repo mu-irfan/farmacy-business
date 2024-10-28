@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { productCategory } from "@/constant/data";
+import { pakistanData, productCategory, provinces } from "@/constant/data";
 import { useContextConsumer } from "@/context/Context";
 import {
   useCreateFranchise,
@@ -34,8 +34,10 @@ import { Toaster } from "react-hot-toast";
 
 const AddFranchiceForm = ({ franchise, onClose }: any) => {
   const { mode, token } = useContextConsumer();
-  const [selectedCategory, setSelectedCategory] = useState("province");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedManagerUuid, setSelectedManagerUuid] = useState("");
+  const [districtOptions, setDistrictOptions] = useState([]);
+  const [tehsilOptions, setTehsilOptions] = useState([]);
 
   //
   const { mutate: addFranchise, isPending: loading } = useCreateFranchise();
@@ -105,6 +107,17 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
         },
       });
     }
+  };
+
+  const handleProvinceChange = (value: string) => {
+    const districts = pakistanData[`districts_${value}`] || [];
+    setDistrictOptions(districts);
+    setTehsilOptions([]);
+  };
+
+  const handleDistrictChange = (value: string) => {
+    const tehsils = pakistanData[`tehsils_${value}`] || [];
+    setTehsilOptions(tehsils);
   };
 
   return (
@@ -260,7 +273,7 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
+                          handleProvinceChange(value);
                           field.onChange(value);
                         }}
                       >
@@ -274,7 +287,7 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
                             <SelectLabel>Select Province</SelectLabel>
-                            {productCategory.map((item) => (
+                            {pakistanData.provinces.map((item) => (
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>
@@ -300,7 +313,7 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
+                          handleDistrictChange(value);
                           field.onChange(value);
                         }}
                       >
@@ -313,10 +326,13 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
-                            <SelectLabel>Select Province</SelectLabel>
-                            {productCategory.map((item) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
+                            <SelectLabel>Select District</SelectLabel>
+                            {districtOptions.map((district) => (
+                              <SelectItem
+                                key={district.value}
+                                value={district.value}
+                              >
+                                {district.label}
                               </SelectItem>
                             ))}
                           </SelectGroup>
@@ -351,10 +367,13 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
-                            <SelectLabel>Select Province</SelectLabel>
-                            {productCategory.map((item) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
+                            <SelectLabel>Select Tehsil</SelectLabel>
+                            {tehsilOptions.map((tehsil) => (
+                              <SelectItem
+                                key={tehsil.value}
+                                value={tehsil.value}
+                              >
+                                {tehsil.label}
                               </SelectItem>
                             ))}
                           </SelectGroup>

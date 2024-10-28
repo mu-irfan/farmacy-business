@@ -18,10 +18,12 @@ import { CirclePlus, CircleX, Plus, Trash } from "lucide-react";
 
 import {
   activeIngredients,
+  packagingType,
   productCategory,
   productsList,
   productType,
   units,
+  weightUnitType,
 } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import { Textarea } from "@/components/ui/textarea";
@@ -64,7 +66,7 @@ const AddProductForm = ({
 }) => {
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
-  const [selectedCategory, setSelectedCategory] = useState(
+  const [selectedCategory, setSelectedCategory] = useState<any>(
     productData?.category || ""
   );
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
@@ -310,7 +312,7 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
+                          setSelectedCategory(value as any);
                           form.setValue("sub_category", "");
                           field.onChange(value);
                         }}
@@ -353,7 +355,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          // setValue("");
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -693,7 +694,7 @@ const AddProductForm = ({
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
                             <SelectLabel>Weight-Unit</SelectLabel>
-                            {productCategory.map((item) => (
+                            {weightUnitType.map((item) => (
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>
@@ -737,7 +738,7 @@ const AddProductForm = ({
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
                             <SelectLabel>Packaging-Type</SelectLabel>
-                            {productCategory.map((item) => (
+                            {packagingType.map((item) => (
                               <SelectItem key={item.value} value={item.value}>
                                 {item.label}
                               </SelectItem>

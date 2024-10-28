@@ -110,8 +110,6 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   };
 
   const handleProductDelete = async (productId: string) => {
-    console.log(productId, "Delete Product");
-
     const isConfirmed = await SweetAlert(
       "Delete Subscribed Product?",
       "",

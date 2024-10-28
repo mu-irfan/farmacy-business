@@ -13,7 +13,7 @@ import { filterProductsFormSchema } from "@/schemas/validation/validationSchema"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import { productCategory } from "@/constant/data";
+import { productCategory, productsList } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import {
   Select,
@@ -46,7 +46,7 @@ const FilterProductForm = () => {
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
             <Label htmlFor="category" className="dark:text-farmacieGrey">
-              Crop Category
+              Category
             </Label>
             <FormField
               control={form.control}
@@ -105,12 +105,15 @@ const FilterProductForm = () => {
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>All Sub-Categories</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
+                          <SelectLabel>Sub-Category</SelectLabel>
+                          {selectedCategory &&
+                            productsList[selectedCategory]?.map(
+                              (subCategory: any, ind: number) => (
+                                <SelectItem key={ind} value={subCategory}>
+                                  {subCategory}
+                                </SelectItem>
+                              )
+                            )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>

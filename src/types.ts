@@ -71,6 +71,15 @@ interface Manager {
   contact: string;
 }
 
+interface TrailData {
+  id: number;
+  stage: string;
+  principle_stage: string;
+  start_day: string;
+  end_day: string;
+  kc: string;
+}
+
 interface Franchise {
   id: number;
   full_name: string;
@@ -82,6 +91,27 @@ interface Franchise {
   tehsil: string;
   active: boolean;
   remainingDays: number;
+}
+
+interface SeedTrails {
+  id: number;
+  variety_name: string;
+  sowing_date: string;
+  tehsil: string;
+  city: string;
+  min_irrigation_mm: string;
+  max_irrigation_mm: string;
+  est_yield: string;
+}
+
+interface SeedTrailsStages {
+  id: number;
+  stage: string;
+  principle_stage: string;
+  BBCH_scale: string;
+  start_day: string;
+  end_day: string;
+  kc: string;
 }
 
 interface Suggestions {
@@ -107,6 +137,10 @@ interface FranchiseTableRow extends Franchise {
   actions?: never;
 }
 
+interface SeedTrailTableRow extends SeedTrails {
+  actions?: never;
+}
+
 interface SuggestionsTableActionRow extends Suggestions {
   viewed?: never;
   actions?: never;
@@ -117,6 +151,8 @@ type ProductColumnAccessor = keyof Product | "actions";
 type SeedColumnAccessor = keyof Seed | "actions";
 
 type ManagersColumnAccessor = keyof Manager | "actions";
+
+type TrailDataColumnAccessor = keyof TrailData;
 
 type FranchiseColumnAccessor = keyof Franchise | "actions" | "active";
 

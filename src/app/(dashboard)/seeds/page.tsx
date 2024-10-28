@@ -27,7 +27,7 @@ const Seeds = () => {
               <CardTitle className="text-3xl lg:text-6xl font-bold text-green-500">
                 {stats?.data?.seedCountglobalList < 10
                   ? `0${stats?.data?.seedCountglobalList}`
-                  : stats?.data?.seedCountglobalList}
+                  : stats?.data?.seedCountglobalList || "00"}
               </CardTitle>
             </CardHeader>
             <CardContent>

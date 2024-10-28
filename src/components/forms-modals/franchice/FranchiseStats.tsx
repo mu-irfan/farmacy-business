@@ -23,22 +23,29 @@ const FranchiseStats = ({
               {franchiseEntries.map(
                 ([key, value]: [string, any], index: number) => {
                   if (key === "uuid") return null;
+
                   if (key === "franchise_manager") {
                     return (
-                      <li
-                        key={index}
-                        className="grid grid-cols-[150px_1fr] gap-8"
-                      >
-                        <span className="dark:text-farmacieGrey capitalize">
-                          {key}:
-                        </span>
-                        <span className="text-gray-800 font-light capitalize dark:text-white">
-                          {value.full_name || "N/A"}
-                        </span>
-                      </li>
+                      <div key={index}>
+                        <li className="grid grid-cols-[150px_1fr] gap-8">
+                          <span className="dark:text-farmacieGrey capitalize">
+                            Franchise Manager:
+                          </span>
+                          <span className="text-gray-800 font-light capitalize dark:text-white">
+                            {value.full_name || "N/A"}
+                          </span>
+                        </li>
+                        <li className="grid grid-cols-[150px_1fr] gap-8 pt-4">
+                          <span className="dark:text-farmacieGrey capitalize">
+                            Contact:
+                          </span>
+                          <span className="text-gray-800 font-light capitalize dark:text-white">
+                            {value.contact || "N/A"}
+                          </span>
+                        </li>
+                      </div>
                     );
                   }
-
                   return (
                     <li
                       key={index}

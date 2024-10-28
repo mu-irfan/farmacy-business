@@ -26,7 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { productCategory, suitahleRegion } from "@/constant/data";
+import {
+  cropCategories,
+  cropCategoriesOptions,
+  crops,
+  productCategory,
+  suitahleRegion,
+} from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
 import {
   useCreateSeed,
@@ -75,8 +81,6 @@ const AddSeedForm = ({
     useDeleteSeedImage(token);
   const { mutate: updateSeed, isPending: updating } = useUpdateSeed(token);
 
-  console.log(updateSeed, "updatessssssSeed");
-
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
     resolver: zodResolver(addSeedFormSchema),
     defaultValues: {
@@ -92,6 +96,10 @@ const AddSeedForm = ({
       max_harvesting_days: "",
       suitable_region: "",
       package_type: "",
+      height_class: "",
+      nutrient_content: "",
+      Common_disease_tolerance: "",
+      environmental_resilience_factors: "",
       price: "",
       description: "",
     },
@@ -114,6 +122,11 @@ const AddSeedForm = ({
         max_harvesting_days: seed.max_harvesting_days || "",
         suitable_region: seed.suitable_region || "",
         package_type: seed.package_type || "",
+        height_class: seed.height_class || "",
+        nutrient_content: seed.nutrient_content || "",
+        Common_disease_tolerance: seed.Common_disease_tolerance || "",
+        environmental_resilience_factors:
+          seed.environmental_resilience_factors || "",
         price: seed.price || "",
         description: seed.description || "",
       });
@@ -136,6 +149,13 @@ const AddSeedForm = ({
     formData.append("max_harvesting_days", data.max_harvesting_days);
     formData.append("suitable_region", data.suitable_region);
     formData.append("package_type", data.package_type);
+    formData.append("height_class", data.height_class);
+    formData.append("nutrient_content", data.nutrient_content);
+    formData.append("Common_disease_tolerance", data.Common_disease_tolerance);
+    formData.append(
+      "environmental_resilience_factors",
+      data.environmental_resilience_factors
+    );
     formData.append("price", data.price);
     formData.append("description", data.description);
 
@@ -147,10 +167,6 @@ const AddSeedForm = ({
     selectedImages.forEach((image) => {
       formData.append(`images`, image);
     });
-
-    for (const [key, value] of formData.entries()) {
-      console.log(`${key}: ${typeof value}`, "fadsfadsffasdfdsaf");
-    }
 
     if (mode === "add") {
       addSeed(
@@ -177,8 +193,6 @@ const AddSeedForm = ({
       );
     }
   };
-
-  console.log(seed, "seeeeeeed");
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
@@ -317,7 +331,7 @@ const AddSeedForm = ({
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
                               <SelectLabel>Category</SelectLabel>
-                              {productCategory.map((item) => (
+                              {cropCategories.map((item) => (
                                 <SelectItem key={item.value} value={item.value}>
                                   {item.label}
                                 </SelectItem>
@@ -343,8 +357,6 @@ const AddSeedForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
-                            // setValue("");
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -357,11 +369,14 @@ const AddSeedForm = ({
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
                               <SelectLabel>Crop</SelectLabel>
-                              {productCategory.map((item) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </SelectItem>
-                              ))}
+                              {selectedCategory &&
+                                cropCategoriesOptions[selectedCategory]?.map(
+                                  (crop: any, ind: number) => (
+                                    <SelectItem key={ind} value={crop}>
+                                      {crop}
+                                    </SelectItem>
+                                  )
+                                )}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
@@ -375,7 +390,7 @@ const AddSeedForm = ({
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
               <LabelInputContainer>
                 <Label htmlFor="seed_weight" className="dark:text-farmacieGrey">
-                  Seed weight (g)
+                  Seed weight (mg)
                 </Label>
                 <FormField
                   control={form.control}
@@ -384,7 +399,7 @@ const AddSeedForm = ({
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter seed in gram"
+                          placeholder="Enter seed in milligram"
                           type="text"
                           id="seed_weight"
                           className="outline-none focus:border-primary disabled:bg-primary/20"
@@ -629,30 +644,188 @@ const AddSeedForm = ({
                 />
               </LabelInputContainer>
             </div>
-            <LabelInputContainer className="mb-4">
-              <Label htmlFor="price" className="dark:text-farmacieGrey">
-                Price
-              </Label>
-              <FormField
-                control={form.control}
-                name="price"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter Price"
-                        type="text"
-                        id="price"
-                        className="outline-none focus:border-primary disabled:bg-primary/20"
-                        {...field}
-                        disabled={isViewMode}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+              <LabelInputContainer>
+                <Label
+                  htmlFor="height_class"
+                  className="dark:text-farmacieGrey"
+                >
+                  Height Class
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="height_class"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Select
+                          onValueChange={(value) => {
+                            setSelectedCategory(value);
+                            field.onChange(value);
+                          }}
+                          disabled={isViewMode}
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                            <SelectValue
+                              placeholder={
+                                seed?.height_class || "Select Height Class"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>Height Class</SelectLabel>
+                              {suitahleRegion.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label
+                  htmlFor="nutrient_content"
+                  className="dark:text-farmacieGrey"
+                >
+                  Nutrient Content (Optional)
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="nutrient_content"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter any nutrient content"
+                          type="text"
+                          id="nutrient_content"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+            </div>
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+              <LabelInputContainer>
+                <Label
+                  htmlFor="Common_disease_tolerance"
+                  className="dark:text-farmacieGrey"
+                >
+                  Common Disease Tolerance (Optional)
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="Common_disease_tolerance"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter any disease tolerance"
+                          type="text"
+                          id="Common_disease_tolerance"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label
+                  htmlFor="environmental_resilience_factors"
+                  className="dark:text-farmacieGrey"
+                >
+                  Environmental Resilience Factors (optional)
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="environmental_resilience_factors"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter any resilience to environment"
+                          type="text"
+                          id="environmental_resilience_factors"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+            </div>
+            <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
+              <LabelInputContainer className="mb-4">
+                <Label htmlFor="price" className="dark:text-farmacieGrey">
+                  Price
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="price"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter Price"
+                          type="text"
+                          id="price"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label
+                  htmlFor="Unique_features"
+                  className="dark:text-farmacieGrey"
+                >
+                  Unique features (optional)
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="Unique_features"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Enter Unique features"
+                          type="text"
+                          id="Unique_features"
+                          className="outline-none focus:border-primary disabled:bg-primary/20"
+                          {...field}
+                          disabled={isViewMode}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+            </div>
             <LabelInputContainer className="mb-2.5">
               <Label htmlFor="description" className="dark:text-farmacieGrey">
                 Description

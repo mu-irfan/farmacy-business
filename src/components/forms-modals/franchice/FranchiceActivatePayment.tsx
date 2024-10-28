@@ -101,7 +101,7 @@ const ActivateFranchisePaymentModal = ({
                 </CardTitle>
               </div>
             </Card>
-            <Card className="w-full py-8 rounded-xl text-center bg-primary/10">
+            {/* <Card className="w-full py-8 rounded-xl text-center bg-primary/10">
               <div className="flex items-center justify-start pl-4 md:pl-10">
                 <CustomCheckbox
                   id="payment-card"
@@ -112,7 +112,7 @@ const ActivateFranchisePaymentModal = ({
                   Pay With Card
                 </CardTitle>
               </div>
-            </Card>
+            </Card> */}
             <Button
               className="w-full text-white font-medium my-4"
               type="button"

@@ -10,7 +10,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardTitle } from "@/components/ui/card";
 import ActivateFranchisePaymentModal from "./FranchiceActivatePayment";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
-import { useGetInActiveFranchises } from "@/hooks/useDataFetch";
+import {
+  useGetInActiveFranchises,
+  useGetInquiryPayment,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import { Toaster } from "react-hot-toast";
@@ -25,6 +28,7 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
   // franchise
   const { data: inActiveFranchises, isLoading: loading } =
     useGetInActiveFranchises(token);
+  const { refetch } = useGetInquiryPayment(token);
 
   useEffect(() => {
     if (inActiveFranchises?.data) {
@@ -79,6 +83,7 @@ const ActivateFranchiseModal = ({ open, onOpenChange }: any) => {
                 size="sm"
                 className="font-medium border-primary dark:border-yellow-400 dark:text-yellow-500 mt-2 md:mt-0"
                 type="button"
+                onClick={() => refetch()}
               >
                 Payment Inquiry
               </Button>
