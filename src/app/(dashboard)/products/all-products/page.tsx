@@ -32,12 +32,12 @@ const AllProducts = () => {
     null
   );
 
+  // data management
   const { data: products, isLoading: loading } = useGetAllProducts(token);
   const { data: productDetails, isLoading: productLoading } = useGetProduct(
     currentProductUuid!,
     token
   );
-
   const { mutate: deleteProduct, isPending: deletingProduct } =
     useDeleteProduct(token);
 

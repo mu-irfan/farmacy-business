@@ -33,6 +33,8 @@ const SubscribeNewSeeds = ({ params }: any) => {
     token
   );
 
+  console.log(seedDetails, "seedDetails");
+
   const handleSearchChange = debounce((value: string) => {
     setSearchQuery(value);
   }, 300);
@@ -60,7 +62,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
   const seedColumns: {
     Header: string;
     accessor: SeedColumnAccessor;
-    Cell?: ({ row }: any) => JSX.Element;
+    Cell?: ({ row }: any) => JSX.Element | null;
   }[] = [
     { Header: "Seed Variety Name", accessor: "seed_variety_name" },
     { Header: "Brand Name", accessor: "company_fk" },
@@ -80,16 +82,16 @@ const SubscribeNewSeeds = ({ params }: any) => {
       Header: "",
       accessor: "actions",
       Cell: ({ row }: any) =>
-        !row.original.subscribed && (
+        !row.original.subscribed ? (
           <Button
             size="sm"
             variant="outline"
             onClick={() => handleView(row.original)}
-            className="border-primary bg-primary/10  text-primary tracking-wider hover:text-primary/80"
+            className="border-primary bg-primary/10 text-primary tracking-wider hover:text-primary/80"
           >
             View & Subscribe
           </Button>
-        ),
+        ) : null,
     },
   ];
 

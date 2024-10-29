@@ -25,8 +25,12 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type SeedCategory = keyof typeof cropCategoriesOptions;
+
 const FilterSeedForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+  const [selectedCategory, setSelectedCategory] = useState<SeedCategory | "">(
+    ""
+  );
 
   const form = useForm<z.infer<typeof filterSeedFormSchema>>({
     resolver: zodResolver(filterSeedFormSchema),
@@ -56,7 +60,7 @@ const FilterSeedForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
+                        setSelectedCategory(value as any);
                         field.onChange(value);
                       }}
                     >

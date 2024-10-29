@@ -60,7 +60,7 @@ const SubscribeNewProduct = ({ params }: any) => {
   const productColumns: {
     Header: string;
     accessor: ProductColumnAccessor;
-    Cell?: ({ row }: any) => JSX.Element;
+    Cell?: ({ row }: any) => JSX.Element | null;
   }[] = [
     { Header: "Product Name", accessor: "name" },
     { Header: "Brand Name", accessor: "company_fk" },
@@ -80,7 +80,7 @@ const SubscribeNewProduct = ({ params }: any) => {
       Header: "",
       accessor: "actions",
       Cell: ({ row }: any) =>
-        !row.original.subscribed && (
+        !row.original.subscribed ? (
           <Button
             size="sm"
             variant="outline"
@@ -89,7 +89,7 @@ const SubscribeNewProduct = ({ params }: any) => {
           >
             View & Subscribe
           </Button>
-        ),
+        ) : null,
     },
   ];
 

@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useGetProductStats } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import { Toaster } from "react-hot-toast";
 
 export default function Dashboard() {
   const { token } = useContextConsumer();
@@ -31,6 +32,7 @@ export default function Dashboard() {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout contentAtCenter>
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {loading ? (

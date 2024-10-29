@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "../../ui/select";
-import { pakistanData, productCategory, provinces } from "@/constant/data";
+import { pakistanData } from "@/constant/data";
 import { useContextConsumer } from "@/context/Context";
 import {
   useCreateFranchise,
@@ -36,15 +36,14 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
   const { mode, token } = useContextConsumer();
   const [selectedCategory, setSelectedCategory] = useState("");
   const [selectedManagerUuid, setSelectedManagerUuid] = useState("");
-  const [districtOptions, setDistrictOptions] = useState([]);
-  const [tehsilOptions, setTehsilOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState<Option[]>([]);
+  const [tehsilOptions, setTehsilOptions] = useState<Option[]>([]);
 
   //
   const { mutate: addFranchise, isPending: loading } = useCreateFranchise();
   const { data: managers, isLoading: loadingManagers } =
     useGetAllManagers(token);
-  const { mutate: updateFranchise, isPending: updating } =
-    useUpdateFranchise(token);
+  const { mutate: updateFranchise, isPending: updating } = useUpdateFranchise();
 
   const form = useForm<z.infer<typeof addFranchiseFormSchema>>({
     resolver: zodResolver(addFranchiseFormSchema),
@@ -95,9 +94,12 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
       );
     } else if (mode === "edit") {
       const updatedData = {
-        ...data,
-        user_fk: selectedManagerUuid,
-        uuid: franchise?.uuid,
+        data: {
+          ...data,
+          user_fk: selectedManagerUuid,
+          uuid: franchise?.uuid,
+        },
+        token,
       };
       updateFranchise(updatedData, {
         onSuccess: (log) => {
@@ -111,13 +113,13 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
 
   const handleProvinceChange = (value: string) => {
     const districts = pakistanData[`districts_${value}`] || [];
-    setDistrictOptions(districts);
+    setDistrictOptions(districts as any);
     setTehsilOptions([]);
   };
 
   const handleDistrictChange = (value: string) => {
     const tehsils = pakistanData[`tehsils_${value}`] || [];
-    setTehsilOptions(tehsils);
+    setTehsilOptions(tehsils as any);
   };
 
   return (

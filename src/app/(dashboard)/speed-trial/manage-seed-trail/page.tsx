@@ -1,42 +1,36 @@
 "use client";
-import React, { useMemo, useState } from "react";
+import React, { useState } from "react";
 import DashboardLayout from "../../dashboard-layout";
-import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Ban, Check, Filter, Search, Trash } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { Input } from "@/components/ui/input";
 import FilterFranchiceModal from "@/components/forms-modals/franchice/FilterFranchice";
-import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
 import DataTable from "@/components/Table/DataTable";
 import Header from "@/components/Header";
-import { useDeleteFranchise, useGetAllFranchises } from "@/hooks/useDataFetch";
+import {
+  useGetAllSeedTrails,
+  useGetAllSeedTrailsStages,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
-import { debounce } from "lodash";
-import { SweetAlert } from "@/components/alerts/SweetAlert";
 import NoData from "@/components/alerts/NoData";
 import { SkeletonCard } from "@/components/SkeletonLoader";
-import { SeedTrails } from "@/constant/data";
 
 const ManageSeedTrailData = () => {
-  const router = useRouter();
   const { token } = useContextConsumer();
   const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] =
     useState<boolean>(false);
   const [viewStageAgainstSeed, setViewStageAgainstSeed] =
     useState<boolean>(false);
+  const [trailUuid, setTrailUuid] = useState<string>("");
 
-  // franchises
-  const { data: franchises, isLoading: loading } = useGetAllFranchises(token);
-  const { mutate: deleteManager, isPending: deletingManager } =
-    useDeleteFranchise(token);
+  // seed trails
+  const { data: seedTrails, isLoading: loading } = useGetAllSeedTrails(token);
+  const { data: trailStages } = useGetAllSeedTrailsStages(trailUuid, token);
 
-  const handleView = (franchise: any) => {
+  const handleView = (uuid: any) => {
     setViewStageAgainstSeed(true);
-    // router.push(`/franchises/manage-franchises/franchise/${franchise.uuid}`);
+    setTrailUuid(uuid);
   };
 
-  const franchiseColumns: {
+  const SeedTrailColoumn: {
     Header: string;
     accessor: keyof SeedTrails | "actions";
     Cell?: ({ row }: any) => JSX.Element;
@@ -44,19 +38,19 @@ const ManageSeedTrailData = () => {
     {
       Header: "Seed variety name",
       accessor: "variety_name",
-      Cell: ({ row }: any) =>
-        row.original.franchise_manager?.full_name || "N/A",
+      Cell: ({ row }: any) => row.original.seed || "N/A",
     },
     {
       Header: "Sowing date",
       accessor: "sowing_date",
-      Cell: ({ row }: any) => row.original.franchise_manager?.contact || "N/A",
+      Cell: ({ row }: any) =>
+        row.original.sowing_date.toString().split("T")[0] || "N/A",
     },
     { Header: "Tehsil", accessor: "tehsil" },
     { Header: "City", accessor: "city" },
-    { Header: "Min irrigation mm", accessor: "min_irrigation_mm" },
-    { Header: "Max irrigation mm", accessor: "max_irrigation_mm" },
-    { Header: "Est yield", accessor: "est_yield" },
+    { Header: "Min irrigation mm", accessor: "min_irrigation" },
+    { Header: "Max irrigation mm", accessor: "max_irrigation" },
+    { Header: "Est yield", accessor: "estimated_yield" },
     {
       Header: "",
       accessor: "actions",
@@ -64,7 +58,7 @@ const ManageSeedTrailData = () => {
         <Button
           size="sm"
           variant="outline"
-          onClick={() => handleView(row.original)}
+          onClick={() => handleView(row.original.uuid)}
           className="border-primary bg-primary/10 w-20 text-primary tracking-wider hover:text-primary/80"
         >
           Trial
@@ -81,15 +75,14 @@ const ManageSeedTrailData = () => {
     {
       Header: "Stage",
       accessor: "stage",
-      Cell: ({ row }: any) =>
-        row.original.franchise_manager?.full_name || "N/A",
+      Cell: ({ row }: any) => row.original?.stage || "N/A",
     },
     {
       Header: "Principle Stage",
-      accessor: "principle_stage",
-      Cell: ({ row }: any) => row.original.franchise_manager?.contact || "N/A",
+      accessor: "sub_stage",
+      Cell: ({ row }: any) => row.original?.sub_stage || "N/A",
     },
-    { Header: "BBCH scale", accessor: "BBCH_scale" },
+    { Header: "BBCH scale", accessor: "bbch_scale" },
     { Header: "Start day", accessor: "start_day" },
     { Header: "End day", accessor: "end_day" },
     { Header: "Kc", accessor: "kc" },
@@ -114,11 +107,11 @@ const ManageSeedTrailData = () => {
         {!viewStageAgainstSeed &&
           (loading ? (
             <SkeletonCard className="w-full h-80" />
-          ) : SeedTrails && SeedTrails.length > 0 ? (
+          ) : seedTrails && seedTrails.data.length > 0 ? (
             <div className="mt-8">
               <DataTable
-                columns={franchiseColumns}
-                data={SeedTrails as SeedTrailTableRow[]}
+                columns={SeedTrailColoumn}
+                data={seedTrails.data as SeedTrailTableRow[]}
               />
             </div>
           ) : (
@@ -128,11 +121,11 @@ const ManageSeedTrailData = () => {
         {viewStageAgainstSeed &&
           (loading ? (
             <SkeletonCard className="w-full h-80" />
-          ) : SeedTrails && SeedTrails.length > 0 ? (
+          ) : trailStages && trailStages.data.length > 0 ? (
             <div className="mt-8">
               <DataTable
                 columns={stageColumns}
-                data={SeedTrails as SeedTrailTableRow[]}
+                data={trailStages?.data as SeedTrailsStages[]}
               />
             </div>
           ) : (

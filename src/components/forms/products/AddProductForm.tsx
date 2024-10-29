@@ -48,6 +48,9 @@ import { SweetAlert } from "@/components/alerts/SweetAlert";
 import { baseUrl } from "@/lib/utils";
 import Image from "next/image";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import toast from "react-hot-toast";
+
+type ProductCategory = keyof typeof productsList;
 
 const AddProductForm = ({
   mode,
@@ -66,12 +69,18 @@ const AddProductForm = ({
 }) => {
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
-  const [selectedCategory, setSelectedCategory] = useState<any>(
-    productData?.category || ""
-  );
+  const [selectedCategory, setSelectedCategory] = useState<
+    ProductCategory | ""
+  >(productData?.category || "");
   const [selectedImages, setSelectedImages] = useState<File[]>([]);
+  const intitialCount =
+    mode === "add"
+      ? 0
+      : productData
+      ? productData?.active_ingredient?.length
+      : 0;
   const { inputFields, handleAddField, handleDeleteField } =
-    useDynamicFields(0);
+    useDynamicFields(intitialCount);
 
   //
   const { mutate: subscribeProduct, isPending: subscribing } =
@@ -167,7 +176,7 @@ const AddProductForm = ({
     });
 
     if (mode === "add" && selectedImages.length < 1) {
-      alert("Please upload at least 1 image.");
+      toast.error("Please upload at least 1 image.");
       return;
     }
 
@@ -183,10 +192,9 @@ const AddProductForm = ({
         }
       );
     }
-
     if (mode === "edit") {
       updateProduct(
-        { data: formData },
+        { data: formData, uuid: productData.uuid },
         {
           onSuccess: (log) => {
             if (log?.success) {
@@ -211,7 +219,8 @@ const AddProductForm = ({
   };
 
   const handleCardClick = () => {
-    if (mode === "add") document.getElementById("fileInput")?.click();
+    if (mode === "add" || mode === "edit")
+      document.getElementById("fileInput")?.click();
   };
 
   const verifyToSubscribeProduct = async () => {
@@ -323,7 +332,6 @@ const AddProductForm = ({
                             placeholder={
                               productData?.category || "Select Category"
                             }
-                            className=""
                           />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -403,8 +411,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
-                          // setValue("");
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -469,8 +475,6 @@ const AddProductForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
-                            // setValue("");
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -529,8 +533,6 @@ const AddProductForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
-                            // setValue("");
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -595,8 +597,6 @@ const AddProductForm = ({
                         <FormControl>
                           <Select
                             onValueChange={(value) => {
-                              setSelectedCategory(value);
-                              // setValue("");
                               field.onChange(value);
                             }}
                             disabled={isViewMode}
@@ -678,8 +678,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
-                          // setValue("");
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -722,7 +720,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -788,7 +785,6 @@ const AddProductForm = ({
                     <FormControl>
                       <Select
                         onValueChange={(value) => {
-                          setSelectedCategory(value);
                           field.onChange(value);
                         }}
                         disabled={isViewMode}
@@ -926,10 +922,10 @@ const AddProductForm = ({
               </CardContent>
             </Card>
           )}
-          {(isViewMode && subscribe) ||
-            (productData?.product_image?.length > 0 && (
+          {(isViewMode || mode === "edit") &&
+            (subscribe || productData?.product_image?.length > 0) && (
               <div className="flex flex-wrap mb-4">
-                {productData.product_image.map((image: any, index: number) => (
+                {productData.product_image?.map((image: any, index: number) => (
                   <div key={index} className="relative h-32 w-32 m-1">
                     <Image
                       src={`${baseUrl.replace("/api", "")}${image.image_url}`}
@@ -944,13 +940,13 @@ const AddProductForm = ({
                         type="button"
                         className="absolute top-0 right-0 p-1.5 bg-white rounded-full shadow-lg"
                       >
-                        <CircleX className="h-4 w-4 text-red-600" />{" "}
+                        <CircleX className="h-4 w-4 text-red-600" />
                       </button>
                     )}
                   </div>
                 ))}
               </div>
-            ))}
+            )}
           <Input
             id="fileInput"
             type="file"

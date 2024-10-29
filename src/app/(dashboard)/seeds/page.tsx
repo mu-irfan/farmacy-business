@@ -8,6 +8,7 @@ import AddSeedModal from "@/components/forms-modals/seeds/AddSeed";
 import { useGetSeedsStats } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import { Toaster } from "react-hot-toast";
 
 const Seeds = () => {
   const { token } = useContextConsumer();
@@ -18,6 +19,7 @@ const Seeds = () => {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout contentAtCenter>
         {loading ? (
           <SkeletonCard className="h-60 w-[30vw]" />

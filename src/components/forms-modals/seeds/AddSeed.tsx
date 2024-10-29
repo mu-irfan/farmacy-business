@@ -16,7 +16,7 @@ const AddSeedModal = ({
   onOpenChange,
   mode,
   seedData,
-  subscribe,
+  subscribe = false,
   currentFranchiseUuid,
   loading,
 }: any) => {

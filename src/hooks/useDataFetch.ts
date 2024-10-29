@@ -69,6 +69,7 @@ import {
 } from "@/api/subscribe";
 import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
 import { createBulkPayment, inquiryPayment } from "@/api/payment";
+import { getAllSeedTrail, getSeedTrailStages } from "@/api/seedTrail";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -157,7 +158,7 @@ export const useForgotPasswordResetPassword = () => {
 
 // managers API's Functions
 export const useGetManagerStats = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["managerStats", token],
     queryFn: () => getManagerStats(token),
     onSuccess: (data: any) => {
@@ -195,7 +196,7 @@ export const useCreateManager = () => {
 };
 
 export const useGetAllManagers = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["allManagers", token],
     queryFn: () => getAllManagers(token),
     onSuccess: (data: any) => {
@@ -213,10 +214,11 @@ export const useGetAllManagers = (token: string) => {
   } as UseQueryOptions);
 };
 
-export const useUpdateManager = (token: string) => {
+export const useUpdateManager = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => updateManager(data, token),
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      updateManager(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
@@ -251,7 +253,7 @@ export const useDeleteManager = (token: string) => {
 
 // Suggestion  API's Functions
 export const useGetSuggestionsStats = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["suggestionsStats", token],
     queryFn: () => getSuggestionsStats(token),
     onSuccess: (data: any) => {
@@ -289,7 +291,7 @@ export const useCreateTicket = () => {
 };
 
 export const useGetAllTickets = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["alTickets", token],
     queryFn: () => getAllQueries(token),
     onSuccess: (data: any) => {
@@ -308,7 +310,7 @@ export const useGetAllTickets = (token: string) => {
 };
 
 export const useGetTicketsChats = (uuid: any, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["alTicketsChats", token],
     queryFn: () => getQueriesChats(uuid, token),
     onSuccess: (data: any) => {
@@ -430,6 +432,8 @@ export const useCreateProduct = () => {
       createProduct(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
+        console.log(data, "creating");
+
         toast.success(data?.message);
         queryClient.invalidateQueries(["allProducts", variables.token] as any);
       } else {
@@ -465,7 +469,8 @@ export const useGetProduct = (uuid: string, token: string) => {
 export const useUpdateProduct = (token: string) => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: ({ data }: { data: any }) => updateProduct(data, token),
+    mutationFn: ({ data, uuid }: { data: any; uuid: any }) =>
+      updateProduct(data, uuid, token),
     onSuccess: (data: any) => {
       if (data?.success) {
         toast.success(data.message);
@@ -518,7 +523,7 @@ export const useDeleteProduct = (token: string) => {
 
 // Seeds  API's Functions
 export const useGetSeedsStats = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["seedsStats", token],
     queryFn: () => getSeedsStats(token),
     onSuccess: (data: any) => {
@@ -542,6 +547,8 @@ export const useCreateSeed = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createSeed(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
+      console.log(data, "creating seed");
+
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries(["allSeeds", variables.token] as any);
@@ -556,7 +563,7 @@ export const useCreateSeed = () => {
 };
 
 export const useGetAllSeeds = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["allSeeds", token],
     queryFn: () => getAllSeeds(token),
     onSuccess: (data: any) => {
@@ -575,7 +582,7 @@ export const useGetAllSeeds = (token: string) => {
 };
 
 export const useGetSeed = (uuid: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["seed", uuid, token],
     queryFn: () => getSeed(uuid, token),
     onSuccess: (data: any) => {
@@ -652,7 +659,7 @@ export const useDeleteSeed = (token: string) => {
 // Products  API's Functions
 
 export const useGetFranchiseStats = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["franchiseStats", token],
     queryFn: () => getFranchisesStats(token),
     onSuccess: (data: any) => {
@@ -693,7 +700,7 @@ export const useCreateFranchise = () => {
 };
 
 export const useGetAllFranchises = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["allFranchises", token],
     queryFn: () => getAllFranchises(token),
     onSuccess: (data: any) => {
@@ -712,7 +719,7 @@ export const useGetAllFranchises = (token: string) => {
 };
 
 export const useGetInActiveFranchises = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["inactiveFranchises", token],
     queryFn: () => getAllInActiveFranchise(token),
     onSuccess: (data: any) => {
@@ -751,10 +758,11 @@ export const useDeleteFranchise = (token: string) => {
   });
 };
 
-export const useUpdateFranchise = (token: string) => {
+export const useUpdateFranchise = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => updateFranchise(data, token),
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      updateFranchise(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
@@ -774,7 +782,7 @@ export const useUpdateFranchise = (token: string) => {
 
 // Subscribed Integrations Functions
 export const useGetSubscribedProduct = (uuid: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["subsribedProduct", uuid, token],
     queryFn: () => getSubscribedProduct(uuid, token),
     onSuccess: (data: any) => {
@@ -794,7 +802,7 @@ export const useGetSubscribedProduct = (uuid: string, token: string) => {
 };
 
 export const useGetSubscribedSeed = (uuid: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["subsribedSeed", uuid, token],
     queryFn: () => getSubscribedSeed(uuid, token),
     onSuccess: (data: any) => {
@@ -876,7 +884,7 @@ export const useDeleteSubscribedSeed = (token: string, fk: string) => {
 };
 
 export const useGetUnSubscribedProduct = (fk: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["unSubsribedProduct", fk, token],
     queryFn: () => getAllUnSubProducts(fk, token),
     onSuccess: (data: any) => {
@@ -896,7 +904,7 @@ export const useGetUnSubscribedProduct = (fk: string, token: string) => {
 };
 
 export const useGetUnSubscribedSeed = (fk: string, token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["unSubsribedSeed", fk, token],
     queryFn: () => getAllUnSubSeeds(fk, token),
     onSuccess: (data: any) => {
@@ -961,7 +969,7 @@ export const useSubscribeSeed = () => {
 
 // company profile
 export const useGetCompanyProfile = (token: string) => {
-  return useQuery({
+  return useQuery<any, Error>({
     queryKey: ["companyProfile", token],
     queryFn: () => getCompanyProfile(token),
     onSuccess: (data: any) => {
@@ -979,10 +987,11 @@ export const useGetCompanyProfile = (token: string) => {
   } as UseQueryOptions);
 };
 
-export const useUpdateCompanyProfile = (token: string) => {
+export const useUpdateCompanyProfile = () => {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (data: any) => updateCompanyProfile(data, token),
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      updateCompanyProfile(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data.message);
@@ -1040,5 +1049,46 @@ export const useGetInquiryPayment = (token: string) => {
     staleTime: 0,
     refetchOnWindowFocus: false,
     enabled: false,
+  } as UseQueryOptions);
+};
+
+// seed trail
+
+export const useGetAllSeedTrails = (token: string) => {
+  return useQuery<any, Error>({
+    queryKey: ["allSeedTrails", token],
+    queryFn: () => getAllSeedTrail(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
+export const useGetAllSeedTrailsStages = (uuid: string, token: string) => {
+  return useQuery<any, Error>({
+    queryKey: ["allSeedTrailsStages", uuid, token],
+    queryFn: () => getSeedTrailStages(uuid, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+    enabled: !!uuid,
   } as UseQueryOptions);
 };

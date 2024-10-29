@@ -1,11 +1,11 @@
 import Swal from "sweetalert2";
 
 export const SweetAlert = (
-  title?: string | undefined,
-  text?: string | undefined,
-  icon?: "success" | "error" | "warning" | "info" | "question" | undefined,
-  confirmButtonText?: string | undefined,
-  confirmButtonColor?: string | undefined
+  title?: string,
+  text?: string,
+  icon?: "success" | "error" | "warning" | "info" | "question",
+  confirmButtonText?: string,
+  confirmButtonColor?: string
 ): Promise<boolean> => {
   return new Promise((resolve) => {
     Swal.fire({
@@ -17,7 +17,9 @@ export const SweetAlert = (
       cancelButtonColor: "#d33",
       confirmButtonText: confirmButtonText,
       iconColor: "#d33",
-      customClass: "alert-modal",
+      customClass: {
+        popup: "alert-modal",
+      },
     }).then((result) => {
       resolve(result.isConfirmed);
     });

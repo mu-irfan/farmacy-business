@@ -29,7 +29,7 @@ import {
 import {
   cropCategories,
   cropCategoriesOptions,
-  crops,
+  heightClass,
   productCategory,
   suitahleRegion,
 } from "@/constant/data";
@@ -46,6 +46,9 @@ import { baseUrl } from "@/lib/utils";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import toast from "react-hot-toast";
+
+type SeedCategory = keyof typeof cropCategoriesOptions;
 
 const AddSeedForm = ({
   mode,
@@ -65,10 +68,10 @@ const AddSeedForm = ({
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
   const router = useRouter();
-  const [selectedCategory, setSelectedCategory] = useState(
+  const [selectedCategory, setSelectedCategory] = useState<SeedCategory | "">(
     seed?.category || ""
   );
-  const [selectedImages, setSelectedImages] = useState<File[]>([]); // State for selected images
+  const [selectedImages, setSelectedImages] = useState<File[]>([]);
   const [
     isAddSeedTrailDataInstructionModalOpen,
     setAddSeedTrailDataInstructionModalOpen,
@@ -150,17 +153,26 @@ const AddSeedForm = ({
     formData.append("suitable_region", data.suitable_region);
     formData.append("package_type", data.package_type);
     formData.append("height_class", data.height_class);
-    formData.append("nutrient_content", data.nutrient_content);
-    formData.append("Common_disease_tolerance", data.Common_disease_tolerance);
-    formData.append(
-      "environmental_resilience_factors",
-      data.environmental_resilience_factors
-    );
     formData.append("price", data.price);
     formData.append("description", data.description);
+    if (data.nutrient_content) {
+      formData.append("nutrient_content", data.nutrient_content);
+    }
+    if (data.Common_disease_tolerance) {
+      formData.append(
+        "Common_disease_tolerance",
+        data.Common_disease_tolerance
+      );
+    }
+    if (data.environmental_resilience_factors) {
+      formData.append(
+        "environmental_resilience_factors",
+        data.environmental_resilience_factors
+      );
+    }
 
     if (mode === "add" && selectedImages.length < 1) {
-      alert("Please upload at least 1 image.");
+      toast.error("Please upload at least 1 image.");
       return;
     }
 
@@ -207,7 +219,8 @@ const AddSeedForm = ({
   };
 
   const handleCardClick = () => {
-    if (mode === "add") document.getElementById("fileInput")?.click();
+    if (mode === "add" || mode === "edit")
+      document.getElementById("fileInput")?.click();
   };
 
   const verifyToSubscribeSeed = async () => {
@@ -316,7 +329,7 @@ const AddSeedForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
+                            setSelectedCategory(value as any);
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -568,7 +581,6 @@ const AddSeedForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -613,8 +625,6 @@ const AddSeedForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
-                            // setValue("");
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -660,7 +670,6 @@ const AddSeedForm = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
-                            setSelectedCategory(value);
                             field.onChange(value);
                           }}
                           disabled={isViewMode}
@@ -675,7 +684,7 @@ const AddSeedForm = ({
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
                               <SelectLabel>Height Class</SelectLabel>
-                              {suitahleRegion.map((item) => (
+                              {heightClass.map((item) => (
                                 <SelectItem key={item.value} value={item.value}>
                                   {item.label}
                                 </SelectItem>
@@ -883,15 +892,15 @@ const AddSeedForm = ({
                 </CardContent>
               </Card>
             )}
-            {(isViewMode && subscribe) ||
-              (seed?.seed_image?.length > 0 && (
-                <div className="flex flex-wrap mb-4" aria-disabled={isViewMode}>
-                  {seed.seed_image.map((image: any, index: number) => (
+            {(isViewMode || mode === "edit") &&
+              (subscribe || seed?.seed_image?.length > 0) && (
+                <div className="flex flex-wrap mb-4">
+                  {seed.seed_image?.map((image: any, index: number) => (
                     <div key={index} className="relative h-32 w-32 m-1">
                       <Image
                         src={`${baseUrl.replace("/api", "")}${image.image_url}`}
                         alt={`Seed image ${index + 1}`}
-                        className="h-full w-full object-cover rounded-md"
+                        className="h-32 w-32 object-cover m-1 rounded-md"
                         width={80}
                         height={80}
                       />
@@ -901,13 +910,13 @@ const AddSeedForm = ({
                           type="button"
                           className="absolute top-0 right-0 p-1.5 bg-white rounded-full shadow-lg"
                         >
-                          <CircleX className="h-4 w-4 text-red-600" />{" "}
+                          <CircleX className="h-4 w-4 text-red-600" />
                         </button>
                       )}
                     </div>
                   ))}
                 </div>
-              ))}
+              )}
             <Input
               id="fileInput"
               type="file"

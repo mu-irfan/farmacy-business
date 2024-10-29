@@ -26,8 +26,8 @@ import {
 } from "@/components/ui/select";
 
 const FilterFranchiceForm = () => {
-  const [districtOptions, setDistrictOptions] = useState([]);
-  const [tehsilOptions, setTehsilOptions] = useState([]);
+  const [districtOptions, setDistrictOptions] = useState<Option[]>([]);
+  const [tehsilOptions, setTehsilOptions] = useState<Option[]>([]);
 
   const form = useForm<z.infer<typeof filterFranchiceFormSchema>>({
     resolver: zodResolver(filterFranchiceFormSchema),
@@ -40,13 +40,13 @@ const FilterFranchiceForm = () => {
 
   const handleProvinceChange = (value: string) => {
     const districts = pakistanData[`districts_${value}`] || [];
-    setDistrictOptions(districts);
+    setDistrictOptions(districts as any);
     setTehsilOptions([]);
   };
 
   const handleDistrictChange = (value: string) => {
     const tehsils = pakistanData[`tehsils_${value}`] || [];
-    setTehsilOptions(tehsils);
+    setTehsilOptions(tehsils as any);
   };
 
   const onSubmit = (data: z.infer<typeof filterFranchiceFormSchema>) => {

@@ -99,16 +99,16 @@ interface SeedTrails {
   sowing_date: string;
   tehsil: string;
   city: string;
-  min_irrigation_mm: string;
-  max_irrigation_mm: string;
-  est_yield: string;
+  min_irrigation: string;
+  max_irrigation: string;
+  estimated_yield: string;
 }
 
 interface SeedTrailsStages {
   id: number;
   stage: string;
-  principle_stage: string;
-  BBCH_scale: string;
+  sub_stage: string;
+  bbch_scale: string;
   start_day: string;
   end_day: string;
   kc: string;
@@ -222,4 +222,14 @@ interface ActivateFranchisePaymentModalProps {
   franchiseUUIDs: string[];
   amount: number;
   onClose: any;
+}
+
+type PakistanData = {
+  provinces: { label: string; value: string }[];
+  [key: string]: { label: string; value: string }[];
+};
+
+interface Option {
+  value: string;
+  label: string;
 }

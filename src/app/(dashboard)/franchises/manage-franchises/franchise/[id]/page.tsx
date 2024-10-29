@@ -96,7 +96,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     setCurrentProductUuid(product.product_uuid);
   };
 
-  const handleDelete = async (seedId: string) => {
+  const handleDelete = async (seedId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Subscribed Seed?",
       "",
@@ -109,7 +109,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     }
   };
 
-  const handleProductDelete = async (productId: string) => {
+  const handleProductDelete = async (productId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Subscribed Product?",
       "",

@@ -13,6 +13,8 @@ import { filterProductsFormSchema } from "@/schemas/validation/validationSchema"
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
+type ProductCategory = keyof typeof productsList;
+
 import { productCategory, productsList } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import {
@@ -26,7 +28,9 @@ import {
 } from "@/components/ui/select";
 
 const FilterProductForm = () => {
-  const [selectedCategory, setSelectedCategory] = useState("fertilizer");
+  const [selectedCategory, setSelectedCategory] = useState<
+    ProductCategory | ""
+  >("");
 
   const form = useForm<z.infer<typeof filterProductsFormSchema>>({
     resolver: zodResolver(filterProductsFormSchema),
@@ -56,7 +60,7 @@ const FilterProductForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
+                        setSelectedCategory(value as any);
                         field.onChange(value);
                       }}
                     >
@@ -95,8 +99,6 @@ const FilterProductForm = () => {
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
-                        // setValue("");
                         field.onChange(value);
                       }}
                     >

@@ -16,7 +16,7 @@ const AddProductModal: React.FC<AddProductModalProps> = ({
   onOpenChange,
   mode,
   productData,
-  subscribe,
+  subscribe = false,
   currentFranchiseUuid,
   loading,
 }) => {

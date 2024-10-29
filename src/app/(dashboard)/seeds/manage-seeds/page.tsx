@@ -57,7 +57,7 @@ const ManageSeeds = () => {
     setCurrentSeedUuid(seed.uuid);
   };
 
-  const handleDelete = async (seedId: string) => {
+  const handleDelete = async (seedId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Seed?",
       "",

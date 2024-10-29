@@ -33,7 +33,7 @@ export default function ProfileForm() {
   //stats data
   const { data: data, isLoading: loading } = useGetCompanyProfile(token);
   const { mutate: updateCompany, isPending: updating } =
-    useUpdateCompanyProfile(token);
+    useUpdateCompanyProfile();
 
   const form = useForm<z.infer<typeof profileFormSchema>>({
     resolver: zodResolver(profileFormSchema),
@@ -57,11 +57,14 @@ export default function ProfileForm() {
   }, [data, form]);
 
   function onSubmit(data: ProfileFormValues) {
-    updateCompany(data, {
-      onSuccess: () => {
-        setIsEditable(false);
-      },
-    });
+    updateCompany(
+      { data, token },
+      {
+        onSuccess: () => {
+          setIsEditable(false);
+        },
+      }
+    );
   }
 
   return (

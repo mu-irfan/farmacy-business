@@ -32,8 +32,7 @@ const AddManagerForm = ({
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
   const { mutate: addManager, isPending: loading } = useCreateManager();
-  const { mutate: updateManager, isPending: updating } =
-    useUpdateManager(token);
+  const { mutate: updateManager, isPending: updating } = useUpdateManager();
 
   const form = useForm<z.infer<typeof addManagerFormSchema>>({
     resolver: zodResolver(addManagerFormSchema),
@@ -66,7 +65,10 @@ const AddManagerForm = ({
         }
       );
     } else if (mode === "edit") {
-      const updatedData = { full_name: data.full_name, uuid: manager?.uuid };
+      const updatedData = {
+        data: { full_name: data.full_name, uuid: manager?.uuid },
+        token,
+      };
       updateManager(updatedData, {
         onSuccess: (log) => {
           if (log?.success) {

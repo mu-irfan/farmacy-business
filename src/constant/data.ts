@@ -53,6 +53,33 @@ export const provinces = [
   },
 ];
 
+export const heightClass = [
+  {
+    value: "small",
+    label: "Small",
+  },
+  {
+    value: "medium",
+    label: "Medium",
+  },
+  {
+    value: "small - medium",
+    label: "Small - Medium",
+  },
+  {
+    value: "medium - tall",
+    label: "Medium - Tall",
+  },
+  {
+    value: "tall",
+    label: "Tall",
+  },
+  {
+    value: "vine",
+    label: "Vine",
+  },
+];
+
 export const districts = [
   { value: "north waziristan", label: "North Waziristan" },
   { value: "rawalpindi", label: "Rawalpindi" },
@@ -901,7 +928,7 @@ export const tehsils = [
   { value: "kot chutta", label: "Kot Chutta" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
-export const pakistanData = {
+export const pakistanData: PakistanData = {
   provinces: [
     { label: "Azad Kashmir", value: "azad_kashmir" },
     { label: "Balochistan", value: "balochistan" },
@@ -2443,52 +2470,14 @@ export const ManagersData: Manager[] = [
   },
 ];
 
-export const SeedTrails: SeedTrails[] = [
-  {
-    id: 1,
-    variety_name: "Germination",
-    sowing_date: "Flowering",
-    tehsil: "Flowering",
-    city: "Flowering",
-    min_irrigation_mm: "Flowering",
-    max_irrigation_mm: "Flowering",
-    est_yield: "Flowering",
-  },
-  {
-    id: 2,
-    variety_name: "Germination",
-    sowing_date: "Flowering",
-    tehsil: "Flowering",
-    city: "Flowering",
-    min_irrigation_mm: "Flowering",
-    max_irrigation_mm: "Flowering",
-    est_yield: "Flowering",
-  },
-];
-
 export const TrailData: TrailData[] = [
   {
-    id: 1,
+    id: 1, 
     stage: "Germination",
     principle_stage: "Flowering",
   },
   {
     id: 2,
-    stage: "Germination",
-    principle_stage: "Flowering",
-  },
-  {
-    id: 3,
-    stage: "Germination",
-    principle_stage: "Flowering",
-  },
-  {
-    id: 4,
-    stage: "Germination",
-    principle_stage: "Flowering",
-  },
-  {
-    id: 4,
     stage: "Germination",
     principle_stage: "Flowering",
   },

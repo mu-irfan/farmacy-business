@@ -5,7 +5,6 @@ import { CirclePlus, Search } from "lucide-react";
 import ReportCard from "@/components/ReportCard";
 import { seedsTrailReportsTitles } from "@/constant/data";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import AddProductModal from "@/components/forms-modals/products/AddProduct";
 import DashboardLayout from "../dashboard-layout";
 import Link from "next/link";
 import { useGetProductStats } from "@/hooks/useDataFetch";
@@ -20,31 +19,31 @@ export default function SpeedTrail() {
   //stats data
   const { data: stats, isLoading: loading } = useGetProductStats(token);
 
-  //   const reportsWithStats = useMemo(() => {
-  //     return seedsTrailReportsTitles.map((report) => ({
-  //       title: report.title,
-  //       value:
-  //         stats?.data?.[report.key] < 10
-  //           ? `0${stats.data[report.key]}`
-  //           : stats?.data?.[report.key] || "00",
-  //     }));
-  //   }, [stats]);
+  const reportsWithStats = useMemo(() => {
+    return seedsTrailReportsTitles.map((report) => ({
+      title: report.title,
+      value:
+        stats?.data?.[report.key] < 10
+          ? `0${stats.data[report.key]}`
+          : stats?.data?.[report.key] || "00",
+    }));
+  }, [stats]);
 
   return (
     <>
       <DashboardLayout contentAtCenter>
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
-          {/* {loading ? (
+          {loading ? (
             <SkeletonCard className="h-60 w-full col-span-3" />
           ) : (
-            // reportsWithStats.map((report, index) => (
-            //   <ReportCard
-            //     key={index}
-            //     title={report.title}
-            //     value={report.value}
-            //   />
-            // ))
-          )} */}
+            reportsWithStats.map((report, index) => (
+              <ReportCard
+                key={index}
+                title={report.title}
+                value={report.value}
+              />
+            ))
+          )}
         </div>
         <Card
           className="w-full relative py-6 lg:py-8 max-w-xl lg:mt-4 rounded-xl text-center bg-muted/50 hover:bg-background cards cursor-pointer"

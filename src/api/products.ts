@@ -58,17 +58,13 @@ export const getProduct = async (uuid: any, token: string) => {
 };
 
 // update product
-export const updateProduct = async (data: any, token: string) => {
+export const updateProduct = async (data: any, uuid: any, token: string) => {
   try {
-    const res = await axios.patch(
-      `${baseUrl}/product?uuid=${data.uuid}`,
-      data,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await axios.patch(`${baseUrl}/product?uuid=${uuid}`, data, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     return res.data;
   } catch (error) {

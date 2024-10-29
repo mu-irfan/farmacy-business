@@ -14,11 +14,9 @@ const createAccountFormSchema = z
       .email({
         message: "Invalid email.",
       }),
-    contact: validatePhoneNo(
-      z.string().nonempty({
-        message: "Phone is required.",
-      })
-    ),
+    contact: z.string({
+      required_error: "Phone number is required.",
+    }),
     ntn: z.string().nonempty({
       message: "NTN is required.",
     }),
@@ -107,51 +105,38 @@ const resetPasswordSchema = z
   });
 
 const addProductFormSchema = z.object({
-  name: z.string().nonempty({
-    message: "Product Name is required.",
-  }),
-  company_fk: z.string().nonempty({
-    message: "Brand Name is required.",
-  }),
-  category: z.string().nonempty({
-    message: "Category is required.",
-  }),
-  sub_category: z.string().nonempty({
-    message: "Subcategory is required.",
-  }),
-  active_ingredients: z.string().nonempty({
-    message: "ActiveIngredient is required.",
-  }),
-  type: z.string().nonempty({
-    message: "ActiveIngredient is required.",
-  }),
-  concentration: z.string().nonempty({
-    message: "Concentration is required.",
-  }),
-  units: z.string().nonempty({
-    message: "Unit is required.",
-  }),
-  package_weight: z.string().nonempty({
-    message: "Package weight is required.",
-  }),
-  weight_unit: z.string().nonempty({
-    message: "Weight Unit is required.",
-  }),
-  package_type: z.string().nonempty({
-    message: "Packaging Type is required.",
-  }),
-  area_covered: z.string().nonempty({
-    message: "Area covered is required.",
-  }),
-  disease_purpose: z.string().nonempty({
-    message: "Disease is required.",
-  }),
-  price: z.string().nonempty({
-    message: "Disease is required.",
-  }),
-  description: z.string().nonempty({
-    message: "Packaging Type is required.",
-  }),
+  name: z.string().nonempty({ message: "Product Name is required." }),
+  company_fk: z.string().nonempty({ message: "Brand Name is required." }),
+  category: z.string().nonempty({ message: "Category is required." }),
+  sub_category: z.string().nonempty({ message: "Subcategory is required." }),
+  active_ingredients: z
+    .string()
+    .nonempty({ message: "ActiveIngredient is required." }),
+  type: z.string().nonempty({ message: "ActiveIngredient is required." }),
+  concentration: z.string().nonempty({ message: "Concentration is required." }),
+  units: z.string().nonempty({ message: "Unit is required." }),
+  package_weight: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Package weight is required.",
+    }),
+  weight_unit: z.string().nonempty({ message: "Weight Unit is required." }),
+  package_type: z.string().nonempty({ message: "Packaging Type is required." }),
+  area_covered: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Area covered is required.",
+    }),
+  disease_purpose: z.string().nonempty({ message: "Disease is required." }),
+  price: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Price is required.",
+    }),
+  description: z.string().nonempty({ message: "Packaging Type is required." }),
 });
 
 const filterProductsFormSchema = z.object({
@@ -165,55 +150,62 @@ const filterProductsFormSchema = z.object({
 
 //seed
 const addSeedFormSchema = z.object({
-  seed_variety_name: z.string().nonempty({
-    message: "Variety Name is required.",
-  }),
-  company_fk: z.string().nonempty({
-    message: "Brand Name is required.",
-  }),
-  crop_category: z.string().nonempty({
-    message: "Category is required.",
-  }),
-  crop: z.string().nonempty({
-    message: "Crop is required.",
-  }),
-  seed_weight: z.string().nonempty({
-    message: "Seed weight is required.",
-  }),
-  package_weight: z.string().nonempty({
-    message: "Package weight is required.",
-  }),
-  germination_percentage: z.string().nonempty({
-    message: "Germination Percentage is required.",
-  }),
-  maturity_percentage: z.string().nonempty({
-    message: "Maturity Percentage is required.",
-  }),
-  min_harvesting_days: z.string().nonempty({
-    message: "Min Harvesting Days is required.",
-  }),
-  max_harvesting_days: z.string().nonempty({
-    message: "Max Harvesting Days is required.",
-  }),
-  suitable_region: z.string().nonempty({
-    message: "Suitable Region is required.",
-  }),
-  package_type: z.string().nonempty({
-    message: "Packaging Type is required.",
-  }),
-  height_class: z.string().nonempty({
-    message: "Hieght Class is required.",
-  }),
+  seed_variety_name: z
+    .string()
+    .nonempty({ message: "Variety Name is required." }),
+  company_fk: z.string().nonempty({ message: "Brand Name is required." }),
+  crop_category: z.string().nonempty({ message: "Category is required." }),
+  crop: z.string().nonempty({ message: "Crop is required." }),
+  seed_weight: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Seed weight is required.",
+    }),
+  package_weight: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Package weight is required.",
+    }),
+  germination_percentage: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Germination Percentage is required.",
+    }),
+  maturity_percentage: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Maturity Percentage is required.",
+    }),
+  min_harvesting_days: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Min Harvesting Days is required.",
+    }),
+  max_harvesting_days: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", {
+      message: "Max Harvesting Days is required.",
+    }),
+  suitable_region: z
+    .string()
+    .nonempty({ message: "Suitable Region is required." }),
+  package_type: z.string().nonempty({ message: "Packaging Type is required." }),
+  height_class: z.string().nonempty({ message: "Height Class is required." }),
   nutrient_content: z.string().optional(),
   Common_disease_tolerance: z.string().optional(),
   environmental_resilience_factors: z.string().optional(),
   Unique_features: z.string().optional(),
-  price: z.string().nonempty({
-    message: "Price is required.",
-  }),
-  description: z.string().nonempty({
-    message: "Description is required.",
-  }),
+  price: z
+    .union([z.string(), z.number()])
+    .transform((val) => String(val))
+    .refine((val) => val.trim() !== "", { message: "Price is required." }),
+  description: z.string().nonempty({ message: "Description is required." }),
 });
 
 // filter seed

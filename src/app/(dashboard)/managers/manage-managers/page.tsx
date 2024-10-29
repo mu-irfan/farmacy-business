@@ -43,7 +43,7 @@ const ManageManagers = () => {
     setSelectedManagerToView(manager);
   };
 
-  const handleDelete = async (managerId: string) => {
+  const handleDelete = async (managerId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Manager?",
       "",

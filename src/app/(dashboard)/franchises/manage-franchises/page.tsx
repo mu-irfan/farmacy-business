@@ -46,7 +46,7 @@ const ManageFranchises = () => {
     router.push(`/franchises/manage-franchises/franchise/${franchise.uuid}`);
   };
 
-  const handleDelete = async (franchiseId: string) => {
+  const handleDelete = async (franchiseId: any) => {
     const isConfirmed = await SweetAlert(
       "Delete Franchise?",
       "",
