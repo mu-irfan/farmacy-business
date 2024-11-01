@@ -33,8 +33,6 @@ const SubscribeNewSeeds = ({ params }: any) => {
     token
   );
 
-  console.log(seedDetails, "seedDetails");
-
   const handleSearchChange = debounce((value: string) => {
     setSearchQuery(value);
   }, 300);

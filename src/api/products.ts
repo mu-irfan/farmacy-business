@@ -51,6 +51,7 @@ export const getProduct = async (uuid: any, token: string) => {
         Authorization: `Bearer ${token}`,
       },
     });
+
     return res.data;
   } catch (error) {
     return error;
@@ -90,6 +91,20 @@ export const deleteProductImage = async (uuid: any, token: string) => {
 export const deleteProduct = async (uuid: any, token: string) => {
   try {
     const res = await axios.delete(`${baseUrl}/product?uuid=${uuid}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
+// get all active ingredient
+export const getAlActiveIngredient = async (token: string) => {
+  try {
+    const res = await axios.get(`${baseUrl}/ingredient/global-list`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },

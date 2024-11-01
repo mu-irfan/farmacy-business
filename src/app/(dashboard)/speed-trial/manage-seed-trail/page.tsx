@@ -12,10 +12,13 @@ import {
 import { useContextConsumer } from "@/context/Context";
 import NoData from "@/components/alerts/NoData";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import AddSeedTrailDataModal from "@/components/forms-modals/seed-trail-data/AddSeedTrailData";
 
 const ManageSeedTrailData = () => {
   const { token } = useContextConsumer();
   const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] =
+    useState<boolean>(false);
+  const [isUpdateFranchiceModalOpen, setUpdateFranchiceModalOpen] =
     useState<boolean>(false);
   const [viewStageAgainstSeed, setViewStageAgainstSeed] =
     useState<boolean>(false);
@@ -37,8 +40,8 @@ const ManageSeedTrailData = () => {
   }[] = [
     {
       Header: "Seed variety name",
-      accessor: "variety_name",
-      Cell: ({ row }: any) => row.original.seed || "N/A",
+      accessor: "seed_variety_name",
+      Cell: ({ row }: any) => row.original.seed.seed_variety_name || "N/A",
     },
     {
       Header: "Sowing date",
@@ -97,7 +100,7 @@ const ManageSeedTrailData = () => {
             <Button
               size="sm"
               variant="outline"
-              // onClick={() => handleView(row.original)}
+              onClick={() => setUpdateFranchiceModalOpen(true)}
               className="border-primary bg-primary/10 w-40 text-primary tracking-wider hover:text-primary/80"
             >
               Update Trial Data
@@ -135,6 +138,13 @@ const ManageSeedTrailData = () => {
       <FilterFranchiceModal
         open={isAddFranchiceModalOpen}
         onOpenChange={setAddFranchiceModalOpen}
+      />
+      <AddSeedTrailDataModal
+        open={isUpdateFranchiceModalOpen}
+        onOpenChange={setUpdateFranchiceModalOpen}
+        selectedTrailStages={trailStages?.data}
+        trailUuid={trailUuid}
+        mode="view"
       />
     </>
   );

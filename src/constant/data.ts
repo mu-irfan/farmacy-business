@@ -55,16 +55,24 @@ export const provinces = [
 
 export const heightClass = [
   {
+    value: "dwarf",
+    label: "Dwarf",
+  },
+  {
+    value: "semi-dwarf",
+    label: "Semi Dwarf",
+  },
+  {
     value: "small",
     label: "Small",
   },
   {
-    value: "medium",
-    label: "Medium",
-  },
-  {
     value: "small - medium",
     label: "Small - Medium",
+  },
+  {
+    value: "medium",
+    label: "Medium",
   },
   {
     value: "medium - tall",
@@ -73,10 +81,6 @@ export const heightClass = [
   {
     value: "tall",
     label: "Tall",
-  },
-  {
-    value: "vine",
-    label: "Vine",
   },
 ];
 
@@ -2245,12 +2249,13 @@ export const productsList = {
 };
 
 export const packagingType = [
-  { label: "Plastic Bottle", value: "plastic_bottle" },
-  { label: "Plastic Bags", value: "plastic_bag" },
-  { label: "Aluminium Bottle", value: "aluminium_bottle" },
-  { label: "Cloth Bags", value: "cloth_bag" },
-  { label: "Burlap Bags", value: "burlap_bags" },
-  { label: "Boxes / Crates", value: "boxes_crates" },
+  { label: "Envelope Packet", value: "envelope_packet" },
+  { label: "Foil Packet", value: "foil_packet" },
+  { label: "Plastic Pouch", value: "plastic_pouch" },
+  { label: "Glassine Bag", value: "glassine_bag" },
+  { label: "Plastic Bag", value: "plastic_bag" },
+  { label: "Cloth Sack", value: "cloth_sack" },
+  { label: "Jute Sack", value: "jute_sack" },
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const weightUnitType = [
@@ -2270,14 +2275,39 @@ export const productType = [
   { value: "chemical", label: "Chemical" },
 ];
 
-export const activeIngredients = [
-  { value: "fertilizer", label: "Fertilizer" },
-  { value: "pesticides", label: "Pesticides" },
-];
-
 export const units = [
+  { value: "gram", label: "Gram" },
+  { value: "milligram", label: "Milligram" },
   { value: "kg", label: "Kg" },
-  { value: "ml", label: "Ml" },
+  { value: "liter", label: "Liter" },
+  { value: "milliliter", label: "Milliliter" },
+  { value: "percentage", label: "Percentage" },
+  { value: "g_per_l", label: "g/L" },
+  { value: "g_per_kg", label: "g/kg" },
+  { value: "dp", label: "DP" },
+  { value: "ds", label: "DS" },
+  { value: "eg", label: "EG" },
+  { value: "ep", label: "EP" },
+  { value: "gr", label: "GR" },
+  { value: "gw", label: "GW" },
+  { value: "sg", label: "SG" },
+  { value: "sp", label: "SP" },
+  { value: "wdg", label: "WDG" },
+  { value: "wp", label: "WP" },
+  { value: "ec", label: "EC" },
+  { value: "dc", label: "DC" },
+  { value: "es", label: "ES" },
+  { value: "me", label: "ME" },
+  { value: "ew", label: "EW" },
+  { value: "sc", label: "SC" },
+  { value: "od", label: "OD" },
+  { value: "fs", label: "FS" },
+  { value: "se", label: "SE" },
+  { value: "ae", label: "AE" },
+  { value: "zc", label: "ZC" },
+  { value: "zw", label: "ZW" },
+  { value: "ze", label: "ZE" },
+  { value: "df", label: "DF" },
 ];
 
 export const bulkFranchiseAddressDetails = [
@@ -2290,195 +2320,346 @@ export const bulkFranchiseAddressDetails = [
   { label: "Active", value: "False" },
 ];
 
-// product
-export const productData: Product[] = [
+export const seedTrailTableHeaders = [
+  { label: "Stage", accessor: "stage" },
+  { label: "Principle Stage", accessor: "sub_stage" },
+  { label: "Start Day", accessor: "start_day" },
+  { label: "End Day", accessor: "end_day" },
+  { label: "Kc", accessor: "kc" },
+];
+
+export const nutrientsContent = [
   {
-    name: "Super Plant Growth",
-    company_fk: "Sygenta",
-    category: "Fertilizers",
-    sub_category: "Organic",
-    activeIngredient: "Fertilizers",
-    concentration: "John",
-    units: "kg",
-    subscribed: false,
-    packageWeight: "1",
-    weightUnit: "kg",
-    packagingType: "Bag",
-    areaCovered: "5",
-    disease: "Pest control, Nutrient deficiency",
-    price: "2300",
-    description: "A highly effective organic fertilizer for various plants.",
-    images: [], // add image files here when selected
+    value: "high-protein",
+    label: "High Protein",
   },
   {
-    name: "Plant Shield",
-    company_fk: "AgriTech",
-    category: "Pesticides",
-    sub_category: "Insecticides",
-    activeIngredient: "Fertilizers",
-    concentration: "John",
-    units: "kg",
-    subscribed: true,
-    packageWeight: "500",
-    weightUnit: "g",
-    packagingType: "Bottle",
-    areaCovered: "2",
-    disease: "Insect infestation",
-    price: "2300",
-    description: "Protect your crops from harmful insects with Plant Shield.",
-    images: [],
+    value: "medium-protein",
+    label: "Medium Protein",
   },
   {
-    name: "Root Booster",
-    company_fk: "GrowWell",
-    category: "Fertilizers",
-    sub_category: "Liquid",
-    activeIngredient: "Fertilizers",
-    concentration: "John",
-    units: "kg",
-    subscribed: false,
-    packageWeight: "1",
-    weightUnit: "l",
-    packagingType: "Bottle",
-    areaCovered: "3",
-    disease: "Nutrient deficiency",
-    price: "2300",
-    description: "Enhances root development and overall plant health.",
-    images: [],
+    value: "low-protein",
+    label: "Low Protein",
+  },
+  {
+    value: "high-gluten",
+    label: "High Gluten",
+  },
+  {
+    value: "medium-gluten",
+    label: "Medium Gluten",
+  },
+  {
+    value: "low-gluten",
+    label: "Low Gluten",
+  },
+  {
+    value: "high-oleic-acid-content",
+    label: "High Oleic Acid Content",
+  },
+  {
+    value: "medium-oleic-acid-content",
+    label: "Medium Oleic Acid Content",
+  },
+  {
+    value: "low-oleic-acid-content",
+    label: "Low Oleic Acid Content",
+  },
+  {
+    value: "high-oil-content",
+    label: "High Oil Content",
+  },
+  {
+    value: "medium-oil-content",
+    label: "Medium Oil Content",
+  },
+  {
+    value: "low-oil-content",
+    label: "Low Oil Content",
+  },
+  {
+    value: "extra-long-grain-length",
+    label: "Extra Long Grain Length",
+  },
+  {
+    value: "long-grain-length",
+    label: "Long Grain Length",
+  },
+  {
+    value: "medium-grain-length",
+    label: "Medium Grain Length",
+  },
+  {
+    value: "short-grain-length",
+    label: "Short Grain Length",
+  },
+  {
+    value: "high-crude-protein",
+    label: "High Crude Protein",
+  },
+  {
+    value: "medium-crude-protein",
+    label: "Medium Crude Protein",
+  },
+  {
+    value: "low-crude-protein",
+    label: "Low Crude Protein",
+  },
+  {
+    value: "high-crude-fiber",
+    label: "High Crude Fiber",
+  },
+  {
+    value: "medium-crude-fiber",
+    label: "Medium Crude Fiber",
+  },
+  {
+    value: "low-crude-fiber",
+    label: "Low Crude Fiber",
   },
 ];
 
-//seeds
-export const seedsData: Seed[] = [
+export const resistanceTraits = [
   {
-    id: 1,
-    seed_variety_name: "Disease",
-    company_fk: "SoundPro",
-    crop_category: "Electronics",
-    crop: "Audio Devices",
-    subscribed: false,
-    seedWeight: "250g",
-    packageWeight: "1kg",
-    germination_percentage: "95%",
-    maturity_percentage: "85%",
-    minHarvestingDays: 30,
-    maxHavestingDays: 60,
-    suitable_region: "Global",
-    package_type: "Box",
-    price: "750",
-    description: "High-quality wireless headphones.",
+    value: "shattering-resistant",
+    label: "Shattering Resistant",
   },
   {
-    id: 2,
-    seed_variety_name: "Disease",
-    company_fk: "VisionTech",
-    crop_category: "Electronics",
-    crop: "Televisions",
-    subscribed: true,
-    seedWeight: "10kg",
-    packageWeight: "15kg",
-    germination_percentage: "90%",
-    maturity_percentage: "80%",
-    minHarvestingDays: 40,
-    maxHavestingDays: 75,
-    suitable_region: "Global",
-    package_type: "Box",
-    price: "750",
-    description: "Ultra HD 4K Smart TV with built-in apps.",
+    value: "waterlogging-resistant",
+    label: "Waterlogging Resistant",
   },
   {
-    id: 3,
-    seed_variety_name: "Disease",
-    company_fk: "FitTrack",
-    crop_category: "Footwear",
-    crop: "Sports Shoes",
-    subscribed: false,
-    seedWeight: "500g",
-    packageWeight: "1.5kg",
-    germination_percentage: "98%",
-    maturity_percentage: "90%",
-    minHarvestingDays: 20,
-    maxHavestingDays: 40,
-    suitable_region: "Global",
-    package_type: "Box",
-    price: "750",
-    description: "Lightweight running shoes designed for comfort.",
+    value: "drought-resistant",
+    label: "Drought Resistant",
   },
   {
-    id: 4,
-    seed_variety_name: "Disease",
-    company_fk: "PowerCore",
-    crop_category: "Computers",
-    crop: "Laptops",
-    subscribed: false,
-    seedWeight: "3kg",
-    packageWeight: "5kg",
-    germination_percentage: "92%",
-    maturity_percentage: "85%",
-    minHarvestingDays: 60,
-    maxHavestingDays: 90,
-    suitable_region: "Global",
-    package_type: "Box",
-    price: "750",
-    description: "High-performance gaming laptop with advanced graphics.",
+    value: "heat-stress-resistant",
+    label: "Heat Stress Resistant",
   },
   {
-    id: 5,
-    seed_variety_name: "Disease",
-    company_fk: "TimeMaster",
-    crop_category: "Wearables",
-    crop: "Smart Devices",
-    subscribed: true,
-    seedWeight: "150g",
-    packageWeight: "500g",
-    germination_percentage: "96%",
-    maturity_percentage: "90%",
-    minHarvestingDays: 10,
-    maxHavestingDays: 30,
-    suitable_region: "Global",
-    package_type: "Box",
-    price: "750",
-    description: "Advanced smartwatch with fitness tracking features.",
+    value: "moisture-resistant",
+    label: "Moisture Resistant",
+  },
+  {
+    value: "salinity-resistant",
+    label: "Salinity Resistant",
+  },
+  {
+    value: "adaptable-humid-regions",
+    label: "Adaptable to Humid Regions",
+  },
+  {
+    value: "cool-temperature-resistant",
+    label: "Cool Temperature Resistant",
+  },
+  {
+    value: "less-defoliation",
+    label: "Less Defoliation",
   },
 ];
 
-export const ManagersData: Manager[] = [
+export const uniqueFeatures = [
   {
-    id: 1,
-    full_name: "Inam Ullah",
-    contact: "03334859488",
+    value: "high-grain-weight",
+    label: "High Grain Weight",
   },
   {
-    id: 2,
-    full_name: "Irfan",
-    contact: "03334859485",
+    value: "strong-wax-leaves-stem",
+    label: "Strong Wax on Leaves & Stem",
   },
   {
-    id: 3,
-    full_name: "Noman",
-    contact: "03334859485",
+    value: "low-aphid-infestation",
+    label: "Low Aphid Infestation Level",
   },
   {
-    id: 4,
-    full_name: "Khan",
-    contact: "03334859485",
+    value: "white-chaff",
+    label: "White Chaff",
   },
   {
-    id: 4,
-    full_name: "Khans",
-    contact: "03334859489",
+    value: "early-maturity",
+    label: "Early Maturity",
+  },
+  {
+    value: "open-pollinated",
+    label: "Open Pollinated",
+  },
+  {
+    value: "two-rowed-barley",
+    label: "Two Rowed Barley",
+  },
+  {
+    value: "two-rowed-barley-marginal-area",
+    label: "Two Rowed Barley, Marginal Area",
+  },
+  {
+    value: "hull-less",
+    label: "Hull-less",
+  },
+  {
+    value: "six-rowed",
+    label: "Six-Rowed",
+  },
+  {
+    value: "dwarf-version",
+    label: "Dwarf Version",
+  },
+  {
+    value: "aromatic-rice",
+    label: "Aromatic Rice",
+  },
+  {
+    value: "extra-long-grain-length",
+    label: "Extra Long Grain Length",
+  },
+  {
+    value: "seeded-pods-4",
+    label: "Seeded Pods: 4",
+  },
+  {
+    value: "reddish-seed-coat-colour",
+    label: "Reddish Seed Coat Colour",
   },
 ];
 
-export const TrailData: TrailData[] = [
+export const diseaseResistanceTraits = [
   {
-    id: 1, 
-    stage: "Germination",
-    principle_stage: "Flowering",
+    value: "rust",
+    label: "Rust",
   },
   {
-    id: 2,
-    stage: "Germination",
-    principle_stage: "Flowering",
+    value: "yellow-rust",
+    label: "Yellow Rust",
+  },
+  {
+    value: "brown-rust",
+    label: "Brown Rust",
+  },
+  {
+    value: "smut",
+    label: "Smut",
+  },
+  {
+    value: "yellow-smut",
+    label: "Yellow Smut",
+  },
+  {
+    value: "brown-smut",
+    label: "Brown Smut",
+  },
+  {
+    value: "stem-rust",
+    label: "Stem Rust",
+  },
+  {
+    value: "leaf-rust",
+    label: "Leaf Rust",
+  },
+  {
+    value: "stripe-rust",
+    label: "Stripe Rust",
+  },
+  {
+    value: "loose-smut",
+    label: "Loose Smut",
+  },
+  {
+    value: "karnal-bunt",
+    label: "Karnal Bunt",
+  },
+  {
+    value: "aphid",
+    label: "Aphid",
+  },
+  {
+    value: "gray-leaf-spot",
+    label: "Gray Leaf Spot (GLS)",
+  },
+  {
+    value: "stalk-rot",
+    label: "Stalk Rot",
+  },
+  {
+    value: "southern-corn-leaf-blight",
+    label: "Southern Corn Leaf Blight",
+  },
+  {
+    value: "northern-corn-leaf-blight",
+    label: "Northern Corn Leaf Blight",
+  },
+  {
+    value: "brown-spot",
+    label: "Brown Spot",
+  },
+  {
+    value: "downy-mildew",
+    label: "Downy Mildew",
+  },
+  {
+    value: "maize-stalk-borers",
+    label: "Maize Stalk Borers",
+  },
+  {
+    value: "foot-rot",
+    label: "Foot Rot",
+  },
+  {
+    value: "maize-rust",
+    label: "Maize Rust",
+  },
+  {
+    value: "yellowing-moderate-resistance",
+    label: "Yellowing Moderate Resistance",
+  },
+  {
+    value: "stem-borer",
+    label: "Stem Borer",
+  },
+  {
+    value: "stem-rot",
+    label: "Stem Rot",
+  },
+  {
+    value: "paddy-blast-diseases",
+    label: "Paddy Blast Diseases",
+  },
+  {
+    value: "sheath-blight",
+    label: "Sheath Blight",
+  },
+  {
+    value: "bacterial-leaf-blight",
+    label: "Bacterial Leaf Blight",
+  },
+  {
+    value: "cercospora-leaf-spot",
+    label: "Cercospora Leaf Spot",
+  },
+  {
+    value: "tikka-disease",
+    label: "Tikka Disease",
+  },
+  {
+    value: "collar-rot",
+    label: "Collar Rot",
+  },
+  {
+    value: "root-rot",
+    label: "Root Rot",
+  },
+  {
+    value: "alternaria-blight",
+    label: "Alternaria Blight",
+  },
+  {
+    value: "blackleg",
+    label: "Blackleg",
+  },
+  {
+    value: "fusarium-wilt",
+    label: "Fusarium Wilt",
+  },
+  {
+    value: "powdery-mildew",
+    label: "Powdery Mildew",
   },
 ];

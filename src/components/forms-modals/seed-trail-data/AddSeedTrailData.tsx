@@ -6,18 +6,17 @@ import {
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
-import { Pencil } from "lucide-react";
 import AddTrailDataForm from "@/components/forms/seed-trail-data/AddTrailDataForm";
+import UpdateTrailDataForm from "@/components/forms/seed-trail-data/UpdateTrailDataForm";
 
 const AddSeedTrailDataModal: React.FC<any> = ({
   open,
   onOpenChange,
   mode,
-  trailData,
-  currentTrailDataUuid,
-  loading,
+  selectedTrailStages,
+  cropName,
+  trailUuid,
 }) => {
   const [currentMode, setCurrentMode] = useState(mode);
 
@@ -29,7 +28,7 @@ const AddSeedTrailDataModal: React.FC<any> = ({
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-3xl h-[90vh] lg:h-[95vh] overflow-y-auto scrollbar-custom">
+      <DialogContent className="max-w-[80vw] md:max-w-xl lg:max-w-3xl h-[60vh] lg:h-[65vh] overflow-y-auto scrollbar-custom">
         <DialogHeader
           className={cn(
             currentMode === "view"
@@ -42,11 +41,6 @@ const AddSeedTrailDataModal: React.FC<any> = ({
               ? "Add Seed Trial Data"
               : "Update Seed Trial Data"}
           </DialogTitle>
-          {currentMode === "view" && (
-            <Button size="sm" onClick={() => setCurrentMode("edit")}>
-              Edit <Pencil className="w-3.5 h-3.5 ml-2" />
-            </Button>
-          )}
           {currentMode === "add" && (
             <DialogDescription className="!dark:text-farmacieLightGray">
               Add seed trial data so that it can also be the part recomended
@@ -54,13 +48,19 @@ const AddSeedTrailDataModal: React.FC<any> = ({
             </DialogDescription>
           )}
         </DialogHeader>
-        <AddTrailDataForm
-          mode={currentMode}
-          trailData={trailData}
-          currentTrailDataUuid={currentTrailDataUuid}
-          onClose={onOpenChange}
-          loading={loading}
-        />
+        {mode === "add" ? (
+          <AddTrailDataForm
+            mode={currentMode}
+            onClose={onOpenChange}
+            cropName={cropName}
+          />
+        ) : (
+          <UpdateTrailDataForm
+            selectedTrailStages={selectedTrailStages}
+            onClose={onOpenChange}
+            trailUuid={trailUuid}
+          />
+        )}
       </DialogContent>
     </Dialog>
   );

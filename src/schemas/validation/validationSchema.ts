@@ -109,12 +109,12 @@ const addProductFormSchema = z.object({
   company_fk: z.string().nonempty({ message: "Brand Name is required." }),
   category: z.string().nonempty({ message: "Category is required." }),
   sub_category: z.string().nonempty({ message: "Subcategory is required." }),
-  active_ingredients: z
-    .string()
-    .nonempty({ message: "ActiveIngredient is required." }),
+  // active_ingredients: z
+  //   .string()
+  //   .nonempty({ message: "ActiveIngredient is required." }),
   type: z.string().nonempty({ message: "ActiveIngredient is required." }),
-  concentration: z.string().nonempty({ message: "Concentration is required." }),
-  units: z.string().nonempty({ message: "Unit is required." }),
+  // concentration: z.string().nonempty({ message: "Concentration is required." }),
+  // units: z.string().nonempty({ message: "Unit is required." }),
   package_weight: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
@@ -198,6 +198,7 @@ const addSeedFormSchema = z.object({
   package_type: z.string().nonempty({ message: "Packaging Type is required." }),
   height_class: z.string().nonempty({ message: "Height Class is required." }),
   nutrient_content: z.string().optional(),
+  // Common_disease_tolerance: z.array(z.string()).optional(),
   Common_disease_tolerance: z.string().optional(),
   environmental_resilience_factors: z.string().optional(),
   Unique_features: z.string().optional(),
@@ -285,11 +286,11 @@ const addManagerFormSchema = z.object({
 
 // add seed trail data
 const addTrailDataFormSchema = z.object({
-  variety: z.string().nonempty({
+  seed_variety: z.string().nonempty({
     message: "Variety is required.",
   }),
-  sowingDate: z.string().nonempty({
-    message: "sowing Date is required.",
+  sowing_date: z.string().nonempty({
+    message: "Sowing date is required.",
   }),
   city: z.string().nonempty({
     message: "City is required.",
@@ -303,18 +304,60 @@ const addTrailDataFormSchema = z.object({
   max_irrigation: z.string().nonempty({
     message: "Max irrigation is required.",
   }),
-  yield_percentage: z.string().nonempty({
-    message: "yield percentage is required.",
+  estimated_yield: z.string().nonempty({
+    message: "Yield percentage is required.",
   }),
-  start_day: z.string().nonempty({
-    message: "start day is required.",
-  }),
-  end_day: z.string().nonempty({
-    message: "end day is required.",
-  }),
-  kc: z.string().nonempty({
-    message: "kc is required.",
-  }),
+
+  seed_trial_form: z.array(
+    z.object({
+      start_day: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "Start day is required.",
+        }),
+      end_day: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "End day is required.",
+        }),
+      kc: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "Kc is required.",
+        }),
+    })
+  ),
+});
+
+const updateTrailDataFormSchema = z.object({
+  seed_trial_form: z.array(
+    z.object({
+      stage: z.string(),
+      sub_stage: z.string(),
+      bbch_scale: z.union([z.string(), z.number()]),
+      start_day: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "Start day is required.",
+        }),
+      end_day: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "End day is required.",
+        }),
+      kc: z
+        .union([z.string(), z.number()])
+        .transform((val) => String(val))
+        .refine((val) => val.trim() !== "", {
+          message: "Kc is required.",
+        }),
+    })
+  ),
 });
 
 const addCropSelectionFormSchema = z.object({
@@ -378,6 +421,7 @@ export {
   resetPasswordSchema,
   addCropSelectionFormSchema,
   addTrailDataFormSchema,
+  updateTrailDataFormSchema,
   addProductFormSchema,
   filterProductsFormSchema,
   addSeedFormSchema,

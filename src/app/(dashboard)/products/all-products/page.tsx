@@ -34,10 +34,12 @@ const AllProducts = () => {
 
   // data management
   const { data: products, isLoading: loading } = useGetAllProducts(token);
-  const { data: productDetails, isLoading: productLoading } = useGetProduct(
-    currentProductUuid!,
-    token
-  );
+  const {
+    data: productDetails,
+    isLoading: productLoading,
+    refetch,
+  } = useGetProduct(currentProductUuid!, token);
+
   const { mutate: deleteProduct, isPending: deletingProduct } =
     useDeleteProduct(token);
 
@@ -52,9 +54,10 @@ const AllProducts = () => {
     );
   }, [products, searchQuery]);
 
-  const handleView = (product: any) => {
-    setViewProductModalOpen(true);
+  const handleView = async (product: any) => {
     setCurrentProductUuid(product.uuid);
+    await refetch();
+    setViewProductModalOpen(true);
   };
 
   const handleDelete = async (productId: any) => {

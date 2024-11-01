@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CirclePlus, CircleX } from "lucide-react";
+import { CirclePlus, CircleX, Info } from "lucide-react";
 import { Textarea } from "../../ui/textarea";
 import {
   Select,
@@ -29,9 +29,13 @@ import {
 import {
   cropCategories,
   cropCategoriesOptions,
+  diseaseResistanceTraits,
   heightClass,
-  productCategory,
+  nutrientsContent,
+  packagingType,
+  resistanceTraits,
   suitahleRegion,
+  uniqueFeatures,
 } from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
 import {
@@ -47,6 +51,8 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import toast from "react-hot-toast";
+import { MultiSelect } from "@/components/ui/multi-select";
+import NutrientContentModal from "@/components/forms-modals/seeds/NutrientContent";
 
 type SeedCategory = keyof typeof cropCategoriesOptions;
 
@@ -75,7 +81,12 @@ const AddSeedForm = ({
   const [
     isAddSeedTrailDataInstructionModalOpen,
     setAddSeedTrailDataInstructionModalOpen,
-  ] = useState(false);
+  ] = useState<boolean>(false);
+  const [
+    nutrientContentInstructionModalOpen,
+    setNutrientContentInstructionModalOpen,
+  ] = useState<boolean>(false);
+  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
 
   //
   const { mutate: subscribeSeed, isPending: subscribing } = useSubscribeSeed();
@@ -137,8 +148,7 @@ const AddSeedForm = ({
   }, [seed, reset]);
 
   const onSubmit = (data: z.infer<typeof addSeedFormSchema>) => {
-    // setAddSeedTrailDataInstructionModalOpen(true);
-
+    setAddSeedTrailDataInstructionModalOpen(true);
     const formData = new FormData();
     formData.append("seed_variety_name", data.seed_variety_name);
     formData.append("company_fk", data.company_fk);
@@ -170,16 +180,13 @@ const AddSeedForm = ({
         data.environmental_resilience_factors
       );
     }
-
     if (mode === "add" && selectedImages.length < 1) {
       toast.error("Please upload at least 1 image.");
       return;
     }
-
     selectedImages.forEach((image) => {
       formData.append(`images`, image);
     });
-
     if (mode === "add") {
       addSeed(
         { data: formData, token },
@@ -639,7 +646,7 @@ const AddSeedForm = ({
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
                               <SelectLabel>Package Type</SelectLabel>
-                              {productCategory.map((item) => (
+                              {packagingType.map((item) => (
                                 <SelectItem key={item.value} value={item.value}>
                                   {item.label}
                                 </SelectItem>
@@ -699,26 +706,49 @@ const AddSeedForm = ({
                 />
               </LabelInputContainer>
               <LabelInputContainer>
-                <Label
-                  htmlFor="nutrient_content"
-                  className="dark:text-farmacieGrey"
-                >
-                  Nutrient Content (Optional)
-                </Label>
+                <div className="flex items-center justify-between">
+                  <Label
+                    htmlFor="nutrient_content"
+                    className="dark:text-farmacieGrey"
+                  >
+                    Nutrient Content (Optional)
+                  </Label>
+                  <Info
+                    className="w-4 h-4 text-gray-500 cursor-pointer mr-1"
+                    onClick={() => setNutrientContentInstructionModalOpen(true)}
+                  />
+                </div>
                 <FormField
                   control={form.control}
                   name="nutrient_content"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          placeholder="Enter any nutrient content"
-                          type="text"
-                          id="nutrient_content"
-                          className="outline-none focus:border-primary disabled:bg-primary/20"
-                          {...field}
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
                           disabled={isViewMode}
-                        />
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                            <SelectValue
+                              placeholder={
+                                seed?.nutrient_content ||
+                                "Select nutrient content"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>nutrient content</SelectLabel>
+                              {nutrientsContent.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -748,6 +778,16 @@ const AddSeedForm = ({
                           {...field}
                           disabled={isViewMode}
                         />
+                        {/* <MultiSelect
+                          options={diseaseResistanceTraits}
+                          onValueChange={setSelectedFrameworks}
+                          defaultValue={selectedFrameworks}
+                          placeholder="Select frameworks"
+                          variant="inverted"
+                          animation={2}
+                          maxCount={3}
+                          className="relative z-[1050]"
+                        /> */}
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -767,14 +807,31 @@ const AddSeedForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          placeholder="Enter any resilience to environment"
-                          type="text"
-                          id="environmental_resilience_factors"
-                          className="outline-none focus:border-primary disabled:bg-primary/20"
-                          {...field}
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
                           disabled={isViewMode}
-                        />
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                            <SelectValue
+                              placeholder={
+                                seed?.environmental_resilience_factors ||
+                                "Select Environmental Resilience Factors"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>Resilience Factors</SelectLabel>
+                              {resistanceTraits.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -812,7 +869,7 @@ const AddSeedForm = ({
                   htmlFor="Unique_features"
                   className="dark:text-farmacieGrey"
                 >
-                  Unique features (optional)
+                  Unique Features
                 </Label>
                 <FormField
                   control={form.control}
@@ -820,14 +877,31 @@ const AddSeedForm = ({
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          placeholder="Enter Unique features"
-                          type="text"
-                          id="Unique_features"
-                          className="outline-none focus:border-primary disabled:bg-primary/20"
-                          {...field}
+                        <Select
+                          onValueChange={(value) => {
+                            field.onChange(value);
+                          }}
                           disabled={isViewMode}
-                        />
+                        >
+                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                            <SelectValue
+                              placeholder={
+                                seed?.Unique_features ||
+                                "Select Unique Features"
+                              }
+                            />
+                          </SelectTrigger>
+                          <SelectContent className="rounded-xl">
+                            <SelectGroup>
+                              <SelectLabel>Unique Features</SelectLabel>
+                              {uniqueFeatures.map((item) => (
+                                <SelectItem key={item.value} value={item.value}>
+                                  {item.label}
+                                </SelectItem>
+                              ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -940,9 +1014,9 @@ const AddSeedForm = ({
           </form>
         )}
       </Form>
-      <AddSeedTrialDataInstructionModal
-        open={isAddSeedTrailDataInstructionModalOpen}
-        onOpenChange={setAddSeedTrailDataInstructionModalOpen}
+      <NutrientContentModal
+        open={nutrientContentInstructionModalOpen}
+        onOpenChange={setNutrientContentInstructionModalOpen}
       />
     </>
   );

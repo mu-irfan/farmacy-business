@@ -74,7 +74,7 @@ interface Manager {
 interface TrailData {
   id: number;
   stage: string;
-  principle_stage: string;
+  sub_stage: string;
   start_day: string;
   end_day: string;
   kc: string;
@@ -95,7 +95,7 @@ interface Franchise {
 
 interface SeedTrails {
   id: number;
-  variety_name: string;
+  seed_variety_name: string;
   sowing_date: string;
   tehsil: string;
   city: string;

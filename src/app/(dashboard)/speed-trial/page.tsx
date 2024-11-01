@@ -11,6 +11,7 @@ import { useGetProductStats } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import AddCropSelectionSeedTrailDataModal from "@/components/forms-modals/seed-trail-data/AddCropSelectionSeedTrailData";
+import { Toaster } from "react-hot-toast";
 
 export default function SpeedTrail() {
   const { token } = useContextConsumer();
@@ -31,6 +32,7 @@ export default function SpeedTrail() {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout contentAtCenter>
         <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
           {loading ? (
@@ -87,7 +89,6 @@ export default function SpeedTrail() {
       <AddCropSelectionSeedTrailDataModal
         open={isAddSeedTrailModalOpen}
         onOpenChange={setAddSeedTrailModalOpen}
-        mode="add"
       />
     </>
   );

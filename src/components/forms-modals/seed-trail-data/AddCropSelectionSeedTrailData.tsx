@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -17,8 +17,6 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Button } from "@/components/ui/button";
-import { cn } from "@/lib/utils";
-import { Pencil } from "lucide-react";
 import {
   Select,
   SelectContent,
@@ -31,27 +29,16 @@ import {
 import { crops } from "@/constant/data";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Label } from "@/components/ui/label";
-import { useContextConsumer } from "@/context/Context";
 import { addCropSelectionFormSchema } from "@/schemas/validation/validationSchema";
 import AddSeedTrailDataModal from "./AddSeedTrailData";
 
 const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
   open,
   onOpenChange,
-  mode,
-  trailData,
-  currentTrailDataUuid,
-  loading,
 }) => {
-  const isViewMode = mode === "view";
-  const { token } = useContextConsumer();
-  const [currentMode, setCurrentMode] = useState(mode);
   const [isAddSeedTrailDataModalOpen, setAddSeedTrailDataModalOpen] =
     useState(false);
-
-  //   const { mutate: addManager, isPending: loading } = useCreateManager();
-  //   const { mutate: updateManager, isPending: updating } =
-  //     useUpdateManager(token);
+  const [selectedCrop, setselectedCrop] = useState("");
 
   const form = useForm<z.infer<typeof addCropSelectionFormSchema>>({
     resolver: zodResolver(addCropSelectionFormSchema),
@@ -60,74 +47,23 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
     },
   });
 
-  const { reset } = form;
-  //   useEffect(() => {
-  //     if (manager) {
-  //       reset({
-  //         full_name: manager.full_name || "",
-  //         contact: manager.contact || "",
-  //       });
-  //     }
-  //   }, [manager, reset]);
-
   const onSubmit = (data: z.infer<typeof addCropSelectionFormSchema>) => {
     setAddSeedTrailDataModalOpen((prev: any) => !prev);
-    //     if (mode === "add") {
-    //       addManager(
-    //         { data, token },
-    //         {
-    //           onSuccess: (log) => {
-    //             if (log?.success) {
-    //               onClose();
-    //             }
-    //           },
-    //         }
-    //       );
-    //     } else if (mode === "edit") {
-    //       const updatedData = { full_name: data.full_name, uuid: manager?.uuid };
-    //       updateManager(updatedData, {
-    //         onSuccess: (log) => {
-    //           if (log?.success) {
-    //             onClose();
-    //           }
-    //         },
-    //       });
-    //     }
   };
-
-  useEffect(() => {
-    if (open && mode !== "add") {
-      setCurrentMode("view");
-    }
-  }, [open, mode]);
 
   return (
     <>
       <Dialog open={open} onOpenChange={onOpenChange}>
         <DialogContent className="max-w-[80vw] md:max-w-xl h-[50vh] lg:h-[55vh] overflow-y-auto scrollbar-custom">
-          <DialogHeader
-            className={cn(
-              currentMode === "view"
-                ? "flex flex-row items-center justify-between mt-8"
-                : ""
-            )}
-          >
+          <DialogHeader>
             <DialogTitle className="text-primary text-xl font-bold pt-8">
-              {currentMode === "add"
-                ? "Add Seed Trial Data"
-                : "Update Seed Trial Data"}
+              Add Seed Trial Data
             </DialogTitle>
-            {currentMode === "view" && (
-              <Button size="sm" onClick={() => setCurrentMode("edit")}>
-                Edit <Pencil className="w-3.5 h-3.5 ml-2" />
-              </Button>
-            )}
-            {currentMode === "add" && (
-              <DialogDescription className="!dark:text-farmacieLightGray">
-                Add seed trial data so that it can also be the part recomended
-                crop list to the farmer
-              </DialogDescription>
-            )}
+
+            <DialogDescription className="!dark:text-farmacieLightGray">
+              Add seed trial data so that it can also be the part recomended
+              crop list to the farmer
+            </DialogDescription>
           </DialogHeader>
           <ul className="list-disc text-xs pl-8 space-y-2 text-yellow-600">
             <li>
@@ -168,18 +104,12 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
                       <FormControl>
                         <Select
                           onValueChange={(value) => {
+                            setselectedCrop(value);
                             field.onChange(value);
                           }}
-                          disabled={isViewMode}
                         >
                           <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
-                            <SelectValue
-                              placeholder={
-                                // productData?.crop ||
-                                "Select crop"
-                              }
-                              className=""
-                            />
+                            <SelectValue placeholder="Select crop" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
@@ -201,9 +131,8 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
               <Button
                 className="w-full text-white font-medium mt-4"
                 type="submit"
-                disabled={isViewMode || loading}
               >
-                {mode === "add" ? "Add Trial Data" : "Update"}
+                Add Trial Data
               </Button>
               <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
             </form>
@@ -214,6 +143,7 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
         open={isAddSeedTrailDataModalOpen}
         onOpenChange={setAddSeedTrailDataModalOpen}
         mode="add"
+        cropName={selectedCrop}
       />
     </>
   );

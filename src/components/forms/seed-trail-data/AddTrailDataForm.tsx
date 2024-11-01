@@ -14,9 +14,13 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
-import { useCreateManager, useUpdateManager } from "@/hooks/useDataFetch";
+import {
+  useCreateSeedTrail,
+  useGetAllSeeds,
+  useGetAllSeedTrailsStagesFormFields,
+  useUpdateManager,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
-import { Toaster } from "react-hot-toast";
 import {
   Select,
   SelectContent,
@@ -26,187 +30,122 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import {
-  ManagersData,
-  productCategory,
-  tehsils,
-  TrailData,
-} from "@/constant/data";
-import DataTable from "@/components/Table/DataTable";
+import { seedTrailTableHeaders, tehsils } from "@/constant/data";
+import { SkeletonCard } from "@/components/SkeletonLoader";
 
 const AddTrailDataForm = ({
-  showInsList,
-  trailData,
   mode,
-  loading,
-  currentTrailDataUuid,
   onClose,
+  cropName,
 }: {
-  showInsList?: boolean;
-  trailData: any;
   mode: "add" | "view" | "edit";
-  loading?: boolean;
-  currentTrailDataUuid?: string;
   onClose: () => void;
+  cropName: string;
 }) => {
   const isViewMode = mode === "view";
   const { token } = useContextConsumer();
-  //   const { mutate: addManager, isPending: loading } = useCreateManager();
-  //   const { mutate: updateManager, isPending: updating } =
-  //     useUpdateManager(token);
+  const { mutate: createSeedTrail, isPending: creating } = useCreateSeedTrail();
+  const { data: seedTrailsStagesForm, isLoading: loadingStagesForm } =
+    useGetAllSeedTrailsStagesFormFields(cropName ?? "", token);
+  const { data: seedsVarieties, isLoading: loadingSeeds } =
+    useGetAllSeeds(token);
 
   const form = useForm<z.infer<typeof addTrailDataFormSchema>>({
     resolver: zodResolver(addTrailDataFormSchema),
     defaultValues: {
-      variety: "",
-      sowingDate: "",
+      seed_variety: "",
+      sowing_date: "",
       city: "",
       tehsil: "",
       min_irrigation: "",
       max_irrigation: "",
-      yield_percentage: "",
-      start_day: "",
-      end_day: "",
-      kc: "",
+      estimated_yield: "",
+      seed_trial_form:
+        seedTrailsStagesForm?.message?.map(() => ({
+          start_day: "",
+          end_day: "",
+          kc: "",
+        })) || [],
     },
   });
 
-  const TrailDataFormCols: {
-    Header: string;
-    accessor: TrailDataColumnAccessor;
-    Cell?: ({ row }: any) => JSX.Element;
-  }[] = [
-    { Header: "Stage", accessor: "stage" },
-    { Header: "Principle Stage", accessor: "principle_stage" },
-    {
-      Header: "Start Day",
-      accessor: "start_day",
-      Cell: ({ row }: any) => (
-        <LabelInputContainer className="w-20">
-          <FormField
-            control={form.control}
-            name="start_day"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="0"
-                    type="text"
-                    id="start_day"
-                    className="outline-none focus:border-primary disabled:bg-primary/20"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </LabelInputContainer>
-      ),
-    },
-    {
-      Header: "End Day",
-      accessor: "end_day",
-      Cell: ({ row }: any) => (
-        <LabelInputContainer className="w-20">
-          <FormField
-            control={form.control}
-            name="end_day"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="0"
-                    type="text"
-                    id="end_day"
-                    className="outline-none focus:border-primary disabled:bg-primary/20"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </LabelInputContainer>
-      ),
-    },
-    {
-      Header: "Kc",
-      accessor: "kc",
-      Cell: ({ row }: any) => (
-        <LabelInputContainer className="w-20">
-          <FormField
-            control={form.control}
-            name="kc"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input
-                    placeholder="0"
-                    type="text"
-                    id="kc"
-                    className="outline-none focus:border-primary disabled:bg-primary/20"
-                    {...field}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-        </LabelInputContainer>
-      ),
-    },
-  ];
+  const { setValue, watch, control } = form;
+  const seedTrialForm = watch("seed_trial_form");
 
-  const { reset } = form;
-  //   useEffect(() => {
-  //     if (manager) {
-  //       reset({
-  //         full_name: manager.full_name || "",
-  //         contact: manager.contact || "",
-  //       });
-  //     }
-  //   }, [manager, reset]);
+  useEffect(() => {
+    seedTrialForm?.forEach((item, index) => {
+      if (index > 0) {
+        const previousEndDay = seedTrialForm[index - 1]?.end_day || "";
+        setValue(`seed_trial_form.${index}.start_day`, previousEndDay);
+      }
+    });
+  }, [seedTrialForm, setValue]);
+
+  const selectedSeedUUID = seedsVarieties?.data.find(
+    (item: any) => item.seed_variety_name === form.watch("seed_variety")
+  )?.uuid;
 
   const onSubmit = (data: z.infer<typeof addTrailDataFormSchema>) => {
-    console.log(data, "traildata");
+    let isValid = true;
 
-    //     if (mode === "add") {
-    //       addManager(
-    //         { data, token },
-    //         {
-    //           onSuccess: (log) => {
-    //             if (log?.success) {
-    //               onClose();
-    //             }
-    //           },
-    //         }
-    //       );
-    //     } else if (mode === "edit") {
-    //       const updatedData = { full_name: data.full_name, uuid: manager?.uuid };
-    //       updateManager(updatedData, {
-    //         onSuccess: (log) => {
-    //           if (log?.success) {
-    //             onClose();
-    //           }
-    //         },
-    //       });
-    //     }
+    data.seed_trial_form.forEach((item, index, arr) => {
+      if (index > 0) {
+        item.start_day = arr[index - 1].end_day;
+      }
+
+      const startDay = parseInt(item.start_day, 10);
+      const endDay = parseInt(item.end_day, 10);
+
+      if (endDay <= startDay) {
+        isValid = false;
+        form.setError(`seed_trial_form.${index}.end_day`, {
+          type: "manual",
+          message: "End day must be greater than start day",
+        });
+      }
+    });
+
+    if (!isValid) return;
+
+    const completeSeedTrialForm = data.seed_trial_form.map((item, index) => ({
+      ...item,
+      stage: seedTrailsStagesForm?.message[index].stage,
+      sub_stage: seedTrailsStagesForm?.message[index].sub_stage,
+      bbch_scale: seedTrailsStagesForm?.message[index].bbch_scale.toString(),
+    }));
+
+    const finalData = {
+      ...data,
+      seed_fk: selectedSeedUUID,
+      seed_trial_form: completeSeedTrialForm,
+    };
+
+    if (mode === "add") {
+      createSeedTrail(
+        { data: finalData, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+            }
+          },
+        }
+      );
+    }
   };
 
   return (
     <>
-      <Toaster />
       <Form {...form}>
         <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="variety" className="dark:text-farmacieGrey">
+              <Label htmlFor="seed_variety" className="dark:text-farmacieGrey">
                 Seed variety name
               </Label>
               <FormField
                 control={form.control}
-                name="variety"
+                name="seed_variety"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
@@ -218,19 +157,19 @@ const AddTrailDataForm = ({
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                           <SelectValue
-                            placeholder={
-                              // productData?.variety ||
-                              "Select variety"
-                            }
+                            placeholder={"Select seed_variety"}
                             className=""
                           />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
-                            <SelectLabel>variety</SelectLabel>
-                            {productCategory.map((item) => (
-                              <SelectItem key={item.value} value={item.value}>
-                                {item.label}
+                            <SelectLabel>seed variety</SelectLabel>
+                            {seedsVarieties?.data.map((item: any) => (
+                              <SelectItem
+                                key={item.uuid}
+                                value={item.seed_variety_name}
+                              >
+                                {item.seed_variety_name}
                               </SelectItem>
                             ))}
                           </SelectGroup>
@@ -243,19 +182,19 @@ const AddTrailDataForm = ({
               />
             </LabelInputContainer>
             <LabelInputContainer>
-              <Label htmlFor="sowingDate" className="dark:text-farmacieGrey">
+              <Label htmlFor="sowing_date" className="dark:text-farmacieGrey">
                 Sowing Date
               </Label>
               <FormField
                 control={form.control}
-                name="sowingDate"
+                name="sowing_date"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
                         placeholder="Enter date"
                         type="text"
-                        id="sowingDate"
+                        id="sowing_date"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                       />
@@ -285,10 +224,7 @@ const AddTrailDataForm = ({
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                           <SelectValue
-                            placeholder={
-                              // productData?.tehsil ||
-                              "Select Tehsil"
-                            }
+                            placeholder={"Select Tehsil"}
                             className=""
                           />
                         </SelectTrigger>
@@ -388,22 +324,19 @@ const AddTrailDataForm = ({
             </LabelInputContainer>
           </div>
           <LabelInputContainer>
-            <Label
-              htmlFor="yield_percentage"
-              className="dark:text-farmacieGrey"
-            >
+            <Label htmlFor="estimated_yield" className="dark:text-farmacieGrey">
               Estimated yield (per acre)
             </Label>
             <FormField
               control={form.control}
-              name="yield_percentage"
+              name="estimated_yield"
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
                       placeholder="Enter yield percentage"
                       type="text"
-                      id="yield_percentage"
+                      id="estimated_yield"
                       className="outline-none focus:border-primary disabled:bg-primary/20"
                       {...field}
                     />
@@ -414,14 +347,119 @@ const AddTrailDataForm = ({
             />
           </LabelInputContainer>
           <h2 className="py-8 text-yellow-600">Seed Trial Form</h2>
-          <DataTable
-            columns={TrailDataFormCols}
-            data={TrailData as TrailData[]}
-          />
+          <div className="overflow-x-auto">
+            {!loadingStagesForm ? (
+              seedTrailsStagesForm &&
+              seedTrailsStagesForm.message.length > 0 ? (
+                <table className="min-w-full">
+                  <thead>
+                    <tr>
+                      {seedTrailTableHeaders.map((header) => (
+                        <th
+                          key={header.accessor}
+                          className="px-4 py-2 border-b text-sm font-normal"
+                        >
+                          {header.label}
+                        </th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {seedTrailsStagesForm?.message?.map(
+                      (data: any, index: number) => (
+                        <tr key={data.id}>
+                          <td className="px-4 py-2 border-b text-sm font-normal">
+                            {data.stage}
+                          </td>
+                          <td className="px-4 py-2 border-b text-sm font-normal">
+                            {data.sub_stage}
+                          </td>
+
+                          <td className="px-4 py-2 border-b">
+                            <FormField
+                              control={form.control}
+                              name={`seed_trial_form.${index}.start_day`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="0"
+                                      type="text"
+                                      className="outline-none focus:border-primary disabled:bg-primary/20"
+                                      {...field}
+                                      disabled={index > 0}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </td>
+                          <td>
+                            <FormField
+                              control={control}
+                              name={`seed_trial_form.${index}.end_day`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      type="text"
+                                      className="outline-none focus:border-primary"
+                                      {...field}
+                                      onChange={(e) => {
+                                        field.onChange(e);
+                                        const newEndDay = e.target.value;
+                                        if (index < seedTrialForm.length - 1) {
+                                          setValue(
+                                            `seed_trial_form.${
+                                              index + 1
+                                            }.start_day`,
+                                            newEndDay
+                                          );
+                                        }
+                                      }}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </td>
+                          <td className="px-4 py-2 border-b">
+                            <FormField
+                              control={form.control}
+                              name={`seed_trial_form.${index}.kc`}
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="0"
+                                      type="text"
+                                      className="outline-none focus:border-primary disabled:bg-primary/20"
+                                      {...field}
+                                    />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </td>
+                        </tr>
+                      )
+                    )}
+                  </tbody>
+                </table>
+              ) : (
+                <h2>No Stages are available for this crop</h2>
+              )
+            ) : (
+              <SkeletonCard className="w-full h-80" />
+            )}
+          </div>
           <Button
             className="w-full text-white font-medium mt-4"
             type="submit"
-            disabled={isViewMode || loading}
+            disabled={isViewMode || creating}
           >
             {mode === "add" ? "Submit" : "Update"}
           </Button>

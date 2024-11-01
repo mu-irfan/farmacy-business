@@ -34,6 +34,7 @@ import {
   createProduct,
   deleteProduct,
   deleteProductImage,
+  getAlActiveIngredient,
   getAllProducts,
   getProduct,
   getProductStats,
@@ -69,7 +70,13 @@ import {
 } from "@/api/subscribe";
 import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
 import { createBulkPayment, inquiryPayment } from "@/api/payment";
-import { getAllSeedTrail, getSeedTrailStages } from "@/api/seedTrail";
+import {
+  createSeedTrail,
+  getAllSeedTrail,
+  getSeedTrailStages,
+  getSeedTrailStagesFormFields,
+  updateSeedTrailStages,
+} from "@/api/seedTrail";
 
 export const useRegisterCompany = () => {
   const router = useRouter();
@@ -425,6 +432,25 @@ export const useGetAllProducts = (token: string) => {
   } as UseQueryOptions);
 };
 
+export const useGetAllActiveIngredients = (token: string) => {
+  return useQuery<any, Error>({
+    queryKey: ["allActiveIngredients", token],
+    queryFn: () => getAlActiveIngredient(token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 60000,
+    refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
 export const useCreateProduct = () => {
   const queryClient = useQueryClient();
   return useMutation({
@@ -432,8 +458,6 @@ export const useCreateProduct = () => {
       createProduct(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
-        console.log(data, "creating");
-
         toast.success(data?.message);
         queryClient.invalidateQueries(["allProducts", variables.token] as any);
       } else {
@@ -547,8 +571,6 @@ export const useCreateSeed = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createSeed(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
-      console.log(data, "creating seed");
-
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries(["allSeeds", variables.token] as any);
@@ -1054,6 +1076,28 @@ export const useGetInquiryPayment = (token: string) => {
 
 // seed trail
 
+export const useCreateSeedTrail = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createSeedTrail(data, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries([
+          "allSeedTrails",
+          variables.token,
+        ] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
 export const useGetAllSeedTrails = (token: string) => {
   return useQuery<any, Error>({
     queryKey: ["allSeedTrails", token],
@@ -1091,4 +1135,58 @@ export const useGetAllSeedTrailsStages = (uuid: string, token: string) => {
     refetchOnWindowFocus: false,
     enabled: !!uuid,
   } as UseQueryOptions);
+};
+
+export const useGetAllSeedTrailsStagesFormFields = (
+  crop_name: string,
+  token: string
+) => {
+  return useQuery<any, Error>({
+    queryKey: ["allSeedTrails", crop_name, token],
+    queryFn: () => getSeedTrailStagesFormFields(crop_name, token),
+    onSuccess: (data: any) => {
+      if (data?.success) {
+        toast.success(data?.message);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+    staleTime: 0,
+    refetchOnWindowFocus: false,
+  } as UseQueryOptions);
+};
+
+export const useUpdateSeedTrail = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({
+      data,
+      token,
+      uuid,
+    }: {
+      data: any;
+      token: string;
+      uuid: string;
+    }) => updateSeedTrailStages(data, token, uuid),
+    onSuccess: (
+      data: any,
+      variables: { data: any; token: string; uuid: string }
+    ) => {
+      if (data?.success) {
+        toast.success(data.message);
+        queryClient.invalidateQueries([
+          "allSeedTrailsStages",
+          variables.token,
+        ] as any);
+      } else {
+        toast.error(data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message);
+    },
+  });
 };
