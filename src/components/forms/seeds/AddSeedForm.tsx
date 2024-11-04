@@ -95,7 +95,6 @@ const AddSeedForm = ({
     nutrientContentInstructionModalOpen,
     setNutrientContentInstructionModalOpen,
   ] = useState<boolean>(false);
-  const [selectedFrameworks, setSelectedFrameworks] = useState<string[]>([]);
 
   //
   const { mutate: subscribeSeed, isPending: subscribing } = useSubscribeSeed();
