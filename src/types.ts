@@ -233,3 +233,16 @@ interface Option {
   value: string;
   label: string;
 }
+
+interface MultiSelectContextProps {
+  value: string[];
+  onValueChange: (value: any) => void;
+  open: boolean;
+  setOpen: (value: boolean) => void;
+  inputValue: string;
+  setInputValue: React.Dispatch<React.SetStateAction<string>>;
+  activeIndex: number;
+  setActiveIndex: React.Dispatch<React.SetStateAction<number>>;
+  ref: React.RefObject<HTMLInputElement>;
+  handleSelect: (e: React.SyntheticEvent<HTMLInputElement>) => void;
+}

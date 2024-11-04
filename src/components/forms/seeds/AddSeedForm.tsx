@@ -36,6 +36,7 @@ import {
   resistanceTraits,
   suitahleRegion,
   uniqueFeatures,
+  users,
 } from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
 import {
@@ -51,8 +52,16 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import toast from "react-hot-toast";
-import { MultiSelect } from "@/components/ui/multi-select";
+
 import NutrientContentModal from "@/components/forms-modals/seeds/NutrientContent";
+import {
+  MultiSelector,
+  MultiSelectorContent,
+  MultiSelectorInput,
+  MultiSelectorItem,
+  MultiSelectorList,
+  MultiSelectorTrigger,
+} from "@/components/ui/multi-select";
 
 type SeedCategory = keyof typeof cropCategoriesOptions;
 
@@ -112,9 +121,10 @@ const AddSeedForm = ({
       package_type: "",
       height_class: "",
       nutrient_content: "",
-      Common_disease_tolerance: "",
+      common_disease_tolerance: [],
       environmental_resilience_factors: "",
       price: "",
+      unique_features: "",
       description: "",
     },
   });
@@ -138,10 +148,14 @@ const AddSeedForm = ({
         package_type: seed.package_type || "",
         height_class: seed.height_class || "",
         nutrient_content: seed.nutrient_content || "",
-        Common_disease_tolerance: seed.Common_disease_tolerance || "",
+        common_disease_tolerance:
+          typeof seed.common_disease_tolerance === "string"
+            ? seed.common_disease_tolerance.split(",")
+            : seed.common_disease_tolerance || [],
         environmental_resilience_factors:
           seed.environmental_resilience_factors || "",
         price: seed.price || "",
+        unique_features: seed.unique_features || "",
         description: seed.description || "",
       });
     }
@@ -165,13 +179,17 @@ const AddSeedForm = ({
     formData.append("height_class", data.height_class);
     formData.append("price", data.price);
     formData.append("description", data.description);
+
+    if (data.unique_features) {
+      formData.append("unique_features", data.unique_features);
+    }
     if (data.nutrient_content) {
       formData.append("nutrient_content", data.nutrient_content);
     }
-    if (data.Common_disease_tolerance) {
+    if (data.common_disease_tolerance) {
       formData.append(
-        "Common_disease_tolerance",
-        data.Common_disease_tolerance
+        "common_disease_tolerance",
+        data.common_disease_tolerance.join(",")
       );
     }
     if (data.environmental_resilience_factors) {
@@ -759,35 +777,43 @@ const AddSeedForm = ({
             <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
               <LabelInputContainer>
                 <Label
-                  htmlFor="Common_disease_tolerance"
+                  htmlFor="common_disease_tolerance"
                   className="dark:text-farmacieGrey"
                 >
                   Common Disease Tolerance (Optional)
                 </Label>
                 <FormField
                   control={form.control}
-                  name="Common_disease_tolerance"
+                  name="common_disease_tolerance"
+                  disabled={isViewMode}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Input
-                          placeholder="Enter any disease tolerance"
-                          type="text"
-                          id="Common_disease_tolerance"
-                          className="outline-none focus:border-primary disabled:bg-primary/20"
-                          {...field}
-                          disabled={isViewMode}
-                        />
-                        {/* <MultiSelect
-                          options={diseaseResistanceTraits}
-                          onValueChange={setSelectedFrameworks}
-                          defaultValue={selectedFrameworks}
-                          placeholder="Select frameworks"
-                          variant="inverted"
-                          animation={2}
-                          maxCount={3}
-                          className="relative z-[1050]"
-                        /> */}
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value || []}
+                          disabled={mode === "view"}
+                        >
+                          <MultiSelectorTrigger disabled={isViewMode}>
+                            <MultiSelectorInput
+                              placeholder="Select Disease Tolerance"
+                              className="text-sm"
+                              disabled={isViewMode}
+                            />
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {diseaseResistanceTraits.map((trait) => (
+                                <MultiSelectorItem
+                                  key={trait.value}
+                                  value={trait.value}
+                                >
+                                  <span>{trait.label}</span>
+                                </MultiSelectorItem>
+                              ))}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -866,14 +892,14 @@ const AddSeedForm = ({
               </LabelInputContainer>
               <LabelInputContainer>
                 <Label
-                  htmlFor="Unique_features"
+                  htmlFor="unique_features"
                   className="dark:text-farmacieGrey"
                 >
                   Unique Features
                 </Label>
                 <FormField
                   control={form.control}
-                  name="Unique_features"
+                  name="unique_features"
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
@@ -886,7 +912,7 @@ const AddSeedForm = ({
                           <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                             <SelectValue
                               placeholder={
-                                seed?.Unique_features ||
+                                seed?.unique_features ||
                                 "Select Unique Features"
                               }
                             />

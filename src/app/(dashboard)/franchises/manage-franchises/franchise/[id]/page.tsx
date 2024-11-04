@@ -1,4 +1,6 @@
 "use client";
+
+import React, { useEffect, useState } from "react";
 import DashboardLayout from "@/app/(dashboard)/dashboard-layout";
 import NoData from "@/components/alerts/NoData";
 import { SweetAlert } from "@/components/alerts/SweetAlert";
@@ -19,7 +21,6 @@ import {
 } from "@/hooks/useDataFetch";
 import { MoveLeft, ShieldCheck, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
 
 const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
@@ -53,6 +54,18 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
     currentProductUuid!,
     token
   );
+
+  useEffect(() => {
+    if (productDetails?.success && productDetails.data) {
+      setSelectedProductToView(productDetails.data);
+    }
+  }, [productDetails]);
+
+  useEffect(() => {
+    if (seedDetails?.success && seedDetails.data) {
+      setSelectedSeedToView(seedDetails.data);
+    }
+  }, [seedDetails]);
 
   const subscribedProductData = subscribedProduct?.data?.map((item: any) => {
     const { product } = item;
@@ -121,15 +134,6 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
       deleteSubscribedProduct(productId);
     }
   };
-
-  useEffect(() => {
-    if (productDetails?.success && productDetails.data) {
-      setSelectedProductToView(productDetails.data);
-    }
-    if (seedDetails?.success && seedDetails.data) {
-      setSelectedSeedToView(seedDetails.data);
-    }
-  }, [productDetails, seedDetails]);
 
   const seedColumns: {
     Header: string;

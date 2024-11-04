@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import FilterFranchiceForm from "@/components/forms/franchice/FilterFranchiceForm";
 
-const FilterFranchiceModal = ({ open, onOpenChange }: any) => {
+const FilterFranchiceModal = ({ open, onOpenChange, onSubmit }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-md lg:max-w-lg">
@@ -16,7 +16,7 @@ const FilterFranchiceModal = ({ open, onOpenChange }: any) => {
             Filter Franchice
           </DialogTitle>
         </DialogHeader>
-        <FilterFranchiceForm />
+        <FilterFranchiceForm onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

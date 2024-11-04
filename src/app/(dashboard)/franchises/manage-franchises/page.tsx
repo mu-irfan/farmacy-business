@@ -23,6 +23,11 @@ const ManageFranchises = () => {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isAddFranchiceModalOpen, setAddFranchiceModalOpen] = useState(false);
   const [isBulkActivateModalOpen, setBulkActivateModalOpen] = useState(false);
+  const [filterCriteria, setFilterCriteria] = useState({
+    province: "",
+    district: "",
+    tehsil: "",
+  });
 
   // franchises
   const { data: franchises, isLoading: loading } = useGetAllFranchises(token);
@@ -33,14 +38,39 @@ const ManageFranchises = () => {
     setSearchQuery(value);
   }, 300);
 
+  const handleFilterSubmit = (criteria: {
+    province: string;
+    district: string;
+    tehsil: string;
+  }) => {
+    setFilterCriteria(criteria);
+    setAddFranchiceModalOpen(false);
+  };
+
   const filteredManagers = useMemo(() => {
     if (!franchises || !franchises.data) return [];
-    return franchises.data.filter((franchise: any) =>
-      franchise.franchise_manager?.full_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    );
-  }, [franchises, searchQuery]);
+    return franchises.data
+      .filter((franchise: any) =>
+        franchise.franchise_manager?.full_name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+      .filter((franchise: any) => {
+        if (
+          filterCriteria.province &&
+          franchise.province !== filterCriteria.province
+        )
+          return false;
+        if (
+          filterCriteria.district &&
+          franchise.district !== filterCriteria.district
+        )
+          return false;
+        if (filterCriteria.tehsil && franchise.tehsil !== filterCriteria.tehsil)
+          return false;
+        return true;
+      });
+  }, [franchises, searchQuery, filterCriteria]);
 
   const handleView = (franchise: any) => {
     router.push(`/franchises/manage-franchises/franchise/${franchise.uuid}`);
@@ -168,6 +198,7 @@ const ManageFranchises = () => {
       <FilterFranchiceModal
         open={isAddFranchiceModalOpen}
         onOpenChange={setAddFranchiceModalOpen}
+        onSubmit={handleFilterSubmit}
       />
       <ActivateFranchiseModal
         open={isBulkActivateModalOpen}

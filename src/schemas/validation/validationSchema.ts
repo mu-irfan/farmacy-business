@@ -140,12 +140,8 @@ const addProductFormSchema = z.object({
 });
 
 const filterProductsFormSchema = z.object({
-  category: z.string().nonempty({
-    message: "Category is required.",
-  }),
-  allSubCategories: z.string().nonempty({
-    message: "Subcategory is required.",
-  }),
+  category: z.string().optional(),
+  allSubCategories: z.string().optional(),
 });
 
 //seed
@@ -198,10 +194,9 @@ const addSeedFormSchema = z.object({
   package_type: z.string().nonempty({ message: "Packaging Type is required." }),
   height_class: z.string().nonempty({ message: "Height Class is required." }),
   nutrient_content: z.string().optional(),
-  // Common_disease_tolerance: z.array(z.string()).optional(),
-  Common_disease_tolerance: z.string().optional(),
+  common_disease_tolerance: z.array(z.string()).optional(),
   environmental_resilience_factors: z.string().optional(),
-  Unique_features: z.string().optional(),
+  unique_features: z.string().optional(),
   price: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
@@ -211,12 +206,8 @@ const addSeedFormSchema = z.object({
 
 // filter seed
 const filterSeedFormSchema = z.object({
-  category: z.string().nonempty({
-    message: "Category is required.",
-  }),
-  crop: z.string().nonempty({
-    message: "Crop is required.",
-  }),
+  category: z.string().optional(),
+  crop: z.string().optional(),
 });
 
 // add seed trial data
@@ -239,15 +230,9 @@ const addSeedTrailDataFormSchema = z.object({
 
 // filter subscribed product
 const filterSubscribedProduct = z.object({
-  category: z.string().nonempty({
-    message: "Category is required.",
-  }),
-  subCategory: z.string().nonempty({
-    message: "Sub category is required.",
-  }),
-  subscribed: z.string().nonempty({
-    message: "Subscribe is required.",
-  }),
+  category: z.string().optional(),
+  subCategory: z.string().optional(),
+  subscribed: z.string().optional(),
 });
 
 // add franchise
@@ -368,15 +353,9 @@ const addCropSelectionFormSchema = z.object({
 
 // filter franchice
 const filterFranchiceFormSchema = z.object({
-  province: z.string().nonempty({
-    message: "Select Province",
-  }),
-  district: z.string().nonempty({
-    message: "Select District",
-  }),
-  tehsil: z.string().nonempty({
-    message: "Select Tehil",
-  }),
+  province: z.string().optional(),
+  district: z.string().optional(),
+  tehsil: z.string().optional(),
 });
 
 const addQueryFormSchema = z.object({

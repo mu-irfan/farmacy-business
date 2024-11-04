@@ -24,6 +24,11 @@ const SubscribeNewProduct = ({ params }: any) => {
   const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
     null
   );
+  const [filterCriteria, setFilterCriteria] = useState({
+    category: "",
+    subCategory: "",
+    subscribed: "",
+  });
 
   //
   const { data: unSubProducts, isLoading: loading } = useGetUnSubscribedProduct(
@@ -39,12 +44,40 @@ const SubscribeNewProduct = ({ params }: any) => {
     setSearchQuery(value);
   }, 300);
 
+  const handleFilterSubmit = (criteria: {
+    category: string;
+    subCategory: string;
+    subscribed: string;
+  }) => {
+    setFilterCriteria(criteria);
+    setNewSubscribedProductModalOpen(false);
+  };
+
   const filteredUnsubProducts = useMemo(() => {
     if (!unSubProducts || !unSubProducts.message) return [];
-    return unSubProducts?.message?.filter((unsubProd: any) =>
-      unsubProd?.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [unSubProducts, searchQuery]);
+    return unSubProducts.message
+      .filter((unsubProd: any) =>
+        unsubProd.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter((unsubProd: any) => {
+        if (
+          filterCriteria.category &&
+          unsubProd.category !== filterCriteria.category
+        )
+          return false;
+        if (
+          filterCriteria.subCategory &&
+          unsubProd.sub_category !== filterCriteria.subCategory
+        )
+          return false;
+        if (
+          filterCriteria.subscribed &&
+          String(unsubProd.subscribed) !== filterCriteria.subscribed
+        )
+          return false;
+        return true;
+      });
+  }, [unSubProducts, searchQuery, filterCriteria]);
 
   const handleView = (product: any) => {
     setViewProductModalOpen(true);
@@ -137,6 +170,7 @@ const SubscribeNewProduct = ({ params }: any) => {
       <FilterProductSubscribeModal
         open={isNewSubscribedProductModalOpen}
         onOpenChange={setNewSubscribedProductModalOpen}
+        onSubmit={handleFilterSubmit}
       />
       <AddProductModal
         open={isViewProductModalOpen}

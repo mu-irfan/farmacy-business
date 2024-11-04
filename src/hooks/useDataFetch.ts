@@ -92,7 +92,6 @@ export const useRegisterCompany = () => {
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.field);
-      console.log(error);
     },
   });
 };

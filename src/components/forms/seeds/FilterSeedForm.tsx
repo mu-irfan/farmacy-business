@@ -27,7 +27,11 @@ import {
 
 type SeedCategory = keyof typeof cropCategoriesOptions;
 
-const FilterSeedForm = () => {
+const FilterSeedForm = ({
+  onSubmit,
+}: {
+  onSubmit: (data: { category: string; crop: string }) => void;
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<SeedCategory | "">(
     ""
   );
@@ -40,13 +44,12 @@ const FilterSeedForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof filterSeedFormSchema>) => {
-    console.log("Submitting form data:", data);
+  const handleSubmit = (data: z.infer<typeof filterSeedFormSchema>) => {
+    onSubmit(data as any);
   };
-
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
             <Label htmlFor="category" className="dark:text-farmacieGrey">

@@ -21,6 +21,11 @@ const SubscribeNewSeeds = ({ params }: any) => {
   const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
   const [currentSeedUuid, setCurrentSeedUuid] = useState<string | null>(null);
+  const [filterCriteria, setFilterCriteria] = useState({
+    category: "",
+    crop: "",
+    subscribed: "",
+  });
 
   //
   const { data: unSubSeeds, isLoading: loading } = useGetUnSubscribedSeed(
@@ -37,14 +42,39 @@ const SubscribeNewSeeds = ({ params }: any) => {
     setSearchQuery(value);
   }, 300);
 
+  const handleFilterSubmit = (criteria: {
+    category: string;
+    crop: string;
+    subscribed: string;
+  }) => {
+    setFilterCriteria(criteria);
+    setAddProductModalOpen(false);
+  };
+
   const filteredUnsubSeeds = useMemo(() => {
     if (!unSubSeeds || !unSubSeeds.data) return [];
-    return unSubSeeds.data.filter((unsubSeed: any) =>
-      unsubSeed?.seed_variety_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    );
-  }, [unSubSeeds, searchQuery]);
+    return unSubSeeds.data
+      .filter((unsubSeed: any) =>
+        unsubSeed.seed_variety_name
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+      )
+      .filter((unsubSeed: any) => {
+        if (
+          filterCriteria.category &&
+          unsubSeed.category !== filterCriteria.category
+        )
+          return false;
+        if (filterCriteria.crop && unsubSeed.crop !== filterCriteria.crop)
+          return false;
+        if (
+          filterCriteria.subscribed &&
+          String(unsubSeed.subscribed) !== filterCriteria.subscribed
+        )
+          return false;
+        return true;
+      });
+  }, [unSubSeeds, searchQuery, filterCriteria]);
 
   const handleView = (seed: any) => {
     setViewSeedsModalOpen(true);
@@ -135,6 +165,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
       <FilterProductSubscribeModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
+        onSubmit={handleFilterSubmit}
       />
       <AddSeedModal
         open={isViewSeedsModalOpen}

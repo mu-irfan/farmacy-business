@@ -31,6 +31,10 @@ const AllProducts = () => {
   const [currentProductUuid, setCurrentProductUuid] = useState<string | null>(
     null
   );
+  const [filterCriteria, setFilterCriteria] = useState({
+    category: "",
+    subCategory: "",
+  });
 
   // data management
   const { data: products, isLoading: loading } = useGetAllProducts(token);
@@ -47,12 +51,34 @@ const AllProducts = () => {
     setSearchQuery(value);
   }, 300);
 
+  const handleFilterSubmit = (criteria: {
+    category: string;
+    subCategory: string;
+  }) => {
+    setFilterCriteria(criteria);
+    setProductFilterModalOpen(false);
+  };
+
   const filteredProducts = useMemo(() => {
     if (!products || !products.data) return [];
-    return products.data.filter((product: any) =>
-      product.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-  }, [products, searchQuery]);
+    return products.data
+      .filter((product: any) =>
+        product.name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter((product: any) => {
+        if (
+          filterCriteria.category &&
+          product.category !== filterCriteria.category
+        )
+          return false;
+        if (
+          filterCriteria.subCategory &&
+          product.sub_category !== filterCriteria.subCategory
+        )
+          return false;
+        return true;
+      });
+  }, [products, searchQuery, filterCriteria]);
 
   const handleView = async (product: any) => {
     setCurrentProductUuid(product.uuid);
@@ -160,6 +186,7 @@ const AllProducts = () => {
       <FilterProductModal
         open={isProductFilterModalOpen}
         onOpenChange={setProductFilterModalOpen}
+        onSubmit={handleFilterSubmit}
       />
       <div className="overflow-y-auto">
         <AddProductModal

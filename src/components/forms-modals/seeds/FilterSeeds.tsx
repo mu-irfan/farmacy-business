@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import FilterSeedForm from "@/components/forms/seeds/FilterSeedForm";
 
-const FilterSeedModal = ({ open, onOpenChange }: any) => {
+const FilterSeedModal = ({ open, onOpenChange, onSubmit }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-md lg:max-w-lg">
@@ -16,7 +16,7 @@ const FilterSeedModal = ({ open, onOpenChange }: any) => {
             Filter Seed
           </DialogTitle>
         </DialogHeader>
-        <FilterSeedForm />
+        <FilterSeedForm onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

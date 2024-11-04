@@ -27,7 +27,11 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const FilterProductForm = () => {
+const FilterProductForm = ({
+  onSubmit,
+}: {
+  onSubmit: (data: { category: string; subCategory: string }) => void;
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<
     ProductCategory | ""
   >("");
@@ -40,13 +44,13 @@ const FilterProductForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
-    console.log("Submitting form data:", data);
+  const handleSubmit = (data: z.infer<typeof filterProductsFormSchema>) => {
+    onSubmit(data as any);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
             <Label htmlFor="category" className="dark:text-farmacieGrey">

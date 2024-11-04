@@ -25,7 +25,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const FilterSubscribedProductsForm = () => {
+const FilterSubscribedProductsForm = ({
+  onSubmit,
+}: {
+  onSubmit: (data: {
+    category: string;
+    subCategory: string;
+    subscribed: string;
+  }) => void;
+}) => {
   const [selectedCategory, setSelectedCategory] = useState("province");
 
   const form = useForm<z.infer<typeof filterSubscribedProduct>>({
@@ -37,13 +45,13 @@ const FilterSubscribedProductsForm = () => {
     },
   });
 
-  const onSubmit = (data: z.infer<typeof filterSubscribedProduct>) => {
-    console.log("Submitting form data:", data);
+  const handleSubmit = (data: z.infer<typeof filterSubscribedProduct>) => {
+    onSubmit(data as any);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
             <Label htmlFor="category" className="dark:text-farmacieGrey">
@@ -94,7 +102,6 @@ const FilterSubscribedProductsForm = () => {
                     <Select
                       onValueChange={(value) => {
                         setSelectedCategory(value);
-                        // setValue("");
                         field.onChange(value);
                       }}
                     >
@@ -131,7 +138,6 @@ const FilterSubscribedProductsForm = () => {
                     <Select
                       onValueChange={(value) => {
                         setSelectedCategory(value);
-                        // setValue("");
                         field.onChange(value);
                       }}
                     >

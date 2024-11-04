@@ -30,6 +30,10 @@ const ManageSeeds = () => {
     useState<boolean>(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
   const [currentSeedUuid, setCurrentSeedUuid] = useState<string | null>(null);
+  const [filterCriteria, setFilterCriteria] = useState({
+    category: "",
+    crop: "",
+  });
 
   // seeds data
   const { data: seeds, isLoading: loading } = useGetAllSeeds(token);
@@ -43,14 +47,28 @@ const ManageSeeds = () => {
     setSearchQuery(value);
   }, 300);
 
+  const handleFilterSubmit = (criteria: { category: string; crop: string }) => {
+    setFilterCriteria(criteria);
+    setAddProductModalOpen(false);
+  };
+
   const filteredSeeds = useMemo(() => {
     if (!seeds || !seeds.data) return [];
-    return seeds.data.filter((product: any) =>
-      product.seed_variety_name
-        .toLowerCase()
-        .includes(searchQuery.toLowerCase())
-    );
-  }, [seeds, searchQuery]);
+    return seeds.data
+      .filter((seed: any) =>
+        seed.seed_variety_name.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+      .filter((seed: any) => {
+        if (
+          filterCriteria.category &&
+          seed.crop_category !== filterCriteria.category
+        )
+          return false;
+        if (filterCriteria.crop && seed.crop !== filterCriteria.crop)
+          return false;
+        return true;
+      });
+  }, [seeds, searchQuery, filterCriteria]);
 
   const handleView = (seed: any) => {
     setViewSeedsModalOpen(true);
@@ -156,6 +174,7 @@ const ManageSeeds = () => {
       <FilterSeedModal
         open={isAddProductModalOpen}
         onOpenChange={setAddProductModalOpen}
+        onSubmit={handleFilterSubmit}
       />
       <AddSeedModal
         open={isViewSeedsModalOpen}

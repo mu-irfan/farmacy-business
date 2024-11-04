@@ -7,7 +7,7 @@ import {
 } from "@/components/ui/dialog";
 import FilterSubscribedProductsForm from "@/components/forms/products/FilterSubscribedProductsForm";
 
-const FilterProductSubscribeModal = ({ open, onOpenChange }: any) => {
+const FilterProductSubscribeModal = ({ open, onOpenChange, onSubmit }: any) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-[80vw] md:max-w-md lg:max-w-lg">
@@ -16,7 +16,7 @@ const FilterProductSubscribeModal = ({ open, onOpenChange }: any) => {
             Filter
           </DialogTitle>
         </DialogHeader>
-        <FilterSubscribedProductsForm />
+        <FilterSubscribedProductsForm onSubmit={onSubmit} />
       </DialogContent>
     </Dialog>
   );

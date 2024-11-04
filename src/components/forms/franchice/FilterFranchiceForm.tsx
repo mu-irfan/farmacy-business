@@ -25,7 +25,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
-const FilterFranchiceForm = () => {
+const FilterFranchiceForm = ({
+  onSubmit,
+}: {
+  onSubmit: (data: {
+    province: string;
+    district: string;
+    tehsil: string;
+  }) => void;
+}) => {
   const [districtOptions, setDistrictOptions] = useState<Option[]>([]);
   const [tehsilOptions, setTehsilOptions] = useState<Option[]>([]);
 
@@ -49,13 +57,13 @@ const FilterFranchiceForm = () => {
     setTehsilOptions(tehsils as any);
   };
 
-  const onSubmit = (data: z.infer<typeof filterFranchiceFormSchema>) => {
-    console.log("Submitting form data:", data);
+  const handleSubmit = (data: z.infer<typeof filterFranchiceFormSchema>) => {
+    onSubmit(data as any);
   };
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)}>
+      <form onSubmit={form.handleSubmit(handleSubmit)}>
         <div className="flex flex-col space-y-2 gap-3 mb-4">
           <LabelInputContainer>
             <Label htmlFor="province" className="dark:text-farmacieGrey">
