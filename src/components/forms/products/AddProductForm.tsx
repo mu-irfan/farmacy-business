@@ -40,6 +40,7 @@ import {
   useCreateProduct,
   useDeleteProductImage,
   useGetAllActiveIngredients,
+  useGetCompanyProfile,
   useSubscribeProduct,
   useUpdateProduct,
 } from "@/hooks/useDataFetch";
@@ -49,6 +50,7 @@ import { baseUrl } from "@/lib/utils";
 import Image from "next/image";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import toast from "react-hot-toast";
+import { formatPackageType } from "@/lib/helper";
 
 type ProductCategory = keyof typeof productsList;
 
@@ -90,12 +92,14 @@ const AddProductForm = ({
     useDeleteProductImage(token);
   const { data: activeIngredientsList, isLoading: loadingActiveIngredients } =
     useGetAllActiveIngredients(token);
+  const { data: companyProfile, isLoading: profileDataLoading } =
+    useGetCompanyProfile(token);
 
   const form = useForm<z.infer<typeof addProductFormSchema>>({
     resolver: zodResolver(addProductFormSchema),
     defaultValues: {
       name: "",
-      company_fk: "",
+      company_fk: companyProfile?.data?.company_fk,
       category: "",
       sub_category: "",
       package_weight: "",
@@ -142,6 +146,12 @@ const AddProductForm = ({
     }
   }, [productData, reset, setInputFields]);
 
+  useEffect(() => {
+    if (companyProfile?.data?.company_fk) {
+      form.setValue("company_fk", companyProfile.data.company_fk);
+    }
+  }, [companyProfile, form]);
+
   const transformedActiveIngredients =
     activeIngredientsList?.data?.ingredients.map((ingredient: any) => ({
       value: ingredient,
@@ -174,18 +184,6 @@ const AddProductForm = ({
       "active_ingredients",
       JSON.stringify(activeIngredientsArray)
     );
-
-    // activeIngredientsArray.forEach((ingredient, index) => {
-    //   formData.append(
-    //     `active_ingredients[${index}][ingredient_name]`,
-    //     ingredient.ingredient_name
-    //   );
-    //   formData.append(
-    //     `active_ingredients[${index}][concentration]`,
-    //     ingredient.concentration
-    //   );
-    //   formData.append(`active_ingredients[${index}][unit]`, ingredient.unit);
-    // });
 
     selectedImages.forEach((image, index) => {
       formData.append(`images`, image);
@@ -315,7 +313,8 @@ const AddProductForm = ({
                         id="company_fk"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
-                        disabled={isViewMode}
+                        value={form.getValues("company_fk")}
+                        disabled
                       />
                     </FormControl>
                     <FormMessage />
@@ -625,7 +624,7 @@ const AddProductForm = ({
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                           <SelectValue
                             placeholder={
-                              productData?.package_type ||
+                              formatPackageType(productData.package_type) ||
                               "Select Packaging type"
                             }
                           />

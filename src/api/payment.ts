@@ -13,6 +13,7 @@ export const createBulkPayment = async (data: any, token: string) => {
         },
       }
     );
+
     return res.data;
   } catch (error) {
     return error;

@@ -36,12 +36,12 @@ import {
   resistanceTraits,
   suitahleRegion,
   uniqueFeatures,
-  users,
 } from "@/constant/data";
 import AddSeedTrialDataInstructionModal from "@/components/forms-modals/seeds/AddSeedTrialDataInstr";
 import {
   useCreateSeed,
   useDeleteSeedImage,
+  useGetCompanyProfile,
   useSubscribeSeed,
   useUpdateSeed,
 } from "@/hooks/useDataFetch";
@@ -62,6 +62,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "@/components/ui/multi-select";
+import { formatPackageType } from "@/lib/helper";
 
 type SeedCategory = keyof typeof cropCategoriesOptions;
 
@@ -102,12 +103,14 @@ const AddSeedForm = ({
   const { mutate: deleteSeedImage, isPending: deletingImage } =
     useDeleteSeedImage(token);
   const { mutate: updateSeed, isPending: updating } = useUpdateSeed(token);
+  const { data: companyProfile, isLoading: profileDataLoading } =
+    useGetCompanyProfile(token);
 
   const form = useForm<z.infer<typeof addSeedFormSchema>>({
     resolver: zodResolver(addSeedFormSchema),
     defaultValues: {
       seed_variety_name: "",
-      company_fk: "",
+      company_fk: companyProfile?.data?.company_fk,
       crop_category: "",
       crop: "",
       seed_weight: "",
@@ -159,6 +162,12 @@ const AddSeedForm = ({
       });
     }
   }, [seed, reset]);
+
+  useEffect(() => {
+    if (companyProfile?.data?.company_fk) {
+      form.setValue("company_fk", companyProfile.data.company_fk);
+    }
+  }, [companyProfile, form]);
 
   const onSubmit = (data: z.infer<typeof addSeedFormSchema>) => {
     setAddSeedTrailDataInstructionModalOpen(true);
@@ -328,7 +337,8 @@ const AddSeedForm = ({
                           id="company_fk"
                           className="outline-none focus:border-primary disabled:bg-primary/20"
                           {...field}
-                          disabled={isViewMode}
+                          value={form.getValues("company_fk")}
+                          disabled
                         />
                       </FormControl>
                       <FormMessage />
@@ -656,7 +666,8 @@ const AddSeedForm = ({
                           <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                             <SelectValue
                               placeholder={
-                                seed?.package_type || "Select package type"
+                                formatPackageType(seed?.package_type) ||
+                                "Select package type"
                               }
                             />
                           </SelectTrigger>
@@ -802,14 +813,15 @@ const AddSeedForm = ({
                           </MultiSelectorTrigger>
                           <MultiSelectorContent>
                             <MultiSelectorList>
-                              {diseaseResistanceTraits.map((trait) => (
-                                <MultiSelectorItem
-                                  key={trait.value}
-                                  value={trait.value}
-                                >
-                                  <span>{trait.label}</span>
-                                </MultiSelectorItem>
-                              ))}
+                              {diseaseResistanceTraits.length > 0 &&
+                                diseaseResistanceTraits.map((trait) => (
+                                  <MultiSelectorItem
+                                    key={trait.value}
+                                    value={trait.value}
+                                  >
+                                    <span>{trait.label}</span>
+                                  </MultiSelectorItem>
+                                ))}
                             </MultiSelectorList>
                           </MultiSelectorContent>
                         </MultiSelector>
@@ -894,7 +906,7 @@ const AddSeedForm = ({
                   htmlFor="unique_features"
                   className="dark:text-farmacieGrey"
                 >
-                  Unique Features
+                  Unique Features (Optional)
                 </Label>
                 <FormField
                   control={form.control}

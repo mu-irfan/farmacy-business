@@ -116,6 +116,7 @@ const UpdateTrailDataForm = ({
                               type="text"
                               {...field}
                               className="outline-none focus:border-primary disabled:bg-primary/20"
+                              disabled={index > 0}
                             />
                           </FormControl>
                           <FormMessage />

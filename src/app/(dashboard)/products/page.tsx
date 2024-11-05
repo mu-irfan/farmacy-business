@@ -34,7 +34,7 @@ export default function Dashboard() {
     <>
       <Toaster />
       <DashboardLayout contentAtCenter>
-        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 max-w-7xl mx-auto">
           {loading ? (
             <SkeletonCard className="h-60 w-full col-span-3" />
           ) : (

@@ -41,7 +41,7 @@ const ManageSeedTrailData = () => {
     {
       Header: "Seed variety name",
       accessor: "seed_variety_name",
-      Cell: ({ row }: any) => row.original.seed.seed_variety_name || "N/A",
+      Cell: ({ row }: any) => row.original?.seed?.seed_variety_name || "N/A",
     },
     {
       Header: "Sowing date",

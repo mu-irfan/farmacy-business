@@ -1,5 +1,4 @@
 import * as z from "zod";
-import { validatePhoneNo } from "./validate";
 
 const createAccountFormSchema = z
   .object({

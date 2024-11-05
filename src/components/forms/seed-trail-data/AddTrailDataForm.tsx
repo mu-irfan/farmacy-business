@@ -18,7 +18,6 @@ import {
   useCreateSeedTrail,
   useGetAllSeeds,
   useGetAllSeedTrailsStagesFormFields,
-  useUpdateManager,
 } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import {
@@ -156,22 +155,21 @@ const AddTrailDataForm = ({
                         disabled={isViewMode}
                       >
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
-                          <SelectValue
-                            placeholder={"Select seed_variety"}
-                            className=""
-                          />
+                          <SelectValue placeholder="Select Seed Variety" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
                           <SelectGroup>
-                            <SelectLabel>seed variety</SelectLabel>
-                            {seedsVarieties?.data.map((item: any) => (
-                              <SelectItem
-                                key={item.uuid}
-                                value={item.seed_variety_name}
-                              >
-                                {item.seed_variety_name}
-                              </SelectItem>
-                            ))}
+                            <SelectLabel>Seed variety</SelectLabel>
+                            {seedsVarieties?.data
+                              .filter((item: any) => item.crop === cropName)
+                              .map((item: any) => (
+                                <SelectItem
+                                  key={item.uuid}
+                                  value={item.seed_variety_name}
+                                >
+                                  {item.seed_variety_name}
+                                </SelectItem>
+                              ))}
                           </SelectGroup>
                         </SelectContent>
                       </Select>

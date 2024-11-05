@@ -46,6 +46,12 @@ const FranchiseStats = ({
                       </div>
                     );
                   }
+
+                  const formattedValue =
+                    key === "active_date" && typeof value === "string"
+                      ? value.split("T")[0]
+                      : value;
+
                   return (
                     <li
                       key={index}
@@ -64,7 +70,9 @@ const FranchiseStats = ({
                             : ""
                         )}
                       >
-                        {value != null ? value.toString() : "N/A"}
+                        {formattedValue != null
+                          ? formattedValue.toString()
+                          : "N/A"}
                       </span>
                     </li>
                   );

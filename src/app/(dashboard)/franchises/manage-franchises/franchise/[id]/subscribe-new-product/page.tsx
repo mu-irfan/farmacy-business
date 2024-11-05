@@ -13,6 +13,7 @@ import { useGetProduct, useGetUnSubscribedProduct } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
 import { debounce } from "lodash";
 import NoData from "@/components/alerts/NoData";
+import { Toaster } from "react-hot-toast";
 
 const SubscribeNewProduct = ({ params }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -128,6 +129,7 @@ const SubscribeNewProduct = ({ params }: any) => {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout>
         <Header title="Subscribe New Product" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">

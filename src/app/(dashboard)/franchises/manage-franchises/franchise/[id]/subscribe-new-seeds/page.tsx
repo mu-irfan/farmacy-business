@@ -13,6 +13,7 @@ import { useContextConsumer } from "@/context/Context";
 import { useGetSeed, useGetUnSubscribedSeed } from "@/hooks/useDataFetch";
 import { debounce } from "lodash";
 import NoData from "@/components/alerts/NoData";
+import { Toaster } from "react-hot-toast";
 
 const SubscribeNewSeeds = ({ params }: any) => {
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -125,6 +126,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
 
   return (
     <>
+      <Toaster />
       <DashboardLayout>
         <Header title="Subscribe New Seed" />
         <p className="text-md lg:pl-2 font-normal pb-4 text-left dark:text-farmacieGrey">

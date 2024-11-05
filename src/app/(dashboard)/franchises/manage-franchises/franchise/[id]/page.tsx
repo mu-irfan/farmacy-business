@@ -21,14 +21,18 @@ import {
 } from "@/hooks/useDataFetch";
 import { MoveLeft, ShieldCheck, Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
+import ActivateFranchiseModal from "@/components/forms-modals/franchice/ActivateFranchise";
 
 const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   const router = useRouter();
   const { token } = useContextConsumer();
-  const [isViewSeedsModalOpen, setViewSeedsModalOpen] = useState(false);
+  const [isViewSeedsModalOpen, setViewSeedsModalOpen] =
+    useState<boolean>(false);
   const [selectedSeedToView, setSelectedSeedToView] = useState({});
-  const [isViewProductModalOpen, setViewProductModalOpen] = useState(false);
+  const [isViewProductModalOpen, setViewProductModalOpen] =
+    useState<boolean>(false);
   const [selectedProductToView, setSelectedProductToView] = useState({});
+  const [isActivateModalOpen, setActivateModalOpen] = useState<boolean>(false);
   const [visibleTable, setVisibleTable] = useState<"seeds" | "products" | null>(
     null
   );
@@ -206,116 +210,126 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
   ];
 
   return (
-    <DashboardLayout>
-      <div className="md:flex items-center justify-between">
-        <h2 className="text-3xl font-bold text-primary">Franchise Details</h2>
-        <h3
-          className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
-          Back
-        </h3>
-      </div>
-      <p className="text-md lg:pl-2 font-normal text-left pb-3 dark:text-farmacieGrey">
-        Subscribe the products and seeds to make them available on farmacie in
-        this franchise
-      </p>
-      <div className="md:flex justify-between">
-        <div className="flex items-center gap-3">
-          <Button
-            disabled={!selectedFranchise.active}
-            className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-60 !disabled:cursor-not-allowed"
-            onClick={() =>
-              router.push(
-                `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-product`
-              )
-            }
-            type="button"
+    <>
+      <DashboardLayout>
+        <div className="md:flex items-center justify-between">
+          <h2 className="text-3xl font-bold text-primary">Franchise Details</h2>
+          <h3
+            className="text-md lg:pl-2 font-normal py-2 dark:text-gray-400 cursor-pointer"
+            onClick={() => router.back()}
           >
-            Subscribe New Products
-          </Button>
+            <MoveLeft className="inline mr-1 mb-1 w-6 h-6" />
+            Back
+          </h3>
+        </div>
+        <p className="text-md lg:pl-2 font-normal text-left pb-3 dark:text-farmacieGrey">
+          Subscribe the products and seeds to make them available on farmacie in
+          this franchise
+        </p>
+        <div className="md:flex justify-between">
+          <div className="flex items-center gap-3">
+            <Button
+              disabled={!selectedFranchise.active}
+              className="font-medium bg-yellow-500 hover:bg-yellow-600 text-black w-60 !disabled:cursor-not-allowed"
+              onClick={() =>
+                router.push(
+                  `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-product`
+                )
+              }
+              type="button"
+            >
+              Subscribe New Products
+            </Button>
+            <Button
+              variant="outline"
+              className="font-medium border-primary dark:border-yellow-400 mt-2 md:mt-0 w-60 !disabled:cursor-not-allowed"
+              type="button"
+              onClick={() =>
+                router.push(
+                  `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-seeds`
+                )
+              }
+              disabled={!selectedFranchise.active}
+            >
+              Subscribe New Seeds
+            </Button>
+          </div>
+          {!selectedFranchise.active && (
+            <Button
+              className="font-medium"
+              onClick={() => setActivateModalOpen(true)}
+            >
+              Activate <ShieldCheck className="w-5 h-5 ml-1.5" />
+            </Button>
+          )}
+        </div>
+        <FranchiseStats
+          franchiseStats={selectedFranchise}
+          totalSubscribedProduct={subscribedProduct?.data?.length}
+          totalSubscribedSeed={subscribedSeed?.data?.length}
+        />
+        <div className="flex items-center justify-end gap-3 mb-8">
           <Button
             variant="outline"
-            className="font-medium border-primary dark:border-yellow-400 mt-2 md:mt-0 w-60 !disabled:cursor-not-allowed"
+            className="font-medium border-primary dark:border-green-500 mt-2 md:mt-0 w-60"
             type="button"
-            onClick={() =>
-              router.push(
-                `/franchises/manage-franchises/franchise/${params.id}/subscribe-new-seeds`
-              )
-            }
             disabled={!selectedFranchise.active}
+            onClick={() => setVisibleTable("seeds")}
           >
-            Subscribe New Seeds
+            View Subscribed Seeds
+          </Button>
+          <Button
+            className="font-medium w-60"
+            disabled={!selectedFranchise.active}
+            onClick={() => setVisibleTable("products")}
+          >
+            View Subscribed Products
           </Button>
         </div>
-        {!selectedFranchise.active && (
-          <Button className="font-medium">
-            Activate <ShieldCheck className="w-5 h-5 ml-1.5" />
-          </Button>
+        {visibleTable === "seeds" &&
+        subscribedSeedData &&
+        subscribedSeedData.length > 0 ? (
+          <DataTable
+            columns={seedColumns}
+            data={subscribedSeedData as SeedTableRow[]}
+          />
+        ) : (
+          visibleTable === "seeds" && (
+            <NoData message="No Subscribe Seeds Available..." />
+          )
         )}
-      </div>
-      <FranchiseStats
-        franchiseStats={selectedFranchise}
-        totalSubscribedProduct={subscribedProduct?.data?.length}
-        totalSubscribedSeed={subscribedSeed?.data?.length}
-      />
-      <div className="flex items-center justify-end gap-3 mb-8">
-        <Button
-          variant="outline"
-          className="font-medium border-primary dark:border-green-500 mt-2 md:mt-0 w-60"
-          type="button"
-          disabled={!selectedFranchise.active}
-          onClick={() => setVisibleTable("seeds")}
-        >
-          View Subscribed Seeds
-        </Button>
-        <Button
-          className="font-medium w-60"
-          disabled={!selectedFranchise.active}
-          onClick={() => setVisibleTable("products")}
-        >
-          View Subscribed Products
-        </Button>
-      </div>
-      {visibleTable === "seeds" &&
-      subscribedSeedData &&
-      subscribedSeedData.length > 0 ? (
-        <DataTable
-          columns={seedColumns}
-          data={subscribedSeedData as SeedTableRow[]}
+        {visibleTable === "products" &&
+        subscribedProductData &&
+        subscribedProductData.length > 0 ? (
+          <DataTable
+            columns={productColumns}
+            data={subscribedProductData as ProductTableRow[]}
+            paginate
+          />
+        ) : (
+          visibleTable === "products" && (
+            <NoData message="No Subscribe Products Available..." />
+          )
+        )}
+        <AddSeedModal
+          open={isViewSeedsModalOpen}
+          onOpenChange={setViewSeedsModalOpen}
+          mode="view"
+          seedData={selectedSeedToView}
         />
-      ) : (
-        visibleTable === "seeds" && (
-          <NoData message="No Subscribe Seeds Available..." />
-        )
-      )}
-      {visibleTable === "products" &&
-      subscribedProductData &&
-      subscribedProductData.length > 0 ? (
-        <DataTable
-          columns={productColumns}
-          data={subscribedProductData as ProductTableRow[]}
-          paginate
+        <AddProductModal
+          open={isViewProductModalOpen}
+          onOpenChange={setViewProductModalOpen}
+          mode="view"
+          productData={selectedProductToView}
         />
-      ) : (
-        visibleTable === "products" && (
-          <NoData message="No Subscribe Products Available..." />
-        )
-      )}
-      <AddSeedModal
-        open={isViewSeedsModalOpen}
-        onOpenChange={setViewSeedsModalOpen}
-        mode="view"
-        seedData={selectedSeedToView}
+      </DashboardLayout>
+      <ActivateFranchiseModal
+        open={isActivateModalOpen}
+        onOpenChange={setActivateModalOpen}
+        franchise={selectedFranchise}
       />
-      <AddProductModal
-        open={isViewProductModalOpen}
-        onOpenChange={setViewProductModalOpen}
-        mode="view"
-        productData={selectedProductToView}
-      />
-    </DashboardLayout>
+    </>
   );
 };
 

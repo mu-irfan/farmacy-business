@@ -1,7 +1,7 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const ReportCard: React.FC<ReportCardProps> = ({ title, value }) => (
-  <Card className="relative py-5 rounded-xl text-center bg-primary/10 transition-all delay-75 group/number dark:shadow-2xl">
+  <Card className="relative py-5 rounded-xl text-center bg-primary/10 transition-all delay-75 group/number dark:shadow-2xl ">
     <CardHeader className="space-y-0 pb-2">
       <CardTitle className="text-3xl lg:text-6xl font-bold text-primary dark:text-green-500">
         {value}

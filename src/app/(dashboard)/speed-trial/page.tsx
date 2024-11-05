@@ -34,7 +34,7 @@ export default function SpeedTrail() {
     <>
       <Toaster />
       <DashboardLayout contentAtCenter>
-        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        <div className="w-full grid gap-4 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 max-w-4xl mx-auto">
           {loading ? (
             <SkeletonCard className="h-60 w-full col-span-3" />
           ) : (

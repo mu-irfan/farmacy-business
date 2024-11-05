@@ -192,7 +192,7 @@ const MultiSelector = ({
       <Command
         onKeyDown={handleKeyDown}
         className={cn(
-          "overflow-visible bg-transparent flex flex-col space-y-2 ",
+          "overflow-visible bg-transparent flex flex-col space-y-0.5",
           {
             "cursor-not-allowed ": disabled,
           },
@@ -213,6 +213,8 @@ const MultiSelectorTrigger = forwardRef<
 >(({ className, children, disabled = false, ...props }, ref) => {
   const { value, onValueChange, activeIndex } = useMultiSelect();
 
+  const nonEmptyValues = value.filter((item) => item.trim() !== "");
+
   const mousePreventDefault = useCallback((e: React.MouseEvent) => {
     e.preventDefault();
     e.stopPropagation();
@@ -222,7 +224,7 @@ const MultiSelectorTrigger = forwardRef<
     <div
       ref={ref}
       className={cn(
-        "flex flex-wrap gap-1 p-1 py-2 ring-1 ring-muted rounded-lg bg-background",
+        "flex flex-wrap gap-1 p-1 py-2.5 ring-1 ring-muted rounded-lg bg-background",
         {
           "ring-1 focus-within:ring-ring": activeIndex === -1,
           "cursor-not-allowed bg-primary/10": disabled,
@@ -231,7 +233,7 @@ const MultiSelectorTrigger = forwardRef<
       )}
       {...props}
     >
-      {value.map((item, index) => (
+      {nonEmptyValues.map((item, index) => (
         <Badge
           key={item}
           className={cn(
@@ -288,7 +290,7 @@ const MultiSelectorInput = forwardRef<
       onFocus={() => setOpen(true)}
       onClick={() => setActiveIndex(-1)}
       className={cn(
-        "ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1",
+        "ml-2 bg-transparent outline-none placeholder:text-muted-foreground flex-1 py mt-0",
         className,
         activeIndex !== -1 && "caret-transparent",
         disabled && "cursor-not-allowed"

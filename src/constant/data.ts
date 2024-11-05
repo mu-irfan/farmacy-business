@@ -2310,16 +2310,6 @@ export const units = [
   { value: "df", label: "DF" },
 ];
 
-export const bulkFranchiseAddressDetails = [
-  { label: "Manager", value: "Ahmad Raza" },
-  { label: "Contact", value: "0310-000 0000" },
-  { label: "Address", value: "Shop #1, BG-5, Mid city apartments" },
-  { label: "Province", value: "Punjab" },
-  { label: "District", value: "Rawalpindi" },
-  { label: "Tehsil", value: "Rawalpindi" },
-  { label: "Active", value: "False" },
-];
-
 export const seedTrailTableHeaders = [
   { label: "Stage", accessor: "stage" },
   { label: "Principle Stage", accessor: "sub_stage" },
@@ -2714,17 +2704,5 @@ export const nutrientData = [
       { label: "Medium Crude Fiber", value: "2% - 3%" },
       { label: "Low Crude Fiber", value: "1% - 2%" },
     ],
-  },
-];
-
-export const users = [
-  {
-    name: "ThePrimeagen",
-  },
-  {
-    name: "Shadcn",
-  },
-  {
-    name: "Theo",
   },
 ];

@@ -87,11 +87,11 @@ export const useRegisterCompany = () => {
         toast.success(data?.message);
         router.push("/");
       } else {
-        toast.error(data?.response?.data?.field);
+        toast.error(data?.response?.data?.message);
       }
     },
     onError: (error: any) => {
-      toast.error(error.response?.data?.field);
+      toast.error(error.response?.data?.message);
     },
   });
 };
@@ -1037,6 +1037,8 @@ export const useCreateBulkPayment = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createBulkPayment(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
+      console.log(data, "Payload");
+
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries([

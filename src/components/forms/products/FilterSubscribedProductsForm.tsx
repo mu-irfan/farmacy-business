@@ -13,7 +13,7 @@ import { filterSubscribedProduct } from "@/schemas/validation/validationSchema";
 import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 
-import { productCategory } from "@/constant/data";
+import { productCategory, productsList } from "@/constant/data";
 import LabelInputContainer from "../LabelInputContainer";
 import {
   Select,
@@ -25,6 +25,8 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+type ProductCategory = keyof typeof productsList;
+
 const FilterSubscribedProductsForm = ({
   onSubmit,
 }: {
@@ -34,7 +36,9 @@ const FilterSubscribedProductsForm = ({
     subscribed: string;
   }) => void;
 }) => {
-  const [selectedCategory, setSelectedCategory] = useState("province");
+  const [selectedCategory, setSelectedCategory] = useState<
+    ProductCategory | ""
+  >("");
 
   const form = useForm<z.infer<typeof filterSubscribedProduct>>({
     resolver: zodResolver(filterSubscribedProduct),
@@ -65,7 +69,8 @@ const FilterSubscribedProductsForm = ({
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
+                        setSelectedCategory(value as any);
+                        form.setValue("subCategory", "");
                         field.onChange(value);
                       }}
                     >
@@ -101,7 +106,6 @@ const FilterSubscribedProductsForm = ({
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
                         field.onChange(value);
                       }}
                     >
@@ -110,12 +114,15 @@ const FilterSubscribedProductsForm = ({
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
                         <SelectGroup>
-                          <SelectLabel>Sub category</SelectLabel>
-                          {productCategory.map((item) => (
-                            <SelectItem key={item.value} value={item.value}>
-                              {item.label}
-                            </SelectItem>
-                          ))}
+                          <SelectLabel>Sub-Category</SelectLabel>
+                          {selectedCategory &&
+                            productsList[selectedCategory]?.map(
+                              (subCategory: any, ind: number) => (
+                                <SelectItem key={ind} value={subCategory}>
+                                  {subCategory}
+                                </SelectItem>
+                              )
+                            )}
                         </SelectGroup>
                       </SelectContent>
                     </Select>
@@ -125,7 +132,7 @@ const FilterSubscribedProductsForm = ({
               )}
             />
           </LabelInputContainer>
-          <LabelInputContainer>
+          {/* <LabelInputContainer>
             <Label htmlFor="subscribed" className="dark:text-farmacieGrey">
               Subscribed
             </Label>
@@ -137,7 +144,6 @@ const FilterSubscribedProductsForm = ({
                   <FormControl>
                     <Select
                       onValueChange={(value) => {
-                        setSelectedCategory(value);
                         field.onChange(value);
                       }}
                     >
@@ -160,7 +166,7 @@ const FilterSubscribedProductsForm = ({
                 </FormItem>
               )}
             />
-          </LabelInputContainer>
+          </LabelInputContainer> */}
         </div>
         <Button className="w-full text-white font-medium" type="submit">
           Submit Filter
