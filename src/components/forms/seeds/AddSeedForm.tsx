@@ -122,11 +122,11 @@ const AddSeedForm = ({
       suitable_region: "",
       package_type: "",
       height_class: "",
-      nutrient_content: "",
+      nutrient_content: [],
       common_disease_tolerance: [],
-      environmental_resilience_factors: "",
+      env_resilience_fators: [],
       price: "",
-      unique_features: "",
+      unique_features: [],
       description: "",
     },
   });
@@ -149,15 +149,23 @@ const AddSeedForm = ({
         suitable_region: seed.suitable_region || "",
         package_type: seed.package_type || "",
         height_class: seed.height_class || "",
-        nutrient_content: seed.nutrient_content || "",
+        nutrient_content:
+          typeof seed.nutrient_content === "string"
+            ? seed.nutrient_content.split(",")
+            : seed.nutrient_content || [],
         common_disease_tolerance:
           typeof seed.common_disease_tolerance === "string"
             ? seed.common_disease_tolerance.split(",")
             : seed.common_disease_tolerance || [],
-        environmental_resilience_factors:
-          seed.environmental_resilience_factors || "",
+        env_resilience_fators:
+          typeof seed.env_resilience_fators === "string"
+            ? seed.env_resilience_fators.split(",")
+            : seed.env_resilience_fators || [],
         price: seed.price || "",
-        unique_features: seed.unique_features || "",
+        unique_features:
+          typeof seed.unique_features === "string"
+            ? seed.unique_features.split(",")
+            : seed.unique_features || [],
         description: seed.description || "",
       });
     }
@@ -189,10 +197,10 @@ const AddSeedForm = ({
     formData.append("description", data.description);
 
     if (data.unique_features) {
-      formData.append("unique_features", data.unique_features);
+      formData.append("unique_features", data.unique_features.join(","));
     }
     if (data.nutrient_content) {
-      formData.append("nutrient_content", data.nutrient_content);
+      formData.append("nutrient_content", data.nutrient_content.join(","));
     }
     if (data.common_disease_tolerance) {
       formData.append(
@@ -200,12 +208,13 @@ const AddSeedForm = ({
         data.common_disease_tolerance.join(",")
       );
     }
-    if (data.environmental_resilience_factors) {
+    if (data.env_resilience_fators) {
       formData.append(
-        "environmental_resilience_factors",
-        data.environmental_resilience_factors
+        "env_resilience_fators",
+        data.env_resilience_fators.join(",")
       );
     }
+
     if (mode === "add" && selectedImages.length < 1) {
       toast.error("Please upload at least 1 image.");
       return;
@@ -734,49 +743,47 @@ const AddSeedForm = ({
                 />
               </LabelInputContainer>
               <LabelInputContainer>
-                <div className="flex items-center justify-between">
-                  <Label
-                    htmlFor="nutrient_content"
-                    className="dark:text-farmacieGrey"
-                  >
-                    Nutrient Content (Optional)
-                  </Label>
-                  <Info
-                    className="w-4 h-4 text-gray-500 cursor-pointer mr-1"
-                    onClick={() => setNutrientContentInstructionModalOpen(true)}
-                  />
-                </div>
+                <Label
+                  htmlFor="nutrient_content"
+                  className="dark:text-farmacieGrey"
+                >
+                  Nutrient Content (Optional)
+                </Label>
                 <FormField
                   control={form.control}
                   name="nutrient_content"
+                  disabled={isViewMode}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                          }}
-                          disabled={isViewMode}
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value || []}
+                          disabled={mode === "view"}
                         >
-                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
-                            <SelectValue
+                          <MultiSelectorTrigger disabled={isViewMode}>
+                            <MultiSelectorInput
                               placeholder={
-                                seed?.nutrient_content ||
-                                "Select nutrient content"
+                                !isViewMode ? "Select nutrient content" : ""
                               }
+                              className="text-sm"
+                              disabled={isViewMode}
                             />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl">
-                            <SelectGroup>
-                              <SelectLabel>nutrient content</SelectLabel>
-                              {nutrientsContent.map((item) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {nutrientsContent.length > 0 &&
+                                nutrientsContent.map((trait) => (
+                                  <MultiSelectorItem
+                                    key={trait.value}
+                                    value={trait.value}
+                                  >
+                                    <span>{trait.label}</span>
+                                  </MultiSelectorItem>
+                                ))}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -806,7 +813,9 @@ const AddSeedForm = ({
                         >
                           <MultiSelectorTrigger disabled={isViewMode}>
                             <MultiSelectorInput
-                              placeholder="Select Disease Tolerance"
+                              placeholder={
+                                !isViewMode ? "Select Disease Tolerance" : ""
+                              }
                               className="text-sm"
                               disabled={isViewMode}
                             />
@@ -831,44 +840,51 @@ const AddSeedForm = ({
                   )}
                 />
               </LabelInputContainer>
+
               <LabelInputContainer>
                 <Label
-                  htmlFor="environmental_resilience_factors"
+                  htmlFor="env_resilience_fators"
                   className="dark:text-farmacieGrey"
                 >
                   Environmental Resilience Factors (optional)
                 </Label>
                 <FormField
                   control={form.control}
-                  name="environmental_resilience_factors"
+                  name="env_resilience_fators"
+                  disabled={isViewMode}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                          }}
-                          disabled={isViewMode}
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value || []}
+                          disabled={mode === "view"}
                         >
-                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
-                            <SelectValue
+                          <MultiSelectorTrigger disabled={isViewMode}>
+                            <MultiSelectorInput
                               placeholder={
-                                seed?.environmental_resilience_factors ||
-                                "Select Environmental Resilience Factors"
+                                !isViewMode
+                                  ? "Select Environmental Resilience Factors"
+                                  : ""
                               }
+                              className="text-sm"
+                              disabled={isViewMode}
                             />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl">
-                            <SelectGroup>
-                              <SelectLabel>Resilience Factors</SelectLabel>
-                              {resistanceTraits.map((item) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {resistanceTraits.length > 0 &&
+                                resistanceTraits.map((trait) => (
+                                  <MultiSelectorItem
+                                    key={trait.value}
+                                    value={trait.value}
+                                  >
+                                    <span>{trait.label}</span>
+                                  </MultiSelectorItem>
+                                ))}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -911,34 +927,38 @@ const AddSeedForm = ({
                 <FormField
                   control={form.control}
                   name="unique_features"
+                  disabled={isViewMode}
                   render={({ field }) => (
                     <FormItem>
                       <FormControl>
-                        <Select
-                          onValueChange={(value) => {
-                            field.onChange(value);
-                          }}
-                          disabled={isViewMode}
+                        <MultiSelector
+                          onValuesChange={field.onChange}
+                          values={field.value || []}
+                          disabled={mode === "view"}
                         >
-                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
-                            <SelectValue
+                          <MultiSelectorTrigger disabled={isViewMode}>
+                            <MultiSelectorInput
                               placeholder={
-                                seed?.unique_features ||
-                                "Select Unique Features"
+                                !isViewMode ? "Select Unique Features" : ""
                               }
+                              className="text-sm"
+                              disabled={isViewMode}
                             />
-                          </SelectTrigger>
-                          <SelectContent className="rounded-xl">
-                            <SelectGroup>
-                              <SelectLabel>Unique Features</SelectLabel>
-                              {uniqueFeatures.map((item) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </SelectItem>
-                              ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
+                          </MultiSelectorTrigger>
+                          <MultiSelectorContent>
+                            <MultiSelectorList>
+                              {uniqueFeatures.length > 0 &&
+                                uniqueFeatures.map((trait) => (
+                                  <MultiSelectorItem
+                                    key={trait.value}
+                                    value={trait.value}
+                                  >
+                                    <span>{trait.label}</span>
+                                  </MultiSelectorItem>
+                                ))}
+                            </MultiSelectorList>
+                          </MultiSelectorContent>
+                        </MultiSelector>
                       </FormControl>
                       <FormMessage />
                     </FormItem>
@@ -958,7 +978,6 @@ const AddSeedForm = ({
                     <FormControl>
                       <Textarea
                         placeholder="Enter product description ..."
-                        // type="text"
                         id="description"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}

@@ -1037,8 +1037,6 @@ export const useCreateBulkPayment = () => {
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createBulkPayment(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
-      console.log(data, "Payload");
-
       if (data?.success) {
         toast.success(data?.message);
         queryClient.invalidateQueries([

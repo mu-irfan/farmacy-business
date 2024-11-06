@@ -192,10 +192,10 @@ const addSeedFormSchema = z.object({
     .nonempty({ message: "Suitable Region is required." }),
   package_type: z.string().nonempty({ message: "Packaging Type is required." }),
   height_class: z.string().nonempty({ message: "Height Class is required." }),
-  nutrient_content: z.string().optional(),
+  nutrient_content: z.array(z.string()).optional(),
   common_disease_tolerance: z.array(z.string()).optional(),
-  environmental_resilience_factors: z.string().optional(),
-  unique_features: z.string().optional(),
+  env_resilience_fators: z.array(z.string()).optional(),
+  unique_features: z.array(z.string()).optional(),
   price: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))

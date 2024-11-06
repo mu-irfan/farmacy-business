@@ -2320,193 +2320,193 @@ export const seedTrailTableHeaders = [
 
 export const nutrientsContent = [
   {
-    value: "high-protein",
+    value: "high protein",
     label: "High Protein",
   },
   {
-    value: "medium-protein",
+    value: "medium protein",
     label: "Medium Protein",
   },
   {
-    value: "low-protein",
+    value: "low protein",
     label: "Low Protein",
   },
   {
-    value: "high-gluten",
+    value: "high gluten",
     label: "High Gluten",
   },
   {
-    value: "medium-gluten",
+    value: "medium gluten",
     label: "Medium Gluten",
   },
   {
-    value: "low-gluten",
+    value: "low gluten",
     label: "Low Gluten",
   },
   {
-    value: "high-oleic-acid-content",
+    value: "high oleic acid content",
     label: "High Oleic Acid Content",
   },
   {
-    value: "medium-oleic-acid-content",
+    value: "medium oleic acid content",
     label: "Medium Oleic Acid Content",
   },
   {
-    value: "low-oleic-acid-content",
+    value: "low oleic acid content",
     label: "Low Oleic Acid Content",
   },
   {
-    value: "high-oil-content",
+    value: "high oil content",
     label: "High Oil Content",
   },
   {
-    value: "medium-oil-content",
+    value: "medium oil content",
     label: "Medium Oil Content",
   },
   {
-    value: "low-oil-content",
+    value: "low oil content",
     label: "Low Oil Content",
   },
   {
-    value: "extra-long-grain-length",
+    value: "extra long grain length",
     label: "Extra Long Grain Length",
   },
   {
-    value: "long-grain-length",
+    value: "long grain length",
     label: "Long Grain Length",
   },
   {
-    value: "medium-grain-length",
+    value: "medium grain length",
     label: "Medium Grain Length",
   },
   {
-    value: "short-grain-length",
+    value: "short grain length",
     label: "Short Grain Length",
   },
   {
-    value: "high-crude-protein",
+    value: "high crude protein",
     label: "High Crude Protein",
   },
   {
-    value: "medium-crude-protein",
+    value: "medium crude protein",
     label: "Medium Crude Protein",
   },
   {
-    value: "low-crude-protein",
+    value: "low crude protein",
     label: "Low Crude Protein",
   },
   {
-    value: "high-crude-fiber",
+    value: "high crude fiber",
     label: "High Crude Fiber",
   },
   {
-    value: "medium-crude-fiber",
+    value: "medium crude fiber",
     label: "Medium Crude Fiber",
   },
   {
-    value: "low-crude-fiber",
+    value: "low crude fiber",
     label: "Low Crude Fiber",
   },
 ];
 
 export const resistanceTraits = [
   {
-    value: "shattering-resistant",
+    value: "shattering resistant",
     label: "Shattering Resistant",
   },
   {
-    value: "waterlogging-resistant",
+    value: "waterlogging resistant",
     label: "Waterlogging Resistant",
   },
   {
-    value: "drought-resistant",
+    value: "drought resistant",
     label: "Drought Resistant",
   },
   {
-    value: "heat-stress-resistant",
+    value: "heat stress resistant",
     label: "Heat Stress Resistant",
   },
   {
-    value: "moisture-resistant",
+    value: "moisture resistant",
     label: "Moisture Resistant",
   },
   {
-    value: "salinity-resistant",
+    value: "salinity resistant",
     label: "Salinity Resistant",
   },
   {
-    value: "adaptable-humid-regions",
+    value: "adaptable humid regions",
     label: "Adaptable to Humid Regions",
   },
   {
-    value: "cool-temperature-resistant",
+    value: "cool temperature resistant",
     label: "Cool Temperature Resistant",
   },
   {
-    value: "less-defoliation",
+    value: "less defoliation",
     label: "Less Defoliation",
   },
 ];
 
 export const uniqueFeatures = [
   {
-    value: "high-grain-weight",
+    value: "high grain weight",
     label: "High Grain Weight",
   },
   {
-    value: "strong-wax-leaves-stem",
+    value: "strong wax leaves stem",
     label: "Strong Wax on Leaves & Stem",
   },
   {
-    value: "low-aphid-infestation",
+    value: "low aphid infestation",
     label: "Low Aphid Infestation Level",
   },
   {
-    value: "white-chaff",
+    value: "white chaff",
     label: "White Chaff",
   },
   {
-    value: "early-maturity",
+    value: "early maturity",
     label: "Early Maturity",
   },
   {
-    value: "open-pollinated",
+    value: "open pollinated",
     label: "Open Pollinated",
   },
   {
-    value: "two-rowed-barley",
+    value: "two rowed barley",
     label: "Two Rowed Barley",
   },
   {
-    value: "two-rowed-barley-marginal-area",
+    value: "two rowed barley marginal area",
     label: "Two Rowed Barley, Marginal Area",
   },
   {
-    value: "hull-less",
-    label: "Hull-less",
+    value: "hull less",
+    label: "Hull less",
   },
   {
-    value: "six-rowed",
-    label: "Six-Rowed",
+    value: "six rowed",
+    label: "Six Rowed",
   },
   {
-    value: "dwarf-version",
+    value: "dwarf version",
     label: "Dwarf Version",
   },
   {
-    value: "aromatic-rice",
+    value: "aromatic rice",
     label: "Aromatic Rice",
   },
   {
-    value: "extra-long-grain-length",
+    value: "extra long grain length",
     label: "Extra Long Grain Length",
   },
   {
-    value: "seeded-pods-4",
+    value: "seeded pods 4",
     label: "Seeded Pods: 4",
   },
   {
-    value: "reddish-seed-coat-colour",
+    value: "reddish seed coat colour",
     label: "Reddish Seed Coat Colour",
   },
 ];
@@ -2517,11 +2517,11 @@ export const diseaseResistanceTraits = [
     label: "Rust",
   },
   {
-    value: "yellow-rust",
+    value: "yellow rust",
     label: "Yellow Rust",
   },
   {
-    value: "brown-rust",
+    value: "brown rust",
     label: "Brown Rust",
   },
   {
@@ -2529,31 +2529,31 @@ export const diseaseResistanceTraits = [
     label: "Smut",
   },
   {
-    value: "yellow-smut",
+    value: "yellow smut",
     label: "Yellow Smut",
   },
   {
-    value: "brown-smut",
+    value: "brown smut",
     label: "Brown Smut",
   },
   {
-    value: "stem-rust",
+    value: "stem rust",
     label: "Stem Rust",
   },
   {
-    value: "leaf-rust",
+    value: "leaf rust",
     label: "Leaf Rust",
   },
   {
-    value: "stripe-rust",
+    value: "stripe rust",
     label: "Stripe Rust",
   },
   {
-    value: "loose-smut",
+    value: "loose smut",
     label: "Loose Smut",
   },
   {
-    value: "karnal-bunt",
+    value: "karnal bunt",
     label: "Karnal Bunt",
   },
   {
@@ -2561,83 +2561,83 @@ export const diseaseResistanceTraits = [
     label: "Aphid",
   },
   {
-    value: "gray-leaf-spot",
+    value: "gray leaf spot",
     label: "Gray Leaf Spot (GLS)",
   },
   {
-    value: "stalk-rot",
+    value: "stalk rot",
     label: "Stalk Rot",
   },
   {
-    value: "southern-corn-leaf-blight",
+    value: "southern corn leaf blight",
     label: "Southern Corn Leaf Blight",
   },
   {
-    value: "northern-corn-leaf-blight",
+    value: "northern corn leaf blight",
     label: "Northern Corn Leaf Blight",
   },
   {
-    value: "brown-spot",
+    value: "brown spot",
     label: "Brown Spot",
   },
   {
-    value: "downy-mildew",
+    value: "downy mildew",
     label: "Downy Mildew",
   },
   {
-    value: "maize-stalk-borers",
+    value: "maize stalk borers",
     label: "Maize Stalk Borers",
   },
   {
-    value: "foot-rot",
+    value: "foot rot",
     label: "Foot Rot",
   },
   {
-    value: "maize-rust",
+    value: "maize rust",
     label: "Maize Rust",
   },
   {
-    value: "yellowing-moderate-resistance",
+    value: "yellowing moderate resistance",
     label: "Yellowing Moderate Resistance",
   },
   {
-    value: "stem-borer",
+    value: "stem borer",
     label: "Stem Borer",
   },
   {
-    value: "stem-rot",
+    value: "stem rot",
     label: "Stem Rot",
   },
   {
-    value: "paddy-blast-diseases",
+    value: "paddy blast diseases",
     label: "Paddy Blast Diseases",
   },
   {
-    value: "sheath-blight",
+    value: "sheath blight",
     label: "Sheath Blight",
   },
   {
-    value: "bacterial-leaf-blight",
+    value: "bacterial leaf blight",
     label: "Bacterial Leaf Blight",
   },
   {
-    value: "cercospora-leaf-spot",
+    value: "cercospora leaf spot",
     label: "Cercospora Leaf Spot",
   },
   {
-    value: "tikka-disease",
+    value: "tikka disease",
     label: "Tikka Disease",
   },
   {
-    value: "collar-rot",
+    value: "collar rot",
     label: "Collar Rot",
   },
   {
-    value: "root-rot",
+    value: "root rot",
     label: "Root Rot",
   },
   {
-    value: "alternaria-blight",
+    value: "alternaria blight",
     label: "Alternaria Blight",
   },
   {
@@ -2645,11 +2645,11 @@ export const diseaseResistanceTraits = [
     label: "Blackleg",
   },
   {
-    value: "fusarium-wilt",
+    value: "fusarium wilt",
     label: "Fusarium Wilt",
   },
   {
-    value: "powdery-mildew",
+    value: "powdery mildew",
     label: "Powdery Mildew",
   },
 ];

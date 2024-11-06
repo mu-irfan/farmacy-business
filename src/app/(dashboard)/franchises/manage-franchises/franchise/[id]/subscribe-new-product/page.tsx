@@ -56,8 +56,8 @@ const SubscribeNewProduct = ({ params }: any) => {
 
   const filteredUnsubProducts = useMemo(() => {
     if (!unSubProducts || !unSubProducts.message) return [];
-    return unSubProducts.message
-      .filter((unsubProd: any) =>
+    return unSubProducts?.message
+      ?.filter((unsubProd: any) =>
         unsubProd.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
       .filter((unsubProd: any) => {
