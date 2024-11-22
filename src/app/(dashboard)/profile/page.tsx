@@ -23,6 +23,7 @@ import { useContextConsumer } from "@/context/Context";
 import { useEffect, useState } from "react";
 import { Pencil } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { Toaster } from "react-hot-toast";
 
 type ProfileFormValues = z.infer<typeof profileFormSchema>;
 
@@ -68,150 +69,153 @@ export default function ProfileForm() {
   }
 
   return (
-    <DashboardLayout>
-      <div className="flex flex-col justify-center items-center mt-20">
-        <h2
-          className="font-semibold text-2xl md:text-4
+    <>
+      <Toaster />
+      <DashboardLayout>
+        <div className="flex flex-col justify-center items-center mt-20">
+          <h2
+            className="font-semibold text-2xl md:text-4
         xl mt-4 text-neutral-800 dark:text-green-500"
-        >
-          Profile Details
-        </h2>
-        <p className="text-neutral-600 text-sm max-w-md text-center dark:text-neutral-300 mt-4 mb-8">
-          Update your profile information here to ensure your details are
-          current and accurate.
-        </p>
-        <div className="flex justify-end gap-1 w-full max-w-xl mb-4">
-          <Button
-            variant="outline"
-            size="sm"
-            disabled
-            type="button"
-            className={cn(
-              "py-2 px-4 cursor-not-allowed hover:bg-current",
-              data?.data?.verified
-                ? "bg-green-100 text-green-700"
-                : "bg-red-100 text-red-700"
-            )}
           >
-            {data?.data?.verified ? "Verified" : "Not Verified"}
-          </Button>
-          <Button
-            size="sm"
-            type="button"
-            onClick={() => setIsEditable(!isEditable)}
-            className="py-2 px-4"
-          >
-            {isEditable ? "Cancel" : "Edit"}
-            {!isEditable && <Pencil className="w-3.5 h-3.5 ml-2" />}
-          </Button>
-        </div>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(onSubmit)}
-            className="px-6 space-y-4 flex flex-col items-stretch w-full max-w-xl border-2 border-primary p-20 rounded-lg"
-          >
-            <LabelInputContainer>
-              <Label htmlFor="companyName" className="dark:text-farmacieGrey">
-                Company Name
-              </Label>
-              <FormField
-                control={form.control}
-                name="companyName"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Agronomics"
-                        type="text"
-                        id="companyName"
-                        className="outline-none focus:border-primary py-5"
-                        {...field}
-                        disabled={!isEditable}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="email" className="dark:text-farmacieGrey">
-                Company Email
-              </Label>
-              <FormField
-                control={form.control}
-                name="email"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="agronomics@gmail.com"
-                        type="text"
-                        id="email"
-                        className="outline-none focus:border-primary py-5"
-                        {...field}
-                        disabled
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="contact" className="dark:text-farmacieGrey">
-                Company Contact
-              </Label>
-              <FormField
-                control={form.control}
-                name="contact"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="03244534538"
-                        type="text"
-                        id="contact"
-                        className="outline-none focus:border-primary py-5"
-                        {...field}
-                        disabled={!isEditable}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="ntn" className="dark:text-farmacieGrey">
-                Company NTN
-              </Label>
-              <FormField
-                control={form.control}
-                name="ntn"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="NTN"
-                        type="text"
-                        id="ntn"
-                        className="outline-none focus:border-primary py-5"
-                        {...field}
-                        disabled={!isEditable}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
-            <Button type="submit" className="my-4" disabled={!isEditable}>
-              {updating ? "Updating" : "Update Profile"}
+            Profile Details
+          </h2>
+          <p className="text-neutral-600 text-sm max-w-md text-center dark:text-neutral-300 mt-4 mb-8">
+            Update your profile information here to ensure your details are
+            current and accurate.
+          </p>
+          <div className="flex justify-end gap-1 w-full max-w-xl mb-4">
+            <Button
+              variant="outline"
+              size="sm"
+              disabled
+              type="button"
+              className={cn(
+                "py-2 px-4 cursor-not-allowed hover:bg-current",
+                data?.data?.verified
+                  ? "bg-green-100 text-green-700"
+                  : "bg-red-100 text-red-700"
+              )}
+            >
+              {data?.data?.verified ? "Verified" : "Not Verified"}
             </Button>
-          </form>
-        </Form>
-      </div>
-    </DashboardLayout>
+            <Button
+              size="sm"
+              type="button"
+              onClick={() => setIsEditable(!isEditable)}
+              className="py-2 px-4"
+            >
+              {isEditable ? "Cancel" : "Edit"}
+              {!isEditable && <Pencil className="w-3.5 h-3.5 ml-2" />}
+            </Button>
+          </div>
+          <Form {...form}>
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="px-6 space-y-4 flex flex-col items-stretch w-full max-w-xl border-2 border-primary p-20 rounded-lg"
+            >
+              <LabelInputContainer>
+                <Label htmlFor="companyName" className="dark:text-farmacieGrey">
+                  Company Name
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="companyName"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="Agronomics"
+                          type="text"
+                          id="companyName"
+                          className="outline-none focus:border-primary py-5"
+                          {...field}
+                          disabled={!isEditable}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="email" className="dark:text-farmacieGrey">
+                  Company Email
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="agronomics@gmail.com"
+                          type="text"
+                          id="email"
+                          className="outline-none focus:border-primary py-5"
+                          {...field}
+                          disabled
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="contact" className="dark:text-farmacieGrey">
+                  Company Contact
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="contact"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="03244534538"
+                          type="text"
+                          id="contact"
+                          className="outline-none focus:border-primary py-5"
+                          {...field}
+                          disabled={!isEditable}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <LabelInputContainer>
+                <Label htmlFor="ntn" className="dark:text-farmacieGrey">
+                  Company NTN
+                </Label>
+                <FormField
+                  control={form.control}
+                  name="ntn"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Input
+                          placeholder="NTN"
+                          type="text"
+                          id="ntn"
+                          className="outline-none focus:border-primary py-5"
+                          {...field}
+                          disabled={!isEditable}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </LabelInputContainer>
+              <Button type="submit" className="my-4" disabled={!isEditable}>
+                {updating ? "Updating" : "Update Profile"}
+              </Button>
+            </form>
+          </Form>
+        </div>
+      </DashboardLayout>
+    </>
   );
 }

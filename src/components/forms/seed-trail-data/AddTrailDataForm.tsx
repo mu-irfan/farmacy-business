@@ -60,11 +60,13 @@ const AddTrailDataForm = ({
       max_irrigation: "",
       estimated_yield: "",
       seed_trial_form:
-        seedTrailsStagesForm?.message?.map(() => ({
-          start_day: "",
-          end_day: "",
-          kc: "",
-        })) || [],
+        (seedTrailsStagesForm?.message?.length > 0 &&
+          seedTrailsStagesForm?.message?.map(() => ({
+            start_day: "",
+            end_day: "",
+            kc: "",
+          }))) ||
+        [],
     },
   });
 

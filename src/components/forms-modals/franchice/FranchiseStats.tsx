@@ -4,6 +4,7 @@ import { cn } from "@/lib/utils";
 import Image from "next/image";
 import { useContextConsumer } from "@/context/Context";
 import AddFranchiseModal from "./AddFranchise";
+import { formatKey } from "@/lib/helper";
 
 const FranchiseStats = ({
   franchiseStats,
@@ -58,7 +59,7 @@ const FranchiseStats = ({
                       className="grid grid-cols-[150px_1fr] gap-8"
                     >
                       <span className="dark:text-farmacieGrey capitalize">
-                        {key}:
+                        {formatKey(key)}:
                       </span>
                       <span
                         className={cn(

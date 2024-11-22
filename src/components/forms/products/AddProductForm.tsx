@@ -50,7 +50,7 @@ import { baseUrl } from "@/lib/utils";
 import Image from "next/image";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import toast from "react-hot-toast";
-import { formatPackageType } from "@/lib/helper";
+import { formatKey } from "@/lib/helper";
 
 type ProductCategory = keyof typeof productsList;
 
@@ -624,7 +624,7 @@ const AddProductForm = ({
                         <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                           <SelectValue
                             placeholder={
-                              formatPackageType(productData.package_type) ||
+                              formatKey(productData?.package_type) ||
                               "Select Packaging type"
                             }
                           />

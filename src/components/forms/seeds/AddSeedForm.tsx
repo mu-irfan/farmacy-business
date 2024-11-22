@@ -62,7 +62,7 @@ import {
   MultiSelectorList,
   MultiSelectorTrigger,
 } from "@/components/ui/multi-select";
-import { formatPackageType } from "@/lib/helper";
+import { formatKey } from "@/lib/helper";
 
 type SeedCategory = keyof typeof cropCategoriesOptions;
 
@@ -675,7 +675,7 @@ const AddSeedForm = ({
                           <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
                             <SelectValue
                               placeholder={
-                                formatPackageType(seed?.package_type) ||
+                                formatKey(seed?.package_type) ||
                                 "Select package type"
                               }
                             />

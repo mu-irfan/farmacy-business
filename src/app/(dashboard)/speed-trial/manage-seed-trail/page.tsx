@@ -110,11 +110,12 @@ const ManageSeedTrailData = () => {
         {!viewStageAgainstSeed &&
           (loading ? (
             <SkeletonCard className="w-full h-80" />
-          ) : seedTrails && seedTrails.data.length > 0 ? (
+          ) : seedTrails.data && seedTrails.data.length > 0 ? (
             <div className="mt-8">
               <DataTable
                 columns={SeedTrailColoumn}
                 data={seedTrails.data as SeedTrailTableRow[]}
+                paginate
               />
             </div>
           ) : (
@@ -129,6 +130,7 @@ const ManageSeedTrailData = () => {
               <DataTable
                 columns={stageColumns}
                 data={trailStages?.data as SeedTrailsStages[]}
+                paginate
               />
             </div>
           ) : (
