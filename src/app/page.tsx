@@ -47,7 +47,8 @@ export default function Home() {
                 >
                   Create Account
                 </Link>
-              </div>
+              </div>{" "}
+              . . . . . . .
             </div>
           </div>
         </div>
