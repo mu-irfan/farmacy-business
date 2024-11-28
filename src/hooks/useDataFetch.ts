@@ -85,7 +85,7 @@ export const useRegisterCompany = () => {
     onSuccess: (data: any) => {
       if (data?.success) {
         toast.success(data?.message);
-        router.push("/products");
+        router.push("/");
       } else {
         toast.error(data?.response?.data?.message);
       }

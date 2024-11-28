@@ -11,7 +11,7 @@ export const useAuth = () => {
     if (token) {
       setIsAuthenticated(true);
     } else {
-      setIsAuthenticated(true);
+      setIsAuthenticated(false);
     }
   }, []);
 
