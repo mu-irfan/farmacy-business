@@ -108,12 +108,7 @@ const addProductFormSchema = z.object({
   company_fk: z.string().nonempty({ message: "Brand Name is required." }),
   category: z.string().nonempty({ message: "Category is required." }),
   sub_category: z.string().nonempty({ message: "Subcategory is required." }),
-  // active_ingredients: z
-  //   .string()
-  //   .nonempty({ message: "ActiveIngredient is required." }),
   type: z.string().nonempty({ message: "ActiveIngredient is required." }),
-  // concentration: z.string().nonempty({ message: "Concentration is required." }),
-  // units: z.string().nonempty({ message: "Unit is required." }),
   package_weight: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
