@@ -2250,6 +2250,7 @@ export const productsList = {
 
 export const packagingType = [
   { label: "Envelope Packet", value: "envelope_packet" },
+  { label: "Plastic Bottle", value: "plastic_bottle" },
   { label: "Foil Packet", value: "foil_packet" },
   { label: "Plastic Pouch", value: "plastic_pouch" },
   { label: "Glassine Bag", value: "glassine_bag" },
