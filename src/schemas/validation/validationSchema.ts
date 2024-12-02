@@ -120,9 +120,7 @@ const addProductFormSchema = z.object({
   area_covered: z
     .union([z.string(), z.number()])
     .transform((val) => String(val))
-    .refine((val) => val.trim() !== "", {
-      message: "Area covered is required.",
-    }),
+    .optional(),
   disease_purpose: z.string().nonempty({ message: "Disease is required." }),
   price: z
     .union([z.string(), z.number()])
@@ -130,7 +128,7 @@ const addProductFormSchema = z.object({
     .refine((val) => val.trim() !== "", {
       message: "Price is required.",
     }),
-  description: z.string().nonempty({ message: "Packaging Type is required." }),
+  description: z.string().nonempty({ message: "Description is required." }),
 });
 
 const filterProductsFormSchema = z.object({
@@ -195,7 +193,7 @@ const addSeedFormSchema = z.object({
     .union([z.string(), z.number()])
     .transform((val) => String(val))
     .refine((val) => val.trim() !== "", { message: "Price is required." }),
-  description: z.string().nonempty({ message: "Description is required." }),
+  description: z.string().optional(),
 });
 
 // filter seed

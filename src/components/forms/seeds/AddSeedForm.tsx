@@ -15,7 +15,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import LabelInputContainer from "../LabelInputContainer";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { CirclePlus, CircleX, Info } from "lucide-react";
+import { CirclePlus, CircleX } from "lucide-react";
 import { Textarea } from "../../ui/textarea";
 import {
   Select,
@@ -194,7 +194,9 @@ const AddSeedForm = ({
     formData.append("package_type", data.package_type);
     formData.append("height_class", data.height_class);
     formData.append("price", data.price);
-    formData.append("description", data.description);
+    if (data.description) {
+      formData.append("description", data.description);
+    }
 
     if (data.unique_features) {
       formData.append("unique_features", data.unique_features.join(","));
@@ -567,7 +569,7 @@ const AddSeedForm = ({
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter min days to reach harvesting"
+                          placeholder="Enter minimum days to reach harvesting"
                           type="text"
                           id="min_harvesting_days"
                           className="outline-none focus:border-primary disabled:bg-primary/20"
@@ -594,7 +596,7 @@ const AddSeedForm = ({
                     <FormItem>
                       <FormControl>
                         <Input
-                          placeholder="Enter max days to reach harvesting"
+                          placeholder="Enter maximum days to reach harvesting"
                           type="text"
                           id="max_harvesting_days"
                           className="outline-none focus:border-primary disabled:bg-primary/20"
