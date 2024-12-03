@@ -94,7 +94,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
     Cell?: ({ row }: any) => JSX.Element | null;
   }[] = [
     { Header: "Seed Variety Name", accessor: "seed_variety_name" },
-    { Header: "Brand Name", accessor: "company_fk" },
+    { Header: "Trail Count", accessor: "trial_count" },
     { Header: "Crop Category", accessor: "crop_category" },
     { Header: "Crop", accessor: "crop" },
     {
