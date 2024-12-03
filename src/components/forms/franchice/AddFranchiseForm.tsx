@@ -161,7 +161,7 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                                   key={manager.uuid}
                                   value={manager.uuid}
                                 >
-                                  {manager.full_name}
+                                  {manager.full_name} - {manager.contact}
                                 </SelectItem>
                               ))
                             ) : (

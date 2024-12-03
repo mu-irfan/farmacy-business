@@ -31,6 +31,7 @@ import {
 } from "@/components/ui/select";
 import { seedTrailTableHeaders, tehsils } from "@/constant/data";
 import { SkeletonCard } from "@/components/SkeletonLoader";
+import toast from "react-hot-toast";
 
 const AddTrailDataForm = ({
   mode,
@@ -49,6 +50,12 @@ const AddTrailDataForm = ({
   const { data: seedsVarieties, isLoading: loadingSeeds } =
     useGetAllSeeds(token);
 
+  if (seedTrailsStagesForm?.data?.length <= 0) {
+    onClose();
+    toast.error(
+      "The selected crop is not present in the agronomics simulator catalog. Please contact agronomics to add this crop and its stages!"
+    );
+  }
   const form = useForm<z.infer<typeof addTrailDataFormSchema>>({
     resolver: zodResolver(addTrailDataFormSchema),
     defaultValues: {
@@ -56,12 +63,11 @@ const AddTrailDataForm = ({
       sowing_date: "",
       city: "",
       tehsil: "",
-      min_irrigation: "",
-      max_irrigation: "",
+      water_requirement_per_day: "",
       estimated_yield: "",
       seed_trial_form:
-        (seedTrailsStagesForm?.message?.length > 0 &&
-          seedTrailsStagesForm?.message?.map(() => ({
+        (seedTrailsStagesForm?.data?.length > 0 &&
+          seedTrailsStagesForm?.data?.map(() => ({
             start_day: "",
             end_day: "",
             kc: "",
@@ -110,9 +116,9 @@ const AddTrailDataForm = ({
 
     const completeSeedTrialForm = data.seed_trial_form.map((item, index) => ({
       ...item,
-      stage: seedTrailsStagesForm?.message[index].stage,
-      sub_stage: seedTrailsStagesForm?.message[index].sub_stage,
-      bbch_scale: seedTrailsStagesForm?.message[index].bbch_scale.toString(),
+      stage: seedTrailsStagesForm?.data[index].stage,
+      sub_stage: seedTrailsStagesForm?.data[index].sub_stage,
+      bbch_scale: seedTrailsStagesForm?.data[index].bbch_scale.toString(),
     }));
 
     const finalData = {
@@ -193,7 +199,7 @@ const AddTrailDataForm = ({
                     <FormControl>
                       <Input
                         placeholder="Enter date"
-                        type="text"
+                        type="date"
                         id="sowing_date"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
@@ -272,21 +278,21 @@ const AddTrailDataForm = ({
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
               <Label
-                htmlFor="min_irrigation"
+                htmlFor="water_requirement_per_day"
                 className="dark:text-farmacieGrey"
               >
-                Min irrigation (mm)
+                Water Requirment Per Day (mm)
               </Label>
               <FormField
                 control={form.control}
-                name="min_irrigation"
+                name="water_requirement_per_day"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Enter min_irrigation name"
+                        placeholder="Enter  Water Requirment Per Day"
                         type="text"
-                        id="min_irrigation"
+                        id="water_requirement_per_day"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                       />
@@ -298,21 +304,21 @@ const AddTrailDataForm = ({
             </LabelInputContainer>
             <LabelInputContainer>
               <Label
-                htmlFor="max_irrigation"
+                htmlFor="estimated_yield"
                 className="dark:text-farmacieGrey"
               >
-                Max irrigation (mm)
+                Estimated yield (per acre)
               </Label>
               <FormField
                 control={form.control}
-                name="max_irrigation"
+                name="estimated_yield"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Enter max irrigation in mm"
+                        placeholder="Enter yield percentage"
                         type="text"
-                        id="max_irrigation"
+                        id="estimated_yield"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                       />
@@ -323,34 +329,10 @@ const AddTrailDataForm = ({
               />
             </LabelInputContainer>
           </div>
-          <LabelInputContainer>
-            <Label htmlFor="estimated_yield" className="dark:text-farmacieGrey">
-              Estimated yield (per acre)
-            </Label>
-            <FormField
-              control={form.control}
-              name="estimated_yield"
-              render={({ field }) => (
-                <FormItem>
-                  <FormControl>
-                    <Input
-                      placeholder="Enter yield percentage"
-                      type="text"
-                      id="estimated_yield"
-                      className="outline-none focus:border-primary disabled:bg-primary/20"
-                      {...field}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </LabelInputContainer>
           <h2 className="py-8 text-yellow-600">Seed Trial Form</h2>
           <div className="overflow-x-auto">
             {!loadingStagesForm ? (
-              seedTrailsStagesForm &&
-              seedTrailsStagesForm.message.length > 0 ? (
+              seedTrailsStagesForm && seedTrailsStagesForm.data.length > 0 ? (
                 <table className="min-w-full">
                   <thead>
                     <tr>
@@ -365,7 +347,7 @@ const AddTrailDataForm = ({
                     </tr>
                   </thead>
                   <tbody>
-                    {seedTrailsStagesForm?.message?.map(
+                    {seedTrailsStagesForm?.data?.map(
                       (data: any, index: number) => (
                         <tr key={data.id}>
                           <td className="px-4 py-2 border-b text-sm font-normal">
@@ -433,8 +415,8 @@ const AddTrailDataForm = ({
                                 <FormItem>
                                   <FormControl>
                                     <Input
-                                      placeholder="0"
-                                      type="text"
+                                      placeholder="Enter KC"
+                                      type="number"
                                       className="outline-none focus:border-primary disabled:bg-primary/20"
                                       {...field}
                                     />

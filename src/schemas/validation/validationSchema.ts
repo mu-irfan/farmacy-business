@@ -275,16 +275,12 @@ const addTrailDataFormSchema = z.object({
   tehsil: z.string().nonempty({
     message: "Tehsil is required.",
   }),
-  min_irrigation: z.string().nonempty({
-    message: "Min irrigation is required.",
-  }),
-  max_irrigation: z.string().nonempty({
-    message: "Max irrigation is required.",
+  water_requirement_per_day: z.string().nonempty({
+    message: "Water Requirment is required.",
   }),
   estimated_yield: z.string().nonempty({
     message: "Yield percentage is required.",
   }),
-
   seed_trial_form: z.array(
     z.object({
       start_day: z

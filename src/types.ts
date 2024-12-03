@@ -49,7 +49,7 @@ interface Product {
 interface Seed {
   id: number;
   seed_variety_name: string;
-  company_fk: string;
+  trial_count: string;
   crop_category: string;
   crop: string;
   subscribed?: boolean;
