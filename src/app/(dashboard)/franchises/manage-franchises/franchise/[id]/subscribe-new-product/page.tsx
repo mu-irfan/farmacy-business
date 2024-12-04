@@ -164,6 +164,7 @@ const SubscribeNewProduct = ({ params }: any) => {
           <DataTable
             columns={productColumns}
             data={filteredUnsubProducts as ProductTableRow[]}
+            paginate
           />
         ) : (
           <NoData message="No Data Available" />

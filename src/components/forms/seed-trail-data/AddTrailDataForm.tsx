@@ -63,7 +63,6 @@ const AddTrailDataForm = ({
       sowing_date: "",
       city: "",
       tehsil: "",
-      water_requirement_per_day: "",
       estimated_yield: "",
       seed_trial_form:
         (seedTrailsStagesForm?.data?.length > 0 &&
@@ -276,32 +275,6 @@ const AddTrailDataForm = ({
             </LabelInputContainer>
           </div>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
-            <LabelInputContainer>
-              <Label
-                htmlFor="water_requirement_per_day"
-                className="dark:text-farmacieGrey"
-              >
-                Water Requirment Per Day (mm)
-              </Label>
-              <FormField
-                control={form.control}
-                name="water_requirement_per_day"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormControl>
-                      <Input
-                        placeholder="Enter  Water Requirment Per Day"
-                        type="text"
-                        id="water_requirement_per_day"
-                        className="outline-none focus:border-primary disabled:bg-primary/20"
-                        {...field}
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </LabelInputContainer>
             <LabelInputContainer>
               <Label
                 htmlFor="estimated_yield"

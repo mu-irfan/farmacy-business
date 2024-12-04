@@ -166,6 +166,7 @@ const ManageSeeds = () => {
           <DataTable
             columns={seedColumns}
             data={filteredSeeds as SeedTableRow[]}
+            paginate
           />
         ) : (
           <NoData message="No Data Available" />

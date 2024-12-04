@@ -117,6 +117,7 @@ const ManageSuggestions = () => {
           <DataTable
             columns={suggestionsColumns}
             data={queries.data as SuggestionsTableActionRow[]}
+            paginate
             extendWidth
           />
         ) : (

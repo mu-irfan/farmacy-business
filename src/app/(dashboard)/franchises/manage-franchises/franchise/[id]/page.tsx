@@ -292,6 +292,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           <DataTable
             columns={seedColumns}
             data={subscribedSeedData as SeedTableRow[]}
+            paginate
           />
         ) : (
           visibleTable === "seeds" && (

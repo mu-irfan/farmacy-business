@@ -275,9 +275,6 @@ const addTrailDataFormSchema = z.object({
   tehsil: z.string().nonempty({
     message: "Tehsil is required.",
   }),
-  water_requirement_per_day: z.string().nonempty({
-    message: "Water Requirment is required.",
-  }),
   estimated_yield: z.string().nonempty({
     message: "Yield percentage is required.",
   }),
