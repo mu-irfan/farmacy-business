@@ -310,7 +310,7 @@ const AddProductForm = ({
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Sygenta fixed"
+                        placeholder="Enter Brand Name"
                         type="text"
                         id="company_fk"
                         className="outline-none focus:border-primary disabled:bg-primary/20"

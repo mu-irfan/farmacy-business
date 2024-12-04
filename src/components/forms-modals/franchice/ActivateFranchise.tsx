@@ -201,6 +201,10 @@ const ActivateFranchiseModal = ({
             className="w-full text-white font-medium"
             type="submit"
             onClick={handlePaymentBulkActivateModalOpen}
+            disabled={
+              inActiveFranchises?.data?.length <= 0 ||
+              selectedUUIDs.length === 0
+            }
           >
             Continue to Payment
           </Button>
