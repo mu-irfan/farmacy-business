@@ -117,7 +117,7 @@ const ManageManagers = () => {
           <DataTable
             columns={ManagerColumns}
             data={filteredManagers as ManagersTableRow[]}
-            paginate
+            paginate={filteredManagers.length > 10}
           />
         ) : (
           <NoData message="No Data Available" />

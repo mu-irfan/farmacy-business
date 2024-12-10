@@ -292,7 +292,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           <DataTable
             columns={seedColumns}
             data={subscribedSeedData as SeedTableRow[]}
-            paginate
+            paginate={subscribedSeedData.length > 10}
           />
         ) : (
           visibleTable === "seeds" && (
@@ -305,7 +305,7 @@ const FranchiseDetails = ({ params }: { params: { id: string } }) => {
           <DataTable
             columns={productColumns}
             data={subscribedProductData as ProductTableRow[]}
-            paginate
+            paginate={subscribedProductData.length > 10}
           />
         ) : (
           visibleTable === "products" && (

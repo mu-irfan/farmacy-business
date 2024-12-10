@@ -159,7 +159,7 @@ const SubscribeNewSeeds = ({ params }: any) => {
           <DataTable
             columns={seedColumns}
             data={filteredUnsubSeeds as SeedTableRow[]}
-            paginate
+            paginate={filteredUnsubSeeds.length > 10}
           />
         ) : (
           <NoData message="No Data Available" />

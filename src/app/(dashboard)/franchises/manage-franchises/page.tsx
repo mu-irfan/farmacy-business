@@ -190,7 +190,7 @@ const ManageFranchises = () => {
           <DataTable
             columns={franchiseColumns}
             data={filteredManagers as FranchiseTableRow[]}
-            paginate
+            paginate={filteredManagers.length > 10}
           />
         ) : (
           <NoData message="No Data Available" />
