@@ -269,8 +269,11 @@ const addTrailDataFormSchema = z.object({
   sowing_date: z.string().nonempty({
     message: "Sowing date is required.",
   }),
-  city: z.string().nonempty({
-    message: "City is required.",
+  lat: z.string().nonempty({
+    message: "Latitude is required.",
+  }),
+  lon: z.string().nonempty({
+    message: "Longitude is required.",
   }),
   tehsil: z.string().nonempty({
     message: "Tehsil is required.",
@@ -294,9 +297,12 @@ const addTrailDataFormSchema = z.object({
         }),
       kc: z
         .union([z.string(), z.number()])
-        .transform((val) => String(val))
-        .refine((val) => val.trim() !== "", {
-          message: "Kc is required.",
+        .transform((val) => Number(val))
+        .refine((val) => !isNaN(val), {
+          message: "Kc must be a valid number.",
+        })
+        .refine((val) => val <= 1.5, {
+          message: "KC must not be greater than 1.5",
         }),
     })
   ),

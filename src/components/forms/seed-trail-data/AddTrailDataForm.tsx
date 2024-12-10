@@ -61,7 +61,8 @@ const AddTrailDataForm = ({
     defaultValues: {
       seed_variety: "",
       sowing_date: "",
-      city: "",
+      lat: "",
+      lon: "",
       tehsil: "",
       estimated_yield: "",
       seed_trial_form:
@@ -87,7 +88,7 @@ const AddTrailDataForm = ({
     });
   }, [seedTrialForm, setValue]);
 
-  const selectedSeedUUID = seedsVarieties?.data.find(
+  const selectedSeedUUID = seedsVarieties?.data?.find(
     (item: any) => item.seed_variety_name === form.watch("seed_variety")
   )?.uuid;
 
@@ -168,7 +169,7 @@ const AddTrailDataForm = ({
                           <SelectGroup>
                             <SelectLabel>Seed variety</SelectLabel>
                             {seedsVarieties?.data
-                              .filter((item: any) => item.crop === cropName)
+                              ?.filter((item: any) => item.crop === cropName)
                               .map((item: any) => (
                                 <SelectItem
                                   key={item.uuid}
@@ -212,6 +213,32 @@ const AddTrailDataForm = ({
           </div>
           <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
+              <Label
+                htmlFor="estimated_yield"
+                className="dark:text-farmacieGrey"
+              >
+                Yield Estimation (kg per hectare)
+              </Label>
+              <FormField
+                control={form.control}
+                name="estimated_yield"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormControl>
+                      <Input
+                        placeholder="Enter yield estimation (kg per hectare)"
+                        type="text"
+                        id="estimated_yield"
+                        className="outline-none focus:border-primary disabled:bg-primary/20"
+                        {...field}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </LabelInputContainer>
+            <LabelInputContainer>
               <Label htmlFor="tehsil" className="dark:text-farmacieGrey">
                 Select Tehsil
               </Label>
@@ -250,20 +277,22 @@ const AddTrailDataForm = ({
                 )}
               />
             </LabelInputContainer>
+          </div>
+          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label htmlFor="city" className="dark:text-farmacieGrey">
-                City
+              <Label htmlFor="lat" className="dark:text-farmacieGrey">
+                Latitude
               </Label>
               <FormField
                 control={form.control}
-                name="city"
+                name="lat"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Enter city name"
+                        placeholder="Enter Latitude"
                         type="text"
-                        id="city"
+                        id="lat"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                       />
@@ -273,25 +302,20 @@ const AddTrailDataForm = ({
                 )}
               />
             </LabelInputContainer>
-          </div>
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-4">
             <LabelInputContainer>
-              <Label
-                htmlFor="estimated_yield"
-                className="dark:text-farmacieGrey"
-              >
-                Estimated yield (per acre)
+              <Label htmlFor="lon" className="dark:text-farmacieGrey">
+                Longitude
               </Label>
               <FormField
                 control={form.control}
-                name="estimated_yield"
+                name="lon"
                 render={({ field }) => (
                   <FormItem>
                     <FormControl>
                       <Input
-                        placeholder="Enter yield percentage"
+                        placeholder="Enter Longitude"
                         type="text"
-                        id="estimated_yield"
+                        id="lon"
                         className="outline-none focus:border-primary disabled:bg-primary/20"
                         {...field}
                       />
@@ -305,7 +329,7 @@ const AddTrailDataForm = ({
           <h2 className="py-8 text-yellow-600">Seed Trial Form</h2>
           <div className="overflow-x-auto">
             {!loadingStagesForm ? (
-              seedTrailsStagesForm && seedTrailsStagesForm.data.length > 0 ? (
+              seedTrailsStagesForm && seedTrailsStagesForm?.data?.length > 0 ? (
                 <table className="min-w-full">
                   <thead>
                     <tr>

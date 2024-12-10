@@ -31,11 +31,14 @@ import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Label } from "@/components/ui/label";
 import { addCropSelectionFormSchema } from "@/schemas/validation/validationSchema";
 import AddSeedTrailDataModal from "./AddSeedTrailData";
+import { useGetAllCrops } from "@/hooks/useDataFetch";
+import { useContextConsumer } from "@/context/Context";
 
 const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
   open,
   onOpenChange,
 }) => {
+  const { token } = useContextConsumer();
   const [isAddSeedTrailDataModalOpen, setAddSeedTrailDataModalOpen] =
     useState(false);
   const [selectedCrop, setselectedCrop] = useState("");
@@ -46,6 +49,8 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
       crop: "",
     },
   });
+
+  const { data: cropsList, isLoading: cropsLoading } = useGetAllCrops(token);
 
   const onSubmit = (data: z.infer<typeof addCropSelectionFormSchema>) => {
     setAddSeedTrailDataModalOpen((prev: any) => !prev);
@@ -83,7 +88,7 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
             </li>
             <li>
               It is recommended to add{" "}
-              <strong className="text-white font-normal">
+              <strong className="text-primary dark:text-white font-normal">
                 {" "}
                 2 to 3 trials{" "}
               </strong>{" "}
@@ -113,12 +118,18 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
                           </SelectTrigger>
                           <SelectContent className="rounded-xl">
                             <SelectGroup>
-                              <SelectLabel>crop</SelectLabel>
-                              {crops.map((item) => (
-                                <SelectItem key={item.value} value={item.value}>
-                                  {item.label}
-                                </SelectItem>
-                              ))}
+                              <SelectLabel>Crop</SelectLabel>
+                              {!cropsLoading &&
+                                cropsList?.data?.map(
+                                  (crop: any, index: number) => (
+                                    <SelectItem
+                                      key={index}
+                                      value={crop?.crop_name}
+                                    >
+                                      {crop.crop_name}
+                                    </SelectItem>
+                                  )
+                                )}
                             </SelectGroup>
                           </SelectContent>
                         </Select>
