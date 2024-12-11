@@ -24,6 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { cn } from "@/lib/utils";
 
 const FilterFranchiceForm = ({
   onSubmit,
@@ -81,7 +82,14 @@ const FilterFranchiceForm = ({
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger
+                        className={cn(
+                          "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                          !field.value
+                            ? "dark:text-farmaciePlaceholderMuted"
+                            : "dark:text-farmacieWhite"
+                        )}
+                      >
                         <SelectValue placeholder="All Pakistan" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -117,7 +125,14 @@ const FilterFranchiceForm = ({
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger
+                        className={cn(
+                          "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                          !field.value
+                            ? "dark:text-farmaciePlaceholderMuted"
+                            : "dark:text-farmacieWhite"
+                        )}
+                      >
                         <SelectValue placeholder="All districts" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">
@@ -155,7 +170,14 @@ const FilterFranchiceForm = ({
                         field.onChange(value);
                       }}
                     >
-                      <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                      <SelectTrigger
+                        className={cn(
+                          "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                          !field.value
+                            ? "dark:text-farmaciePlaceholderMuted"
+                            : "dark:text-farmacieWhite"
+                        )}
+                      >
                         <SelectValue placeholder="All tehsils" />
                       </SelectTrigger>
                       <SelectContent className="rounded-xl">

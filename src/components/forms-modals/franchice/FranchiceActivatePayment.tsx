@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +10,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardTitle } from "@/components/ui/card";
 import CustomCheckbox from "@/components/ui/CustomCheckbox";
 import { useForm } from "react-hook-form";
-import * as z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
   Form,
@@ -23,8 +22,12 @@ import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Input } from "@/components/ui/input";
 import { Label } from "@radix-ui/react-dropdown-menu";
 import { addPaymentFormSchema } from "@/schemas/validation/validationSchema";
-import { useCreateBulkPayment } from "@/hooks/useDataFetch";
+import {
+  useCreateBulkPayment,
+  useCreateEasyPaisaBulkPayment,
+} from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import { MoveLeft } from "lucide-react";
 
 const ActivateFranchisePaymentModal = ({
   open,
@@ -40,6 +43,8 @@ const ActivateFranchisePaymentModal = ({
 
   //
   const { mutate: addBulkPayment, isPending: paying } = useCreateBulkPayment();
+  const { mutate: addEasyPaisaBulkPayment, isPending: payingEasyPaisa } =
+    useCreateEasyPaisaBulkPayment();
 
   const handleCheckboxChange = (paymentMethod: string) => {
     setSelectedPayment((prev) =>
@@ -47,33 +52,57 @@ const ActivateFranchisePaymentModal = ({
     );
   };
 
-  const form = useForm<z.infer<typeof addPaymentFormSchema>>({
-    resolver: zodResolver(addPaymentFormSchema),
+  const form = useForm({
+    resolver: zodResolver(addPaymentFormSchema(selectedPayment)),
     defaultValues: {
       cnic_last6: "",
       phone: "",
     },
   });
 
-  const onSubmit = (data: z.infer<typeof addPaymentFormSchema>) => {
-    const payload = {
-      phone: data.phone,
-      cnic_last6: data.cnic_last6,
-      franchise_uuid_list: franchiseUUIDs,
-      amount_showed: amount,
-    };
+  useEffect(() => {
+    form.reset();
+  }, [selectedPayment, form]);
 
-    addBulkPayment(
-      { data: payload, token },
-      {
-        onSuccess: (log) => {
-          if (log?.success) {
-            onOpenChange(false);
-            onClose((prev: any) => !prev);
-          }
-        },
-      }
-    );
+  const onSubmit = (data: any) => {
+    if (selectedPayment === "JazzCash") {
+      const payload = {
+        phone: data.phone,
+        cnic_last6: data.cnic_last6,
+        franchise_uuid_list: franchiseUUIDs,
+        amount_showed: amount,
+      };
+
+      addBulkPayment(
+        { data: payload, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+              onClose((prev: any) => !prev);
+            }
+          },
+        }
+      );
+    } else if (selectedPayment === "Card") {
+      const payload = {
+        phone: data.phone,
+        email: "finance@agronomics.pk",
+        franchise_uuid_list: franchiseUUIDs,
+        amount_showed: amount,
+      };
+      addEasyPaisaBulkPayment(
+        { data: payload, token },
+        {
+          onSuccess: (log) => {
+            if (log?.success) {
+              onClose();
+              onClose((prev: any) => !prev);
+            }
+          },
+        }
+      );
+    }
   };
 
   return (
@@ -92,6 +121,18 @@ const ActivateFranchisePaymentModal = ({
             <Card className="w-full py-8 rounded-xl text-center bg-primary/10">
               <div className="flex items-center justify-start pl-4 md:pl-10">
                 <CustomCheckbox
+                  id="payment-card"
+                  checked={selectedPayment === "Card"}
+                  onChange={() => handleCheckboxChange("Card")}
+                />
+                <CardTitle className="text-xl md:text-3xl pl-2 md:pl-8 font-bold text-primary">
+                  Pay With EasyPaisa
+                </CardTitle>
+              </div>
+            </Card>
+            <Card className="w-full py-8 rounded-xl text-center bg-primary/10">
+              <div className="flex items-center justify-start pl-4 md:pl-10">
+                <CustomCheckbox
                   id="payment-jazzcash"
                   checked={selectedPayment === "JazzCash"}
                   onChange={() => handleCheckboxChange("JazzCash")}
@@ -101,18 +142,6 @@ const ActivateFranchisePaymentModal = ({
                 </CardTitle>
               </div>
             </Card>
-            {/* <Card className="w-full py-8 rounded-xl text-center bg-primary/10">
-              <div className="flex items-center justify-start pl-4 md:pl-10">
-                <CustomCheckbox
-                  id="payment-card"
-                  checked={selectedPayment === "Card"}
-                  onChange={() => handleCheckboxChange("Card")}
-                />
-                <CardTitle className="text-xl md:text-3xl pl-2 md:pl-8 font-bold text-primary">
-                  Pay With Card
-                </CardTitle>
-              </div>
-            </Card> */}
             <Button
               className="w-full text-white font-medium my-4"
               type="button"
@@ -124,32 +153,43 @@ const ActivateFranchisePaymentModal = ({
         ) : (
           <Form {...form}>
             <form className="2" onSubmit={form.handleSubmit(onSubmit)}>
+              <Button
+                className="text-farmacieWhite font-medium text-base dark:text-farmacieGrey !pl-0 mb-4"
+                type="button"
+                variant="link"
+                onClick={() => setEnterPaymentDetailsModalOpen(false)}
+              >
+                <MoveLeft className=" mr-1.5 mt-1 mb-1 w-6 h-6" />
+                Back
+              </Button>
               <h2 className="pb-6">Bulk Franchise Activate</h2>
               <div className="flex flex-col gap-3 mb-4">
-                <LabelInputContainer>
-                  <Label className="dark:text-farmacieGrey">
-                    Enter CNIC last 6 digits
-                  </Label>
-                  <FormField
-                    control={form.control}
-                    name="cnic_last6"
-                    render={({ field }) => (
-                      <FormItem>
-                        <FormControl>
-                          <Input
-                            placeholder="Enter CNIC last 6 digits"
-                            type="text"
-                            id="cnic_last6"
-                            className="outline-none focus:border-primary"
-                            {...field}
-                            disabled={paying}
-                          />
-                        </FormControl>
-                        <FormMessage />
-                      </FormItem>
-                    )}
-                  />
-                </LabelInputContainer>
+                {selectedPayment === "JazzCash" && (
+                  <LabelInputContainer>
+                    <Label className="dark:text-farmacieGrey">
+                      Enter CNIC last 6 digits
+                    </Label>
+                    <FormField
+                      control={form.control}
+                      name="cnic_last6"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              placeholder="Enter CNIC last 6 digits"
+                              type="text"
+                              id="cnic_last6"
+                              className="outline-none focus:border-primary"
+                              {...field}
+                              disabled={paying || payingEasyPaisa}
+                            />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                  </LabelInputContainer>
+                )}
                 <LabelInputContainer>
                   <Label className="dark:text-farmacieGrey">Phone number</Label>
                   <FormField
@@ -164,7 +204,7 @@ const ActivateFranchisePaymentModal = ({
                             id="phone"
                             className="outline-none focus:border-primary"
                             {...field}
-                            disabled={paying}
+                            disabled={paying || payingEasyPaisa}
                           />
                         </FormControl>
                         <FormMessage />
@@ -177,7 +217,7 @@ const ActivateFranchisePaymentModal = ({
                 className="w-full text-white font-medium mt-4"
                 type="submit"
               >
-                {paying ? "Processing..." : "Pay Now"}
+                {paying || payingEasyPaisa ? "Processing..." : "Pay Now"}
               </Button>
               <div className="bg-gradient-to-r from-transparent via-neutral-300 dark:via-neutral-700 to-transparent mt-6 h-[1px] w-full" />
             </form>

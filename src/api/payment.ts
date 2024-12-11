@@ -20,6 +20,23 @@ export const createBulkPayment = async (data: any, token: string) => {
   }
 };
 
+export const createEasyPaisaBulkPayment = async (data: any, token: string) => {
+  try {
+    const res = await axios.post(
+      `${baseUrl}/payment/easypaisa/easypaisa-mwallet/bulk`,
+      data,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+    return res.data;
+  } catch (error) {
+    return error;
+  }
+};
+
 // create bulk payment
 export const inquiryPayment = async (token: string) => {
   try {

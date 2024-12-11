@@ -11,9 +11,9 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://farmacy-business.vercel.app/",
-    title: "Business Farmacie",
-    description: "Business Farmacie",
+    url: "https://business.agronomics.pk/",
+    title: "Business Farmacie (Agronomics)",
+    description: "Business Farmacie (Agronomics)",
     images: [
       {
         url: "/assets/images/OG.png",

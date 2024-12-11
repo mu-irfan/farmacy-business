@@ -250,5 +250,5 @@ type InputField = {
   id: string;
   ingredient: string;
   concentration: string;
-  unit: string;
+  unit: string | string[];
 };

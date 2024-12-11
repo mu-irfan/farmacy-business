@@ -32,6 +32,7 @@ import {
 import { seedTrailTableHeaders, tehsils } from "@/constant/data";
 import { SkeletonCard } from "@/components/SkeletonLoader";
 import toast from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 const AddTrailDataForm = ({
   mode,
@@ -162,7 +163,14 @@ const AddTrailDataForm = ({
                         }}
                         disabled={isViewMode}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue placeholder="Select Seed Variety" />
                         </SelectTrigger>
                         <SelectContent className="rounded-xl">
@@ -254,7 +262,14 @@ const AddTrailDataForm = ({
                         }}
                         disabled={isViewMode}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue
                             placeholder={"Select Tehsil"}
                             className=""

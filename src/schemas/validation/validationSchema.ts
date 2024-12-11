@@ -374,14 +374,18 @@ const profileFormSchema = z.object({
 });
 
 // payment
-const addPaymentFormSchema = z.object({
-  phone: z.string({
-    required_error: "Phone number is required.",
-  }),
-  cnic_last6: z.string().nonempty({
-    message: "Enter CNIC last 6 digits",
-  }),
-});
+const addPaymentFormSchema = (selectedPayment: string | null) =>
+  z.object({
+    phone: z.string().nonempty({
+      message: "Phone number is required.",
+    }),
+    cnic_last6:
+      selectedPayment === "JazzCash"
+        ? z.string().nonempty({
+            message: "Enter CNIC last 6 digits",
+          })
+        : z.string().optional(),
+  });
 
 export {
   createAccountFormSchema,

@@ -69,7 +69,11 @@ import {
   subscribeSeeds,
 } from "@/api/subscribe";
 import { getCompanyProfile, updateCompanyProfile } from "@/api/companyProfile";
-import { createBulkPayment, inquiryPayment } from "@/api/payment";
+import {
+  createBulkPayment,
+  createEasyPaisaBulkPayment,
+  inquiryPayment,
+} from "@/api/payment";
 import {
   createSeedTrail,
   getAllSeedTrail,
@@ -1037,6 +1041,28 @@ export const useCreateBulkPayment = () => {
   return useMutation({
     mutationFn: ({ data, token }: { data: any; token: string }) =>
       createBulkPayment(data, token),
+    onSuccess: (data: any, variables: { data: any; token: string }) => {
+      if (data?.success) {
+        toast.success(data?.message);
+        queryClient.invalidateQueries([
+          "allFranchises",
+          variables.token,
+        ] as any);
+      } else {
+        toast.error(data?.response?.data?.message);
+      }
+    },
+    onError: (error: any) => {
+      toast.error(error.response?.data?.message);
+    },
+  });
+};
+
+export const useCreateEasyPaisaBulkPayment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: ({ data, token }: { data: any; token: string }) =>
+      createEasyPaisaBulkPayment(data, token),
     onSuccess: (data: any, variables: { data: any; token: string }) => {
       if (data?.success) {
         toast.success(data?.message);

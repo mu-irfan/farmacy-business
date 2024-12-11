@@ -31,6 +31,7 @@ import {
   useUpdateFranchise,
 } from "@/hooks/useDataFetch";
 import { Toaster } from "react-hot-toast";
+import { cn } from "@/lib/utils";
 
 const AddFranchiceForm = ({ franchise, onClose }: any) => {
   const { mode, token } = useContextConsumer();
@@ -144,7 +145,14 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                           field.onChange(value);
                         }}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue
                             placeholder={
                               franchise?.franchise_manager.full_name ||
@@ -279,7 +287,14 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                           field.onChange(value);
                         }}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue
                             placeholder={
                               franchise?.province || "Select province"
@@ -319,7 +334,14 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                           field.onChange(value);
                         }}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue
                             placeholder={
                               franchise?.district || "Select District"
@@ -362,7 +384,14 @@ const AddFranchiceForm = ({ franchise, onClose }: any) => {
                           field.onChange(value);
                         }}
                       >
-                        <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary">
+                        <SelectTrigger
+                          className={cn(
+                            "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                            !field.value
+                              ? "dark:text-farmaciePlaceholderMuted"
+                              : "dark:text-farmacieWhite"
+                          )}
+                        >
                           <SelectValue
                             placeholder={franchise?.tehsil || "Select Tehsil"}
                           />

@@ -26,13 +26,13 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { crops } from "@/constant/data";
 import LabelInputContainer from "@/components/forms/LabelInputContainer";
 import { Label } from "@/components/ui/label";
 import { addCropSelectionFormSchema } from "@/schemas/validation/validationSchema";
 import AddSeedTrailDataModal from "./AddSeedTrailData";
 import { useGetAllCrops } from "@/hooks/useDataFetch";
 import { useContextConsumer } from "@/context/Context";
+import { cn } from "@/lib/utils";
 
 const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
   open,
@@ -113,7 +113,14 @@ const AddCropSelectionSeedTrailDataModal: React.FC<any> = ({
                             field.onChange(value);
                           }}
                         >
-                          <SelectTrigger className="p-3 py-5 dark:text-farmaciePlaceholderMuted rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20">
+                          <SelectTrigger
+                            className={cn(
+                              "p-3 py-5 rounded-md border border-estateLightGray focus:outline-none focus:ring-1 focus:ring-primary disabled:bg-primary/20",
+                              !field.value
+                                ? "dark:text-farmaciePlaceholderMuted"
+                                : "dark:text-farmacieWhite"
+                            )}
+                          >
                             <SelectValue placeholder="Select crop" />
                           </SelectTrigger>
                           <SelectContent className="rounded-xl">
