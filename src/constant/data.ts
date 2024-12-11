@@ -2272,7 +2272,7 @@ export const weightUnitType = [
 ].sort((a, b) => a.label.localeCompare(b.label));
 
 export const productType = [
-  { value: "biological", label: "Biological" },
+  { value: "bio", label: "Biological" },
   { value: "chemical", label: "Chemical" },
 ];
 
